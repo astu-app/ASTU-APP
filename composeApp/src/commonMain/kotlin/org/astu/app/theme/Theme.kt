@@ -107,7 +107,7 @@ internal fun AppTheme(
     ) {
         val isDark by isDarkState
         SystemAppearance(!isDark)
-        currentColorScheme.value = if (isDark) MaterialTheme.colorScheme else lightColorScheme()
+        currentColorScheme.value = if (isDark) DarkColorScheme else LightColorScheme
         MaterialTheme(
             colorScheme = currentColorScheme.value!!,
             typography = AppTypography,

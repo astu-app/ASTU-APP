@@ -24,7 +24,8 @@ class UnauthorizedScreen(onAuth: () -> Unit)  : Screen {
             UnitOfNavigationBar(
                 label = { Text("Авторизация") },
                 icon = { Icon(Icons.Default.Login, contentDescription = null) },
-                screen = AuthScreen(onAuth)
+//                screen = AuthScreen(onAuth) // todo
+                screen = BulletInBoardScreen()
             ),
             UnitOfNavigationBar(
                 label = { Text("Расписание") },

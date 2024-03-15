@@ -26,9 +26,9 @@ class AuthorizedScreen: Screen {
     val screens: List<UnitOfNavigationBar> =
         listOf(
             UnitOfNavigationBar(
-                label = { Text("Доска объявлений") },
+                label = { Text("Объявления") },
                 icon = { Icon(Icons.Default.Newspaper, contentDescription = null) },
-                screen = NoContentScreen()
+                screen = BulletInBoardScreen()
             ),
             UnitOfNavigationBar(
                 label = { Text("АГТУ.Заявка") },
@@ -49,7 +49,7 @@ class AuthorizedScreen: Screen {
 
     @Composable
     override fun Content() {
-        val (selected, setValue) = remember { mutableStateOf(1) }
+        val (selected, setValue) = remember { mutableStateOf(0) }
         Scaffold(
             bottomBar = {
                 NavigationBarScreens(selected, screens, setValue)
