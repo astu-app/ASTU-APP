@@ -3,17 +3,12 @@ package org.astu.app.components.bulletinBoard.announcements
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.sp
 import org.astu.app.components.bulletinBoard.announcements.footer.AnnouncementFooter
 import org.astu.app.components.bulletinBoard.announcements.header.AnnouncementHeader
 import org.astu.app.components.bulletinBoard.announcements.models.AnnouncementSummaryContent
@@ -48,9 +43,7 @@ fun AnnouncementSummary(
             Text(
                 text = content.text,
                 lineHeight = 1.5.em,
-                style = TextStyle(
-                    fontSize = 16.sp
-                ),
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
@@ -65,7 +58,10 @@ fun AnnouncementSummary(
                         .padding(vertical = 4.dp)
                 )
 
-                content.attachments.forEach {
+                // файлы выводятся раньше опроса
+                content.attachments.sortedBy {
+                    it.type
+                }.forEach {
                     Attachment(it)
                 }
             }

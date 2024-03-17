@@ -1,9 +1,9 @@
 package org.astu.app.components.bulletinBoard.attachments
 
 import androidx.compose.runtime.Composable
-import org.astu.app.components.bulletinBoard.announcements.File
 import org.astu.app.components.bulletinBoard.attachments.common.models.AttachmentBase
 import org.astu.app.components.bulletinBoard.attachments.common.models.AttachmentType
+import org.astu.app.components.bulletinBoard.attachments.files.File
 import org.astu.app.components.bulletinBoard.attachments.files.FileSummary
 import org.astu.app.components.bulletinBoard.attachments.surveys.Survey
 import org.astu.app.components.bulletinBoard.attachments.surveys.common.models.SurveyContent

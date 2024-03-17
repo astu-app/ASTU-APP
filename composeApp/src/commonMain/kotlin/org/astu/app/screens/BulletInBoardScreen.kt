@@ -46,6 +46,8 @@ class BulletInBoardScreen : Screen {
 
     private fun getAnnouncements() {
         announcements.add(constructAnnouncementWithFiles())
+        announcements.add(constructAnnouncementWithMultipleQuestionsSurvey(10))
+        announcements.add(constructAnnouncementWithFilesAndSurvey())
         announcements.add(constructAnnouncementWithVotedSurvey())
         announcements.add(constructAnnouncementWithSingleChoiceSurvey())
         announcements.add(constructAnnouncementWithMultipleChoiceSurvey())
@@ -138,6 +140,32 @@ class BulletInBoardScreen : Screen {
         )
     }
 
+    private fun constructAnnouncementWithMultipleQuestionsSurvey(amount: Int): AnnouncementSummaryContent {
+        val questions = mutableListOf<MultipleChoiceQuestionContent>()
+        for (i in 1 .. amount) {
+            val answers = listOf(
+                MultipleChoiceAnswerContent("Ответ 1 на вопрос $i"),
+                MultipleChoiceAnswerContent("Ответ 2 на вопрос $i"),
+                MultipleChoiceAnswerContent("Ответ 3 на вопрос $i"),
+            )
+            val question = MultipleChoiceQuestionContent("Вопрос $i с множественным выбором", answers)
+            questions.add(question)
+        }
+
+        val attachments = listOf(
+            SurveyContent(questions)
+        )
+
+        return AnnouncementSummaryContent(
+            author = "Белов Сергей Валерьевич",
+            publicationTime = "15 фев 15:50",
+            text = "Текст объявления с опросом с множеством вопросов",
+            viewed = 145,
+            audienceSize = 300,
+            attachments = attachments
+        )
+    }
+
     private fun constructAnnouncementWithOnlyText(): AnnouncementSummaryContent {
         return AnnouncementSummaryContent(
             author = "Белов Сергей Валерьевич",
@@ -146,6 +174,30 @@ class BulletInBoardScreen : Screen {
             viewed = 145,
             audienceSize = 300,
             attachments = null
+        )
+    }
+
+    private fun constructAnnouncementWithFilesAndSurvey(): AnnouncementSummaryContent {
+        val answers = listOf(
+            SingleChoiceAnswerContent("Ответ 1"),
+            SingleChoiceAnswerContent("Ответ 2"),
+            SingleChoiceAnswerContent("Ответ 3"),
+        )
+        val questions = listOf(
+            SingleChoiceQuestionContent("Вопрос 1", answers)
+        )
+        val attachments = listOf(
+            SurveyContent(questions),
+            FileSummary("Документ.docx", "20 мб"),
+        )
+
+        return AnnouncementSummaryContent(
+            author = "Белов Сергей Валерьевич",
+            publicationTime = "15 фев 15:50",
+            text = "Текст объявления с опросом с множественным выбором",
+            viewed = 145,
+            audienceSize = 300,
+            attachments = attachments
         )
     }
 }
