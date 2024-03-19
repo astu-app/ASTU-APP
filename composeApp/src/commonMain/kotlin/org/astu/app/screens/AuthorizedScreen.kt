@@ -18,6 +18,7 @@ import compose.icons.tablericons.FileExport
 import compose.icons.tablericons.Messages
 import org.astu.app.UnitOfNavigationBar
 import org.astu.app.components.NavigationBarScreens
+import org.astu.app.screens.bulletInBoard.BulletInBoardScreen
 import org.astu.app.screens.chat.ChannelListScreen
 import org.astu.app.screens.single_window.MainSingleWindowScreen
 

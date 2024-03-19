@@ -4,6 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
 class MultipleChoiceAnswerContent(
-    override val text: String,
+    text: String,
     var selected: MutableState<Boolean> = mutableStateOf(false)
-) : AnswerContentBase()
+) : AnswerContentBase(text)

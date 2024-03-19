@@ -16,6 +16,7 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.CalendarEvent
 import org.astu.app.UnitOfNavigationBar
 import org.astu.app.components.NavigationBarScreens
+import org.astu.app.screens.bulletInBoard.BulletInBoardScreen
 
 class UnauthorizedScreen(onAuth: () -> Unit)  : Screen {
 

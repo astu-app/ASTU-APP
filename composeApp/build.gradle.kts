@@ -36,6 +36,15 @@ kotlin {
         }
     }
 
+//    targets
+//        .filterIsInstance<KotlinNativeTarget>()
+//        .filter { it.konanTarget.family == org.jetbrains.kotlin.konan.target.Family.IOS }
+//        .forEach {
+//            it.binaries.framework {
+//                export("com.mohamedrejeb.calf:calf-ui:0.4.0")
+//            }
+//        }
+
     sourceSets {
         all {
             languageSettings {
@@ -61,6 +70,10 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kodein)
+            implementation(libs.uuid)
+//            implementation(libs.mpfilepicker)
+            implementation(libs.calf.file.picker)
+            api(libs.calf.ui)
         }
 
         commonTest.dependencies {
