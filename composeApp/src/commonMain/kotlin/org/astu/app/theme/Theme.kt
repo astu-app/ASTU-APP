@@ -92,7 +92,7 @@ private val AppTypography = Typography(
 
 internal val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }
 
-private val currentColorScheme: MutableState<ColorScheme?> = mutableStateOf(null)
+private val currentColorScheme: MutableState<ColorScheme> = mutableStateOf(lightColorScheme())
 
 val CurrentColorScheme by currentColorScheme
 
@@ -107,9 +107,9 @@ internal fun AppTheme(
     ) {
         val isDark by isDarkState
         SystemAppearance(!isDark)
-        currentColorScheme.value = if (isDark) MaterialTheme.colorScheme else lightColorScheme()
+        currentColorScheme.value = if (isDark) DarkColorScheme else LightColorScheme
         MaterialTheme(
-            colorScheme = currentColorScheme.value!!,
+            colorScheme = currentColorScheme.value,
             typography = AppTypography,
             shapes = AppShapes,
             content = {
