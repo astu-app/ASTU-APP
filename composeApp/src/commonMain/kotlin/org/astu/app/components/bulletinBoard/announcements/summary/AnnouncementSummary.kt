@@ -11,7 +11,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -35,7 +34,7 @@ fun AnnouncementSummary(
 
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = CurrentColorScheme?.secondaryContainer ?: Color.Cyan,
+            containerColor = CurrentColorScheme.secondaryContainer,
         ),
         modifier = modifier
             .combinedClickable(
@@ -68,7 +67,7 @@ fun AnnouncementSummary(
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
                     thickness = 1.dp,
-                    color = CurrentColorScheme?.outlineVariant ?: Color.Gray
+                    color = CurrentColorScheme.outlineVariant
                 )
 
                 // файлы выводятся раньше опроса

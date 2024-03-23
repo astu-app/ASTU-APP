@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -31,7 +30,7 @@ abstract class VotedAnswerContentBase(text: String, private val voterPercent: In
             ) {
                 Text(
                     text = "$voterPercent%",
-                    color = CurrentColorScheme?.outline ?: Color.Gray,
+                    color = CurrentColorScheme.outline,
                     textAlign = TextAlign.Center,
                     lineHeight = 1.45.em,
                     style = MaterialTheme.typography.labelSmall,

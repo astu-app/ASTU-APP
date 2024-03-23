@@ -12,7 +12,7 @@ import org.astu.app.theme.CurrentColorScheme
 @Composable
 fun AnnouncementAuthor(
     author: String,
-    color: Color = CurrentColorScheme?.outline ?: Color.Gray,
+    color: Color = CurrentColorScheme.outline,
     textAlign: TextAlign = TextAlign.End,
     style: TextStyle = MaterialTheme.typography.bodySmall,
     modifier: Modifier = Modifier

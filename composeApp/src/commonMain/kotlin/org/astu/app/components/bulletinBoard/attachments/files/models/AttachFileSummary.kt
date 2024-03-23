@@ -31,7 +31,7 @@ class AttachFileSummary(
     override fun Content(modifier: Modifier) {
         ElevatedCard(
             colors = Color.getCardColors(
-                containerColor = CurrentColorScheme?.tertiaryContainer ?: Color.Cyan,
+                containerColor = CurrentColorScheme.tertiaryContainer,
             ),
             modifier = modifier
         ) {
@@ -74,7 +74,7 @@ class AttachFileSummary(
                     )
                     Text(
                         text = size,
-                        color = CurrentColorScheme?.outline ?: Color.Gray,
+                        color = CurrentColorScheme.outline,
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier
                             .fillMaxWidth()

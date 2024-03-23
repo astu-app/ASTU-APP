@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import org.astu.app.theme.CurrentColorScheme
@@ -24,7 +23,7 @@ fun ActionDialog(
         .wrapContentSize()
         .padding(top = 24.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
         .clip(RoundedCornerShape(32.dp))
-        .background(CurrentColorScheme?.surface ?: Color.Green),
+        .background(CurrentColorScheme.surface),
     content: @Composable() (ColumnScope.() -> Unit)
 ) {
     Dialog(
@@ -45,7 +44,7 @@ fun ActionDialog(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
-                    color = CurrentColorScheme?.outline ?: Color.LightGray
+                    color = CurrentColorScheme.outline
                 )
             }
 

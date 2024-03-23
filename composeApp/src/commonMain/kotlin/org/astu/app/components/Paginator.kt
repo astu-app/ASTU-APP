@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.astu.app.theme.CurrentColorScheme
 
@@ -37,9 +36,9 @@ fun Paginator(
 private fun PaginatorItem(paginatorItem: Int, currentPage: Int) {
     val color =
         if (currentPage == paginatorItem)
-            CurrentColorScheme?.outline ?: Color.DarkGray
+            CurrentColorScheme.outline
         else
-            CurrentColorScheme?.outlineVariant ?: Color.LightGray
+            CurrentColorScheme.outlineVariant
     val size = if (currentPage == paginatorItem) 8.dp else 6.dp
 
     Box(

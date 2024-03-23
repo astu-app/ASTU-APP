@@ -125,7 +125,7 @@ class NewSurvey(private val onSurveyDeleteRequest: () -> Unit) : ContentProvider
                     }
                 },
                 colors = Color.getButtonColors(
-                    containerColor = CurrentColorScheme?.secondaryContainer ?: Color.Cyan
+                    containerColor = CurrentColorScheme.secondaryContainer
                 ),
             ) {
                 Row(

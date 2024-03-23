@@ -52,7 +52,7 @@ class NewQuestion : ContentProvider, DefaultModifierProvider {
     @Composable
     override fun Content(modifier: Modifier) {
         Card(
-            colors = CardDefaults.cardColors(containerColor = CurrentColorScheme?.secondaryContainer ?: Color.Cyan),
+            colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
             modifier = modifier,
         ) {
             Column(
@@ -62,7 +62,7 @@ class NewQuestion : ContentProvider, DefaultModifierProvider {
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    color = CurrentColorScheme?.outlineVariant ?: Color.Gray
+                    color = CurrentColorScheme.outlineVariant
                 )
 
                 OutlinedTextField(
@@ -93,7 +93,7 @@ class NewQuestion : ContentProvider, DefaultModifierProvider {
                             lastAnswerId++
                         },
                         colors = Color.getButtonColors(
-                            containerColor = CurrentColorScheme?.secondaryContainer ?: Color.Cyan
+                            containerColor = CurrentColorScheme.secondaryContainer
                         ),
                         modifier = Modifier
                             .wrapContentSize()
@@ -115,7 +115,7 @@ class NewQuestion : ContentProvider, DefaultModifierProvider {
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    color = CurrentColorScheme?.outlineVariant ?: Color.Gray
+                    color = CurrentColorScheme.outlineVariant
                 )
             }
         }

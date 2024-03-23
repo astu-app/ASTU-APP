@@ -120,7 +120,7 @@ class AnnouncementCreator {
         ) {
             // Текст
             Card(
-                colors = CardDefaults.cardColors(containerColor = CurrentColorScheme?.secondaryContainer ?: Color.Cyan),
+                colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -343,7 +343,7 @@ class AnnouncementCreator {
         )
 
         Card(
-            colors = CardDefaults.cardColors(containerColor = CurrentColorScheme?.secondaryContainer ?: Color.Cyan),
+            colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -360,7 +360,7 @@ class AnnouncementCreator {
                 Button(
                     onClick = { pickerLauncher.launch() },
                     colors = Color.getButtonColors(
-                        containerColor = CurrentColorScheme?.tertiaryContainer ?: Color.Cyan
+                        containerColor = CurrentColorScheme.tertiaryContainer
                     ),
                     modifier = Modifier
                         .wrapContentSize()
@@ -385,7 +385,7 @@ class AnnouncementCreator {
         var showDeleteSurveyDialog by remember { mutableStateOf(false) }
 
         Card(
-            colors = CardDefaults.cardColors(containerColor = CurrentColorScheme?.secondaryContainer ?: Color.Cyan),
+            colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -400,7 +400,7 @@ class AnnouncementCreator {
                             surveyAttached = true
                         },
                         colors = Color.getButtonColors(
-                            containerColor = CurrentColorScheme?.tertiaryContainer ?: Color.Cyan
+                            containerColor = CurrentColorScheme.tertiaryContainer
                         ),
                     ) {
                         Row(
@@ -437,8 +437,8 @@ class AnnouncementCreator {
                             survey.value = null
                         },
                         colors = Color.getButtonColors(
-                            containerColor = CurrentColorScheme?.errorContainer ?: Color.Red,
-                            contentColor = CurrentColorScheme?.onErrorContainer ?: Color.Black
+                            containerColor = CurrentColorScheme.errorContainer,
+                            contentColor = CurrentColorScheme.onErrorContainer
                         )
                     ) {
                         Text(
@@ -451,19 +451,19 @@ class AnnouncementCreator {
                     Button(
                         onClick = { showDeleteSurveyDialog = false },
                         colors = Color.getButtonColors(
-                            containerColor = CurrentColorScheme?.secondaryContainer ?: Color.Green,
-                            contentColor = CurrentColorScheme?.onSecondaryContainer ?: Color.Black
+                            containerColor = CurrentColorScheme.secondaryContainer,
+                            contentColor = CurrentColorScheme.onSecondaryContainer
                         )
                     ) {
                         Text(
                             text = "Отменить",
                             modifier = Modifier.clickable { showDeleteSurveyDialog = false },
                             style = MaterialTheme.typography.bodyMedium,
-                            color = CurrentColorScheme?.onSecondaryContainer ?: Color.Black
+                            color = CurrentColorScheme.onSecondaryContainer
                         )
                     }
                 },
-                containerColor = CurrentColorScheme?.secondaryContainer ?: Color.Green,
+                containerColor = CurrentColorScheme.secondaryContainer,
                 modifier = Modifier
             )
         }

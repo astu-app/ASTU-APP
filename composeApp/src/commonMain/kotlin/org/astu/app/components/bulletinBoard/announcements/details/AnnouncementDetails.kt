@@ -5,7 +5,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.astu.app.components.TreeDropDown
 import org.astu.app.components.bulletinBoard.announcements.details.models.AnnouncementDetailsContent
@@ -66,6 +65,6 @@ private inline fun AddDivider() {
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         thickness = 1.dp,
-        color = CurrentColorScheme?.outlineVariant ?: Color.Gray
+        color = CurrentColorScheme.outlineVariant
     )
 }

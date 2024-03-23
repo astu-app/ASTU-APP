@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.astu.app.components.bulletinBoard.attachments.common.models.AttachmentBase
 import org.astu.app.components.bulletinBoard.attachments.common.models.AttachmentType
@@ -26,7 +25,7 @@ class FileSummary(
     @Composable
     override fun Content(modifier: Modifier) {
         ElevatedCard(
-            colors = CardDefaults.cardColors(containerColor = CurrentColorScheme?.tertiaryContainer ?: Color.Cyan),
+            colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.tertiaryContainer),
             modifier = modifier
         ) {
             Row(
@@ -67,7 +66,7 @@ class FileSummary(
                     )
                     Text(
                         text = size,
-                        color = CurrentColorScheme?.outline ?: Color.Gray,
+                        color = CurrentColorScheme.outline,
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier
                             .fillMaxWidth()

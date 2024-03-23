@@ -10,16 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import co.touchlab.kermit.Logger
-import co.touchlab.kermit.Severity
 import org.astu.app.components.bulletinBoard.announcements.creation.AnnouncementCreator
 import org.astu.app.theme.CurrentColorScheme
 
 class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
-//    private val creator: MutableState<AnnouncementCreator> = mutableStateOf(AnnouncementCreator())
     private val creator: AnnouncementCreator = AnnouncementCreator()
 
 
@@ -48,17 +44,14 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
                                 modifier = Modifier.weight(0.7f)
                             ) {
                                 Button(
-//                                    enabled = creator.value.canCreate(),
                                     enabled = creator.canCreate(),
                                     onClick = { TODO("Создание объявления еще не реализовано") },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = CurrentColorScheme?.surface ?: Color.White,
-                                        disabledContainerColor = CurrentColorScheme?.surface ?: Color.White,
-                                        contentColor = CurrentColorScheme?.primary ?: Color.Black,
+                                        containerColor = CurrentColorScheme.surface,
+                                        disabledContainerColor = CurrentColorScheme.surface,
+                                        contentColor = CurrentColorScheme.primary,
                                     )
                                 ) {
-//                                    Logger.log(Severity.Info, "", null, creator.value.canCreate().toString())
-                                    Logger.log(Severity.Info, "", null, creator.canCreate().toString())
 
                                     Text(
                                         text = "Создать",
@@ -88,7 +81,6 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
                     .padding(top = it.calculateTopPadding())
                     .verticalScroll(scrollState)
             ) {
-//                creator.value.Content()
                 creator.Content()
             }
         }

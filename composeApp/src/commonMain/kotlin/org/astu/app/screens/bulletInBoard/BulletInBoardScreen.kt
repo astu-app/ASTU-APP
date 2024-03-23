@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -50,7 +49,7 @@ class BulletInBoardScreen : Screen {
                         val createAnnouncementScreen = CreateAnnouncementScreen { navigator.pop() }
                         navigator.push(createAnnouncementScreen)
                     },
-                    containerColor = CurrentColorScheme?.tertiaryContainer ?: Color.Cyan,
+                    containerColor = CurrentColorScheme.tertiaryContainer,
                 ) {
                     Icon(Icons.Outlined.Edit, null)
                 }

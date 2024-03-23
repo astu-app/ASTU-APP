@@ -14,7 +14,7 @@ fun ViewersCount(
     viewed: Int,
     audienceSize: Int,
     viewedPercent: Int? = null,
-    color: Color = CurrentColorScheme?.outline ?: Color.Gray,
+    color: Color = CurrentColorScheme.outline,
     textAlign: TextAlign = TextAlign.End,
     style: TextStyle = MaterialTheme.typography.bodySmall,
     modifier: Modifier = Modifier
