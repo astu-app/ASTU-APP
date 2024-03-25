@@ -23,7 +23,6 @@ class NoContentScreen : Screen {
                 Icon(TablerIcons.Pacman, contentDescription = null, Modifier.size(128.dp), tint = Color.Yellow)
                 Text("Здесь пока пусто")
             }
-
         }
     }
 }

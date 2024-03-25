@@ -16,14 +16,15 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.CalendarEvent
 import compose.icons.tablericons.FileExport
 import compose.icons.tablericons.Messages
-import org.astu.app.UnitOfNavigationBar
-import org.astu.app.components.NavigationBarScreens
-import org.astu.app.screens.chat.ChannelListScreen
-import org.astu.app.screens.single_window.MainSingleWindowScreen
+import org.astu.infrastructure.UnitOfNavigationBar
+import org.astu.feature.chat.screens.ChannelListScreen
+import org.astu.feature.single_window.screens.MainSingleWindowScreen
+import org.astu.feature.schedule.screens.ScheduleScreen
+import org.astu.infrastructure.components.NavigationBarScreens
 
 class AuthorizedScreen: Screen {
 
-    val screens: List<UnitOfNavigationBar> =
+    private val screens: List<UnitOfNavigationBar> =
         listOf(
             UnitOfNavigationBar(
                 label = { Text("Доска объявлений") },

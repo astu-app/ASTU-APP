@@ -3,6 +3,7 @@ package org.astu.app.screens
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -14,8 +15,9 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import compose.icons.TablerIcons
 import compose.icons.tablericons.CalendarEvent
-import org.astu.app.UnitOfNavigationBar
-import org.astu.app.components.NavigationBarScreens
+import org.astu.infrastructure.UnitOfNavigationBar
+import org.astu.feature.schedule.screens.ScheduleScreen
+import org.astu.infrastructure.components.NavigationBarScreens
 
 class UnauthorizedScreen(onAuth: () -> Unit)  : Screen {
 
@@ -23,7 +25,7 @@ class UnauthorizedScreen(onAuth: () -> Unit)  : Screen {
         listOf(
             UnitOfNavigationBar(
                 label = { Text("Авторизация") },
-                icon = { Icon(Icons.Default.Login, contentDescription = null) },
+                icon = { Icon(Icons.AutoMirrored.Filled.Login, contentDescription = null) },
                 screen = AuthScreen(onAuth)
             ),
             UnitOfNavigationBar(

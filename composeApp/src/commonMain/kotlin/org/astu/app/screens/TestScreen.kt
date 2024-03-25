@@ -24,7 +24,7 @@ class TestScreen : Screen {
                 ModalDrawerSheet {
                     Column {
 //                        Text(BuildConfig.APP_NAME + " version:" + BuildConfig.APP_VERSION)
-                        Divider()
+                        HorizontalDivider()
                         views.forEach {
                             TextButton({ currentView.value = it.key }) {
                                 Text(it.key)
