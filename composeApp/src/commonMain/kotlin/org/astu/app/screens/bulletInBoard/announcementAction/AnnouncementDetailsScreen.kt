@@ -1,13 +1,12 @@
-package org.astu.app.screens.bulletInBoard
+package org.astu.app.screens.bulletInBoard.announcementAction
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,35 +27,13 @@ import org.astu.app.components.bulletinBoard.common.models.UserStorage
 import org.astu.app.components.bulletinBoard.common.models.UserSummary
 
 class AnnouncementDetailsScreen(private val onReturn: () -> Unit) : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Объявление") },
-                    navigationIcon = {
-                        IconButton(onClick = onReturn) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Покинуть экран просмотра деталей объявления"
-                            )
-                        }
-                    },
-                )
-            },
-            modifier = Modifier.fillMaxSize()
+        AnnouncementActionScreenScaffold(
+            onReturn = onReturn,
+            topBarTitle = { Text("Объявление") },
         ) {
-            val scrollState = rememberScrollState()
-            LaunchedEffect(Unit) { scrollState.animateScrollTo(100) }
-
-            Surface(
-                modifier = Modifier
-                    .padding(top = it.calculateTopPadding())
-                    .verticalScroll(scrollState)
-            ) {
-                AnnouncementDetails(constructAnnouncementDetails())
-            }
+            AnnouncementDetails(constructAnnouncementDetails())
         }
     }
 

@@ -22,7 +22,8 @@ import org.astu.app.components.bulletinBoard.announcements.summary.dropdownMenuC
 import org.astu.app.components.bulletinBoard.announcements.summary.dropdownMenuContent.DropdownMenuContentBase
 import org.astu.app.components.bulletinBoard.announcements.summary.models.AnnouncementSummaryContent
 import org.astu.app.components.bulletinBoard.attachments.Attachment
-import org.astu.app.screens.bulletInBoard.AnnouncementDetailsScreen
+import org.astu.app.screens.bulletInBoard.announcementAction.AnnouncementDetailsScreen
+import org.astu.app.screens.bulletInBoard.announcementAction.EditAnnouncementScreen
 import org.astu.app.theme.CurrentColorScheme
 
 @Composable
@@ -56,18 +57,18 @@ fun AnnouncementSummary(
                 top = 10.dp,
                 bottom = 10.dp
             )
-            .pointerInput(true) {
-                detectTapGestures(
-                    onTap = {
-                        val detailsScreen = AnnouncementDetailsScreen { navigator.pop() }
-                        navigator.push(detailsScreen)
-                    },
-                    onLongPress = {
-                        pressOffset = DpOffset(it.x.toDp(), it.y.toDp())
-                        showDropdownMenu = true
-                    }
-                )
-            }
+                .pointerInput(true) {
+                    detectTapGestures(
+                        onTap = {
+                            val detailsScreen = AnnouncementDetailsScreen { navigator.pop() }
+                            navigator.push(detailsScreen)
+                        },
+                        onLongPress = {
+                            pressOffset = DpOffset(it.x.toDp(), it.y.toDp())
+                            showDropdownMenu = true
+                        }
+                    )
+                }
         ) {
             Column {
                 AnnouncementHeader(content.author, content.publicationTime, Modifier.fillMaxWidth())
@@ -96,7 +97,12 @@ fun AnnouncementSummary(
             }
         }
 
-        val dropdownMenuContent = remember { createDropdownMenuContent() }
+        val dropdownMenuContent = remember {
+            createDropdownMenuContent(
+                openInfoScreen = { navigator.push(AnnouncementDetailsScreen { navigator.pop() }) },
+                openEditScreen = { navigator.push(EditAnnouncementScreen(content.id) { navigator.pop() }) },
+            )
+        }
         // при pressOffset == DpOffset.Zero левый верхний угол меню совпадает с верхним левым углом карты объявления
         DropdownMenu(
             expanded = showDropdownMenu,
@@ -109,8 +115,8 @@ fun AnnouncementSummary(
                     DropdownMenuItem(
                         text = { Text(item.name) },
                         onClick = {
-                            item.onClick
                             showDropdownMenu = false
+                            item.onClick()
                         },
                         leadingIcon = { Icon(item.icon, null) }
                     )
@@ -128,10 +134,19 @@ fun AnnouncementSummary(
     }
 }
 
-private fun createDropdownMenuContent(): DropdownMenuContentBase {
+private fun createDropdownMenuContent(
+    openInfoScreen: () -> Unit,
+    openEditScreen: () -> Unit,
+): DropdownMenuContentBase {
     return AuthorDropdownMenuContent(
-        onInfoClick = { Logger.log(Severity.Info, "Dropdown", null, "On Info Click") },
-        onEditClick = { Logger.log(Severity.Info, "Dropdown", null, "On Edit Click") },
+        onInfoClick = {
+            Logger.log(Severity.Info, "Dropdown", null, "On Info Click")
+            openInfoScreen()
+        },
+        onEditClick = {
+            Logger.log(Severity.Info, "Dropdown", null, "On Edit Click")
+            openEditScreen()
+        },
         onStopSurveyClick = { Logger.log(Severity.Info, "Dropdown", null, "On StopSurvey Click") },
         onHideClick = { Logger.log(Severity.Info, "Dropdown", null, "On Hide Click") },
         onDeleteClick = { Logger.log(Severity.Info, "Dropdown", null, "On Delete Click") },

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.benasher44.uuid.uuidFrom
 import org.astu.app.components.bulletinBoard.announcements.summary.AnnouncementSummary
 import org.astu.app.components.bulletinBoard.announcements.summary.models.AnnouncementSummaryContent
 import org.astu.app.components.bulletinBoard.attachments.files.models.FileDownloadState
@@ -27,6 +28,7 @@ import org.astu.app.components.bulletinBoard.attachments.surveys.common.models.S
 import org.astu.app.components.bulletinBoard.attachments.surveys.questions.models.MultipleChoiceQuestionContent
 import org.astu.app.components.bulletinBoard.attachments.surveys.questions.models.SingleChoiceQuestionContent
 import org.astu.app.components.bulletinBoard.attachments.surveys.questions.models.VotedQuestionContent
+import org.astu.app.screens.bulletInBoard.announcementAction.CreateAnnouncementScreen
 import org.astu.app.theme.CurrentColorScheme
 
 class BulletInBoardScreen : Screen {
@@ -81,6 +83,7 @@ class BulletInBoardScreen : Screen {
 
     private fun constructAnnouncementWithFiles(): AnnouncementSummaryContent {
         return AnnouncementSummaryContent(
+            id = uuidFrom("30220a72-1be1-48e4-8321-4e037cea89ab"),
             author = "Белов Сергей Валерьевич",
             publicationTime = "15 фев 15:50",
             text = "Текст объявления с документами",
@@ -108,6 +111,7 @@ class BulletInBoardScreen : Screen {
         )
 
         return AnnouncementSummaryContent(
+            id = uuidFrom("816a1287-0f24-4757-ad00-6892888a583e"),
             author = "Белов Сергей Валерьевич",
             publicationTime = "15 фев 15:50",
             text = "Текст объявления с опросом с единственным выбором",
@@ -132,6 +136,7 @@ class BulletInBoardScreen : Screen {
         )
 
         return AnnouncementSummaryContent(
+            id = uuidFrom("fc9b13dc-5e4e-4764-a523-471171e034a7"),
             author = "Белов Сергей Валерьевич",
             publicationTime = "15 фев 15:50",
             text = "Текст объявления с опросом с множественным выбором",
@@ -156,6 +161,7 @@ class BulletInBoardScreen : Screen {
         )
 
         return AnnouncementSummaryContent(
+            id = uuidFrom("b7f6ab67-31c0-47f8-b812-f0f8c2b0497b"),
             author = "Белов Сергей Валерьевич",
             publicationTime = "15 фев 15:50",
             text = "Текст объявления с опросом с множественным выбором",
@@ -182,6 +188,7 @@ class BulletInBoardScreen : Screen {
         )
 
         return AnnouncementSummaryContent(
+            id = uuidFrom("a66fe755-8d3c-4d0d-800e-16751fbddbe4"),
             author = "Белов Сергей Валерьевич",
             publicationTime = "15 фев 15:50",
             text = "Текст объявления с опросом с множеством вопросов",
@@ -193,6 +200,7 @@ class BulletInBoardScreen : Screen {
 
     private fun constructAnnouncementWithOnlyText(): AnnouncementSummaryContent {
         return AnnouncementSummaryContent(
+            id = uuidFrom("e26286f1-bb10-449f-bc29-67bea23559bf"),
             author = "Белов Сергей Валерьевич",
             publicationTime = "15 фев 15:50",
             text = "Текст простого объявления",
@@ -217,6 +225,7 @@ class BulletInBoardScreen : Screen {
         )
 
         return AnnouncementSummaryContent(
+            id = uuidFrom("a212918e-ce44-4fb2-bafa-4bc7bb3d9bd8"),
             author = "Белов Сергей Валерьевич",
             publicationTime = "15 фев 15:50",
             text = "Текст объявления с опросом с множественным выбором",
