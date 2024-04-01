@@ -16,8 +16,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.INode
 import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.Node
-import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.NodeBase
 import org.astu.app.theme.CurrentColorScheme
 
 /**
@@ -30,7 +30,7 @@ import org.astu.app.theme.CurrentColorScheme
  */
 @Composable
 fun TreeDropDown(
-    rootNode: NodeBase,
+    rootNode: INode,
     levelIndent: Dp = 16.dp,
     modifier: Modifier = Modifier
         .fillMaxWidth()
@@ -77,6 +77,7 @@ fun TreeDropDown(
             }
         }
 
+        // анимация развертывания и сворачивания
         val density = LocalDensity.current
         AnimatedVisibility(
             visible = isExpanded,
@@ -99,7 +100,7 @@ fun TreeDropDown(
 
 @Composable
 private fun PlaceNode(
-    node: NodeBase,
+    node: INode,
     indent: Dp,
     modifier: Modifier = Modifier.fillMaxWidth()
 ) {

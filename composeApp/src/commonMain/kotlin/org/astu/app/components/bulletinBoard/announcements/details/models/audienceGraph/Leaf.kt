@@ -2,4 +2,4 @@ package org.astu.app.components.bulletinBoard.announcements.details.models.audie
 
 import androidx.compose.runtime.Composable
 
-class Leaf(text: @Composable () -> Unit) : NodeBase(text)
+open class Leaf(override var content: @Composable () -> Unit) : INode

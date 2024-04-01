@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import org.astu.app.components.bulletinBoard.announcements.common.AttachFilesSection
 import org.astu.app.components.bulletinBoard.announcements.common.AttachSurveySection
 import org.astu.app.components.bulletinBoard.announcements.common.DelayedMomentPicker
+import org.astu.app.components.bulletinBoard.announcements.common.SelectAudienceSection
 import org.astu.app.components.bulletinBoard.announcements.details.AnnouncementDetailsHeader
 import org.astu.app.components.bulletinBoard.common.models.ContentProvider
 import org.astu.app.components.bulletinBoard.common.models.DefaultModifierProvider
@@ -76,6 +77,9 @@ class AnnouncementEditor(
             } else {
                 AttachSurveySection(announcement.newSurvey)
             }
+
+            // Аудитория
+            SelectAudienceSection(announcement.audienceRoot)
         }
     }
 

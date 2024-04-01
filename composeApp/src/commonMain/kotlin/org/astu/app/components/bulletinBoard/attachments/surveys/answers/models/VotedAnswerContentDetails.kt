@@ -7,12 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.astu.app.components.TreeDropDown
-import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.NodeBase
+import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.INode
 
 class VotedAnswerContentDetails(
     text: String,
     voterPercent: Int,
-    private val votersRootNode: NodeBase?
+    private val votersRootNode: INode?
 ) : VotedAnswerContentBase(text, voterPercent) {
     @Composable
     override fun Content(modifier: Modifier) {

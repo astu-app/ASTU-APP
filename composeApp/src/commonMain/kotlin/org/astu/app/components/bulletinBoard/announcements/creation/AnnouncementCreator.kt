@@ -18,10 +18,13 @@ import kotlinx.datetime.toLocalDateTime
 import org.astu.app.components.bulletinBoard.announcements.common.AttachFilesSection
 import org.astu.app.components.bulletinBoard.announcements.common.AttachSurveySection
 import org.astu.app.components.bulletinBoard.announcements.common.DelayedMomentPicker
+import org.astu.app.components.bulletinBoard.announcements.common.SelectAudienceSection
 import org.astu.app.components.bulletinBoard.announcements.creation.models.NewSurvey
+import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.INode
 import org.astu.app.components.bulletinBoard.attachments.files.models.AttachFileSummary
 import org.astu.app.components.bulletinBoard.common.models.ContentProvider
 import org.astu.app.components.bulletinBoard.common.models.DefaultModifierProvider
+import org.astu.app.components.bulletinBoard.common.models.UserGroupStorage
 import org.astu.app.theme.CurrentColorScheme
 import org.astu.app.utils.dateTime.getDateString
 import org.astu.app.utils.dateTime.getTimeString
@@ -51,6 +54,8 @@ class AnnouncementCreator : ContentProvider, DefaultModifierProvider {
 
     private var files: SnapshotStateMap<Int, AttachFileSummary> = mutableStateMapOf()
     private var survey: MutableState<NewSurvey?> = mutableStateOf(null)
+
+    private val audienceRoot: INode = UserGroupStorage.makeSelectableAudience()
 
 
     init {
@@ -126,7 +131,6 @@ class AnnouncementCreator : ContentProvider, DefaultModifierProvider {
                             .padding(bottom = 8.dp)
                     )
 
-
                     // Отложенная публикация и сокрытие
                     DelayedPublishingMomentSetter()
                     DelayedHidingMomentSetter()
@@ -138,6 +142,9 @@ class AnnouncementCreator : ContentProvider, DefaultModifierProvider {
 
             // Опрос
             AttachSurveySection(survey)
+
+            // Аудитория
+            SelectAudienceSection(audienceRoot)
         }
     }
 

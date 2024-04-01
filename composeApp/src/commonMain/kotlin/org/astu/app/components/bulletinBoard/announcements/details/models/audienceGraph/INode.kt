@@ -2,4 +2,6 @@ package org.astu.app.components.bulletinBoard.announcements.details.models.audie
 
 import androidx.compose.runtime.Composable
 
-abstract class NodeBase(val content: @Composable (() -> Unit)?)
+interface INode {
+    var content: @Composable () -> Unit
+}

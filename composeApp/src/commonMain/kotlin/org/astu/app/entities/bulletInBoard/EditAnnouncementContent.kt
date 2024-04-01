@@ -10,8 +10,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.astu.app.components.bulletinBoard.announcements.creation.models.NewSurvey
+import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.INode
 import org.astu.app.components.bulletinBoard.attachments.files.models.AttachFileSummary
 import org.astu.app.components.bulletinBoard.attachments.surveys.common.models.SurveyContent
+import org.astu.app.components.bulletinBoard.common.models.UserGroupStorage
 import org.astu.app.utils.dateTime.getDateString
 import org.astu.app.utils.dateTime.getTimeString
 import kotlin.time.Duration
@@ -45,6 +47,8 @@ class EditAnnouncementContent {
     val files: SnapshotStateMap<Int, AttachFileSummary> = mutableStateMapOf()
     var attachedSurvey: SurveyContent? = null
     var newSurvey: MutableState<NewSurvey?> = mutableStateOf(null)
+
+    val audienceRoot: INode = UserGroupStorage.makeSelectableAudience()
 
 
     init {

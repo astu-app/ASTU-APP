@@ -16,6 +16,19 @@ fun SwitchRow(
     state: MutableState<Boolean>,
     modifier: Modifier = Modifier.fillMaxWidth()
 ) {
+    SwitchRow(
+        title = { Text(title) },
+        state = state,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun SwitchRow(
+    title: @Composable () -> Unit,
+    state: MutableState<Boolean>,
+    modifier: Modifier = Modifier.fillMaxWidth(),
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -23,7 +36,7 @@ fun SwitchRow(
         Row(
             modifier = Modifier.fillMaxWidth(0.9f)
         ) {
-            Text(title)
+            title()
         }
 
         Row (
