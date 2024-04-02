@@ -16,8 +16,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.INode
-import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.Node
+import org.astu.app.entities.bulletInBoard.audienceGraph.INode
+import org.astu.app.entities.bulletInBoard.audienceGraph.Node
 import org.astu.app.theme.CurrentColorScheme
 
 /**

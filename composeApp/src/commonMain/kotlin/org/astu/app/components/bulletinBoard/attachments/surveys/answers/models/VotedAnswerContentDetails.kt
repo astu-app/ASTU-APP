@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.astu.app.components.TreeDropDown
-import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.INode
+import org.astu.app.entities.bulletInBoard.audienceGraph.INode
 
 class VotedAnswerContentDetails(
     text: String,

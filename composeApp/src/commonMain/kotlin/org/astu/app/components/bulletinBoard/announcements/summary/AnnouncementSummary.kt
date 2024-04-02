@@ -20,8 +20,8 @@ import co.touchlab.kermit.Logger
 import co.touchlab.kermit.Severity
 import org.astu.app.components.bulletinBoard.announcements.summary.dropdownMenuContent.AuthorDropdownMenuContent
 import org.astu.app.components.bulletinBoard.announcements.summary.dropdownMenuContent.DropdownMenuContentBase
-import org.astu.app.components.bulletinBoard.announcements.summary.models.AnnouncementSummaryContent
 import org.astu.app.components.bulletinBoard.attachments.Attachment
+import org.astu.app.entities.bulletInBoard.announcement.summary.AnnouncementSummaryContent
 import org.astu.app.screens.bulletInBoard.announcementAction.AnnouncementDetailsScreen
 import org.astu.app.screens.bulletInBoard.announcementAction.EditAnnouncementScreen
 import org.astu.app.theme.CurrentColorScheme
@@ -60,7 +60,7 @@ fun AnnouncementSummary(
                 .pointerInput(true) {
                     detectTapGestures(
                         onTap = {
-                            val detailsScreen = AnnouncementDetailsScreen { navigator.pop() }
+                            val detailsScreen = AnnouncementDetailsScreen(content.id) { navigator.pop() }
                             navigator.push(detailsScreen)
                         },
                         onLongPress = {
@@ -99,7 +99,7 @@ fun AnnouncementSummary(
 
         val dropdownMenuContent = remember {
             createDropdownMenuContent(
-                openInfoScreen = { navigator.push(AnnouncementDetailsScreen { navigator.pop() }) },
+                openInfoScreen = { navigator.push(AnnouncementDetailsScreen(content.id) { navigator.pop() }) },
                 openEditScreen = { navigator.push(EditAnnouncementScreen(content.id) { navigator.pop() }) },
             )
         }

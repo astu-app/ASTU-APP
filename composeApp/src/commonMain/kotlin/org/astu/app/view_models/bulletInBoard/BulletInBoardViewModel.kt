@@ -1,13 +1,10 @@
 package org.astu.app.view_models.bulletInBoard
 
 import cafe.adriel.voyager.core.model.StateScreenModel
-import com.benasher44.uuid.Uuid
-import org.astu.app.entities.bulletInBoard.EditAnnouncementContent
+import org.astu.app.entities.bulletInBoard.announcement.summary.AnnouncementSummaryContent
 import org.astu.app.models.bulletInBoard.AnnouncementModel
 
-class EditAnnouncementViewModel(
-    private val announcementId: Uuid
-) : StateScreenModel<EditAnnouncementViewModel.State>(State.Loading) {
+class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(State.Loading) {
     sealed class State {
         data object Loading : State()
         data object LoadingDone : State()
@@ -15,20 +12,16 @@ class EditAnnouncementViewModel(
     }
 
     private val model: AnnouncementModel = AnnouncementModel()
-    lateinit var content: EditAnnouncementContent
+    lateinit var content: List<AnnouncementSummaryContent>
 
 
     init {
         mutableState.value = State.Loading
-        loadAnnouncement()
+        loadAnnouncements()
     }
 
-    fun canEdit(): Boolean {
-        return model.canEdit(content)
-    }
-
-    private fun loadAnnouncement() {
-        content = model.getEditContent(announcementId)
+    private fun loadAnnouncements() {
+        content = model.getAnnouncementList()
         mutableState.value = State.LoadingDone
     }
 }

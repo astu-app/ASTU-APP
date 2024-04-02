@@ -1,30 +1,21 @@
-package org.astu.app.entities.bulletInBoard
+package org.astu.app.entities.bulletInBoard.announcement.creation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import com.benasher44.uuid.Uuid
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.astu.app.components.bulletinBoard.attachments.files.models.AttachFileSummary
-import org.astu.app.components.bulletinBoard.attachments.surveys.common.models.SurveyContent
 import org.astu.app.components.bulletinBoard.common.models.UserGroupStorage
-import org.astu.app.entities.bulletInBoard.announcement.creation.NewSurvey
 import org.astu.app.entities.bulletInBoard.audienceGraph.INode
 import org.astu.app.utils.dateTime.getDateString
 import org.astu.app.utils.dateTime.getTimeString
 import kotlin.time.Duration
 
-class EditAnnouncementContent(val id: Uuid) {
-    val author: String = "Белов Сергей Валерьевич"
-    val publicationTimeString: String = "Опубликовано 15 фев 15:50"
-    val viewed: Int = 145
-    val viewedPercent: Int = 48
-    val audienceSize: Int = 300
-
-    var text: MutableState<String> = mutableStateOf("Boulder persian newsletter northwest flavor possess painting, mobility caused internship hypothetical closest change breakdown, fork accepts browsing running finally sensors cet, plan basically waters sent.")
+class CreateAnnouncementContent {
+    var textContent: MutableState<String> = mutableStateOf("")
 
     val delayedPublicationEnabled: MutableState<Boolean> = mutableStateOf(false)
     var delayedPublicationDateMillis: MutableState<Long>
@@ -42,9 +33,8 @@ class EditAnnouncementContent(val id: Uuid) {
     var delayedHidingTimeMinutes: MutableState<Int> = mutableStateOf(0)
     var delayedHidingTimeString: MutableState<String>
 
-    val files: SnapshotStateMap<Int, AttachFileSummary> = mutableStateMapOf()
-    var attachedSurvey: SurveyContent? = null
-    var newSurvey: MutableState<NewSurvey?> = mutableStateOf(null)
+    var files: SnapshotStateMap<Int, AttachFileSummary> = mutableStateMapOf()
+    var survey: MutableState<NewSurvey?> = mutableStateOf(null)
 
     val audienceRoot: INode = UserGroupStorage.makeSelectableAudience()
 

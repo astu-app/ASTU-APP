@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.astu.app.components.TreeDropDown
-import org.astu.app.components.bulletinBoard.announcements.details.models.AnnouncementDetailsContent
 import org.astu.app.components.bulletinBoard.attachments.Attachment
+import org.astu.app.entities.bulletInBoard.announcement.details.AnnouncementDetailsContent
 import org.astu.app.theme.CurrentColorScheme
 
 @Composable

@@ -9,12 +9,15 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.benasher44.uuid.Uuid
+import org.astu.app.components.Loading
 import org.astu.app.components.bulletinBoard.announcements.editing.AnnouncementEditor
 import org.astu.app.theme.CurrentColorScheme
 import org.astu.app.view_models.bulletInBoard.EditAnnouncementViewModel
@@ -64,7 +67,12 @@ class EditAnnouncementScreen(
                 }
             }
         ) {
-            editor.Content(editor.getDefaultModifier())
+            val state by viewModel.state.collectAsState()
+            when(state) {
+                EditAnnouncementViewModel.State.Loading -> Loading()
+                EditAnnouncementViewModel.State.LoadingDone -> editor.Content(editor.getDefaultModifier())
+                EditAnnouncementViewModel.State.Error -> TODO()
+            }
         }
     }
 }

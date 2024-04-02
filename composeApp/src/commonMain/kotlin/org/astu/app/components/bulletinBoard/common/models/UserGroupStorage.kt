@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.astu.app.components.CheckboxRow
 import org.astu.app.components.bulletinBoard.announcements.common.SelectableUserSummary
-import org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph.*
 import org.astu.app.components.bulletinBoard.common.models.UserStorage.makeSelectableUserText
 import org.astu.app.components.bulletinBoard.common.models.UserStorage.makeStaticUserText
+import org.astu.app.entities.bulletInBoard.audienceGraph.*
 
 object UserGroupStorage {
     fun makeStaticAudience(): INode {

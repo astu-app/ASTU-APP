@@ -1,4 +1,4 @@
-package org.astu.app.components.bulletinBoard.announcements.details.models.audienceGraph
+package org.astu.app.entities.bulletInBoard.audienceGraph
 
 import androidx.compose.runtime.MutableState
 

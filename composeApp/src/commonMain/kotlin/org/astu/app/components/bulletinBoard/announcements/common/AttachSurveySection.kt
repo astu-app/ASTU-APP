@@ -10,8 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.astu.app.components.bulletinBoard.announcements.creation.models.NewSurvey
 import org.astu.app.components.common.getButtonColors
+import org.astu.app.entities.bulletInBoard.announcement.creation.NewSurvey
 import org.astu.app.theme.CurrentColorScheme
 
 /**

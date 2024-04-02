@@ -9,18 +9,24 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import org.astu.app.components.Loading
 import org.astu.app.components.bulletinBoard.announcements.creation.AnnouncementCreator
 import org.astu.app.theme.CurrentColorScheme
+import org.astu.app.view_models.bulletInBoard.CreateAnnouncementViewModel
 
 class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
-    private val creator: AnnouncementCreator = AnnouncementCreator()
-
     @Composable
     override fun Content() {
+        val viewModel = rememberScreenModel { CreateAnnouncementViewModel() }
+        val creator = AnnouncementCreator(viewModel)
+
         AnnouncementActionScreenScaffold(
             onReturn = onReturn,
             topBarTitle = {
@@ -41,14 +47,15 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
                     ) {
                         Button(
                             enabled = creator.canCreate(),
-                            onClick = { },
+                            onClick = {
+                                viewModel.create()
+                            },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = CurrentColorScheme.surface,
                                 disabledContainerColor = CurrentColorScheme.surface,
                                 contentColor = CurrentColorScheme.primary,
                             )
                         ) {
-
                             Text(
                                 text = "Создать",
                                 style = MaterialTheme.typography.titleLarge,
@@ -58,7 +65,13 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
                 }
             }
         ) {
-            creator.Content(creator.getDefaultModifier())
+            val state by viewModel.state.collectAsState()
+            when(state) {
+                CreateAnnouncementViewModel.State.Init -> creator.Content(creator.getDefaultModifier())
+                CreateAnnouncementViewModel.State.Uploading -> Loading()
+                CreateAnnouncementViewModel.State.UploadingDone -> onReturn()
+                CreateAnnouncementViewModel.State.Error -> TODO()
+            }
         }
     }
 }
