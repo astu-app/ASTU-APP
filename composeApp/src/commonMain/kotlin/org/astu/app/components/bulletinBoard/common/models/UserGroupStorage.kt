@@ -130,7 +130,7 @@ object UserGroupStorage {
         return group1
     }
 
-    private fun makeStaticUserGroupText(text: String): @Composable () -> Unit {
+    fun makeStaticUserGroupText(text: String): @Composable () -> Unit {
         return {
             Text(
                 text = text,

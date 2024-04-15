@@ -6,8 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.astu.app.components.TreeDropDown
 import org.astu.app.components.bulletinBoard.attachments.Attachment
+import org.astu.app.components.bulletinBoard.common.models.UserStorage
+import org.astu.app.components.dropdown.DropDown
 import org.astu.app.entities.bulletInBoard.announcement.details.AnnouncementDetailsContent
 import org.astu.app.theme.CurrentColorScheme
 
@@ -47,7 +48,11 @@ fun AnnouncementDetails(
 
         AddDivider()
 
-        TreeDropDown(details.rootAudienceNode) {
+        DropDown(
+            details.audience.map {
+                UserStorage.makeStaticUserText(it)
+            }
+        ) {
             Text(
                 text = "Получатели",
                 modifier = Modifier
@@ -55,6 +60,15 @@ fun AnnouncementDetails(
                     .wrapContentHeight()
             )
         }
+
+//        TreeDropDown(details.rootAudienceNode) { // remove
+//            Text(
+//                text = "Получатели",
+//                modifier = Modifier
+//                    .wrapContentWidth()
+//                    .wrapContentHeight()
+//            )
+//        }
     }
 }
 

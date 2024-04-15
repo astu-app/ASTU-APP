@@ -71,7 +71,7 @@ fun AnnouncementSummary(
                 }
         ) {
             Column {
-                AnnouncementHeader(content.author, content.publicationTime, Modifier.fillMaxWidth())
+                AnnouncementHeader(content.author, content.publicationTime.toString(), Modifier.fillMaxWidth())
                 Text(
                     text = content.text,
                     modifier = Modifier

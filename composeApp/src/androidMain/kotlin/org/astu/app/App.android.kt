@@ -1,11 +1,17 @@
 package org.astu.app
 
 import android.app.Application
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.websocket.*
+import io.ktor.serialization.kotlinx.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
+import org.astu.app.security.SslSettings
 
 class AndroidApp : Application() {
     companion object {
@@ -23,6 +29,24 @@ class AppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             App()
+        }
+    }
+}
+
+actual fun makeHttpClient(): HttpClient {
+    return HttpClient(OkHttp) {
+        engine {
+            config {
+                sslSocketFactory(SslSettings.sslContext()!!.socketFactory, SslSettings.trustManager())
+                followRedirects(true)
+                hostnameVerifier(SslSettings.hostNameVerifier())
+            }
+        }
+        install(ContentNegotiation) {
+            json()
+        }
+        install(WebSockets){
+            contentConverter = KotlinxWebsocketSerializationConverter(Json)
         }
     }
 }

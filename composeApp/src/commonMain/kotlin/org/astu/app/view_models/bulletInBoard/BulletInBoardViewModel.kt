@@ -1,6 +1,10 @@
 package org.astu.app.view_models.bulletInBoard
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import cafe.adriel.voyager.core.model.StateScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.launch
 import org.astu.app.entities.bulletInBoard.announcement.summary.AnnouncementSummaryContent
 import org.astu.app.models.bulletInBoard.AnnouncementModel
 
@@ -12,7 +16,7 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
     }
 
     private val model: AnnouncementModel = AnnouncementModel()
-    lateinit var content: List<AnnouncementSummaryContent>
+    var content: SnapshotStateList<AnnouncementSummaryContent> = mutableStateListOf()
 
 
     init {
@@ -21,7 +25,13 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
     }
 
     private fun loadAnnouncements() {
-        content = model.getAnnouncementList()
-        mutableState.value = State.LoadingDone
+        screenModelScope.launch {
+            content.clear()
+
+            val announcements = model.getAnnouncementList()
+            content.addAll(announcements)
+
+            mutableState.value = State.LoadingDone
+        }
     }
 }

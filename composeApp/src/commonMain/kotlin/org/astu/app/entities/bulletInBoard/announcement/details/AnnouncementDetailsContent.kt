@@ -2,7 +2,7 @@ package org.astu.app.entities.bulletInBoard.announcement.details
 
 import com.benasher44.uuid.Uuid
 import org.astu.app.components.bulletinBoard.attachments.common.models.AttachmentBase
-import org.astu.app.entities.bulletInBoard.audienceGraph.INode
+import org.astu.app.components.bulletinBoard.common.models.UserSummary
 
 class AnnouncementDetailsContent(
     val id: Uuid,
@@ -12,6 +12,7 @@ class AnnouncementDetailsContent(
     val viewedPercent: Int,
     val audienceSize: Int,
     val text: String,
-    val rootAudienceNode: INode,
+//    val rootAudienceNode: INode, // remove
     val attachments: List<AttachmentBase>? = null,
+    val audience : List<UserSummary>
 )

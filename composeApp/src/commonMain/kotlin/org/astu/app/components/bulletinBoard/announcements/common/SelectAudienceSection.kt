@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.astu.app.components.TreeDropDown
+import org.astu.app.components.dropdown.TreeDropDown
 import org.astu.app.entities.bulletInBoard.audienceGraph.INode
 import org.astu.app.theme.CurrentColorScheme
 

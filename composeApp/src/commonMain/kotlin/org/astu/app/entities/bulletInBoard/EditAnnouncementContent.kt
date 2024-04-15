@@ -17,15 +17,16 @@ import org.astu.app.utils.dateTime.getDateString
 import org.astu.app.utils.dateTime.getTimeString
 import kotlin.time.Duration
 
-class EditAnnouncementContent(val id: Uuid) {
-    val author: String = "Белов Сергей Валерьевич"
-    val publicationTimeString: String = "Опубликовано 15 фев 15:50"
-    val viewed: Int = 145
-    val viewedPercent: Int = 48
-    val audienceSize: Int = 300
+class EditAnnouncementContent(
+    val id: Uuid,
+    val author: String = "Белов Сергей Валерьевич",
+    val publicationTimeString: String = "Опубликовано 15 фев 15:50",
+    val viewed: Int = 145,
+    val viewedPercent: Int = 48,
+    val audienceSize: Int = 300,
+    var text: MutableState<String> = mutableStateOf("Boulder persian newsletter northwest flavor possess painting, mobility caused internship hypothetical closest change breakdown, fork accepts browsing running finally sensors cet, plan basically waters sent."),
 
-    var text: MutableState<String> = mutableStateOf("Boulder persian newsletter northwest flavor possess painting, mobility caused internship hypothetical closest change breakdown, fork accepts browsing running finally sensors cet, plan basically waters sent.")
-
+) {
     val delayedPublicationEnabled: MutableState<Boolean> = mutableStateOf(false)
     var delayedPublicationDateMillis: MutableState<Long>
     var delayedPublicationDateString: MutableState<String>

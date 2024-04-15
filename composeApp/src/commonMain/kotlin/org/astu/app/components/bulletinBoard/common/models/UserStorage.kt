@@ -18,15 +18,19 @@ object UserStorage {
     val user6 = UserSummary(uuid4(), "Левин", "Тимофей", "Владимирович")
 
     fun makeStaticUserText(user: UserSummary, modifier: Modifier = Modifier): @Composable () -> Unit {
+        return makeStaticUserText(user.firstName, user.secondName, user.patronymic, modifier)
+    }
+
+    fun makeStaticUserText(firstName: String, secondName: String, patronymic: String?, modifier: Modifier = Modifier): @Composable () -> Unit {
         return {
             Column(modifier = modifier) {
                 Text(
-                    text = user.firstName
+                    text = firstName
                 )
                 val secondPartOfName =
-                    if (user.patronymic != null)
-                        "${user.secondName} ${user.patronymic}"
-                    else user.secondName
+                    if (patronymic != null)
+                        "$secondName $patronymic"
+                    else secondName
                 Text(
                     text = secondPartOfName,
                     style = MaterialTheme.typography.labelMedium,

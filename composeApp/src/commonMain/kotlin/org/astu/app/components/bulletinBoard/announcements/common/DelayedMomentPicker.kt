@@ -83,7 +83,7 @@ fun DelayedMomentPicker(
                 }
             ) {
                 AdaptiveDatePicker(
-                    state = datePickerState,
+                    state = datePickerState, // todo добавить заголовок диалога
                 )
             }
         }

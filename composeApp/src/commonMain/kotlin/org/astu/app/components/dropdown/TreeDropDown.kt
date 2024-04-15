@@ -1,4 +1,4 @@
-package org.astu.app.components
+package org.astu.app.components.dropdown
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
