@@ -18,7 +18,7 @@ class AnnouncementModel {
         return repository.loadList()
     }
 
-    fun getDetails(id: Uuid): AnnouncementDetails {
+    suspend fun getDetails(id: Uuid): AnnouncementDetails {
         return repository.loadDetails(id)
     }
 
@@ -35,7 +35,7 @@ class AnnouncementModel {
         return createValidator.canCreate()
     }
 
-    fun getEditContent(id: Uuid): EditAnnouncementContent { // todo задействовать репозиторий
+    suspend fun getEditContent(id: Uuid): EditAnnouncementContent { // todo задействовать репозиторий
         val details = repository.loadDetails(id)
         return EditAnnouncementContent(
             id = id,

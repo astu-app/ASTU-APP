@@ -2,8 +2,10 @@ package org.astu.app.components.bulletinBoard.attachments.surveys.common.models
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.uuid4
 import org.astu.app.components.bulletinBoard.attachments.common.models.AttachmentBase
 import org.astu.app.components.bulletinBoard.attachments.common.models.AttachmentType
@@ -25,6 +27,8 @@ class SurveyContent(private val questions: List<QuestionContentBase>) : Attachme
     }
 
     override fun getDefaultModifier(): Modifier {
-        return Modifier.fillMaxSize()
+        return Modifier
+            .fillMaxSize()
+            .padding(vertical = 8.dp)
     }
 }

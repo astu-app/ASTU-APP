@@ -1,6 +1,6 @@
 package org.astu.app.view_models.bulletInBoard
 
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
@@ -18,20 +18,25 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
     private val model: AnnouncementModel = AnnouncementModel()
     var content: SnapshotStateList<AnnouncementSummaryContent> = mutableStateListOf()
 
+    val showErrorDialog: MutableState<Boolean> = mutableStateOf(false)
 
     init {
         mutableState.value = State.Loading
         loadAnnouncements()
     }
 
-    private fun loadAnnouncements() {
+    fun loadAnnouncements() {
         screenModelScope.launch {
-            content.clear()
+            try {
+                content.clear()
 
-            val announcements = model.getAnnouncementList()
-            content.addAll(announcements)
+                val announcements = model.getAnnouncementList()
+                content.addAll(announcements)
 
-            mutableState.value = State.LoadingDone
+                mutableState.value = State.LoadingDone
+            } catch (e: Exception) {
+                showErrorDialog.value = true
+            }
         }
     }
 }

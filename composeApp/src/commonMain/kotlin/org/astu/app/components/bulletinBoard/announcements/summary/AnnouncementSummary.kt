@@ -18,6 +18,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.Severity
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import org.astu.app.components.bulletinBoard.announcements.summary.dropdownMenuContent.AuthorDropdownMenuContent
 import org.astu.app.components.bulletinBoard.announcements.summary.dropdownMenuContent.DropdownMenuContentBase
 import org.astu.app.components.bulletinBoard.attachments.Attachment
@@ -25,7 +26,9 @@ import org.astu.app.entities.bulletInBoard.announcement.summary.AnnouncementSumm
 import org.astu.app.screens.bulletInBoard.announcementAction.AnnouncementDetailsScreen
 import org.astu.app.screens.bulletInBoard.announcementAction.EditAnnouncementScreen
 import org.astu.app.theme.CurrentColorScheme
+import org.astu.app.view_models.bulletInBoard.humanization.humanizeDateTime
 
+@OptIn(FormatStringsInDatetimeFormats::class)
 @Composable
 fun AnnouncementSummary(
     content: AnnouncementSummaryContent,
@@ -71,7 +74,10 @@ fun AnnouncementSummary(
                 }
         ) {
             Column {
-                AnnouncementHeader(content.author, content.publicationTime.toString(), Modifier.fillMaxWidth())
+                val publicationMoment by remember {
+                    mutableStateOf(humanizeDateTime(content.publicationTime))
+                }
+                AnnouncementHeader(content.author, publicationMoment, Modifier.fillMaxWidth())
                 Text(
                     text = content.text,
                     modifier = Modifier
@@ -79,7 +85,7 @@ fun AnnouncementSummary(
                         .padding(vertical = 4.dp)
                 )
 
-                if (content.attachments != null) {
+                if (content.attachments.isNotEmpty()) {
                     HorizontalDivider(
                         modifier = Modifier
                             .fillMaxWidth()

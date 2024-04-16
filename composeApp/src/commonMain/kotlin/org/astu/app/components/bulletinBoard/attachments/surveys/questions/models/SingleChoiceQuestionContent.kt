@@ -24,7 +24,7 @@ class SingleChoiceQuestionContent (
             val answerContent = SingleChoiceAnswerContent(it.text)
             states.add(answerContent)
         }
-        val stateIds = states.getIds()
+        val stateIds = remember { states.getIds() }
 
         Column(
             horizontalAlignment = Alignment.Start,

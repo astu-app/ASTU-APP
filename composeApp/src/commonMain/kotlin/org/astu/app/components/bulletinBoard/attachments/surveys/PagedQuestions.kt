@@ -19,7 +19,6 @@ fun PagedQuestions(
         .fillMaxWidth()
         .wrapContentHeight()
 ) {
-
     val pagerState = rememberPagerState(pageCount = { questions.size })
     HorizontalPager(
         state = pagerState,

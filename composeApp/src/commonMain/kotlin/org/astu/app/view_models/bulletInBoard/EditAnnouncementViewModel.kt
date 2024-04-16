@@ -1,7 +1,9 @@
 package org.astu.app.view_models.bulletInBoard
 
 import cafe.adriel.voyager.core.model.StateScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.launch
 import org.astu.app.entities.bulletInBoard.EditAnnouncementContent
 import org.astu.app.models.bulletInBoard.AnnouncementModel
 
@@ -28,7 +30,9 @@ class EditAnnouncementViewModel(
     }
 
     private fun loadAnnouncement() {
-        content = model.getEditContent(announcementId)
-        mutableState.value = State.LoadingDone
+        screenModelScope.launch {
+            content = model.getEditContent(announcementId)
+            mutableState.value = State.LoadingDone
+        }
     }
 }

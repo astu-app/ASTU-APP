@@ -6,8 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
@@ -40,6 +42,14 @@ actual fun makeHttpClient(): HttpClient {
                 sslSocketFactory(SslSettings.sslContext()!!.socketFactory, SslSettings.trustManager())
                 followRedirects(true)
                 hostnameVerifier(SslSettings.hostNameVerifier())
+            }
+        }
+        defaultRequest {
+//            host = "192.168.1.12:7222"
+//            host = "192.168.1.11:7222"
+            host = "10.0.2.2:7222"
+            url {
+                protocol = URLProtocol.HTTPS
             }
         }
         install(ContentNegotiation) {

@@ -11,5 +11,5 @@ class AnnouncementSummaryContent(
     val text: String,
     val viewed: Int,
     val audienceSize: Int,
-    val attachments: List<AttachmentBase>? = null,
+    val attachments: List<AttachmentBase> = emptyList(),
 )
