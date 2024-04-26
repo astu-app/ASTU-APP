@@ -52,10 +52,14 @@ kotlin {
             }
         }
         commonMain.dependencies {
+            implementation(projects.features.scheduleFeature)
+            implementation(projects.features.singleWindowFeature)
+            implementation(projects.features.chatFeature)
+            implementation(projects.infrastructure)
+
             implementation(compose.runtime)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)
@@ -139,10 +143,6 @@ android {
         kotlinCompilerExtensionVersion = "1.5.4"
     }
 }
-dependencies {
-    implementation("io.ktor:ktor-client-okhttp-jvm:2.3.7")
-    implementation("io.ktor:ktor-client-cio-jvm:2.3.7")
-}
 
 compose.desktop {
     application {
@@ -157,8 +157,7 @@ compose.desktop {
 }
 
 compose.experimental {
-    web.application {
-    }
+    web.application {}
 }
 
 buildConfig {

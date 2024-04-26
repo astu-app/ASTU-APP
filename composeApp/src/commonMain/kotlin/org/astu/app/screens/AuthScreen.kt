@@ -33,7 +33,7 @@ class AuthScreen(private val onAuth: () -> Unit)  : Screen {
     fun desktopView() {
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
             authPanel(Modifier.weight(2f).fillMaxHeight())
-            Divider(Modifier.weight(0.01f).fillMaxHeight(), 4.dp)
+            HorizontalDivider(Modifier.weight(0.01f).fillMaxHeight(), 4.dp)
             authDetail(Modifier.weight(6f))
         }
     }

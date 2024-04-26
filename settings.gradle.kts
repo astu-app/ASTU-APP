@@ -1,5 +1,9 @@
 rootProject.name = "ASTU-Client"
-include(":composeApp")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+include(":composeApp", ":infrastructure")
+include(":features:scheduleFeature")
+include(":features:singleWindowFeature")
+include(":features:chatFeature")
 
 pluginManagement {
     repositories {

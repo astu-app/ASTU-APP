@@ -1,9 +1,9 @@
 [versions]
 
 calfFilePicker = "0.4.0"
-kotlin = "1.9.21"
-compose = "1.5.11"
-agp = "8.2.0"
+kotlin = "1.9.23"
+compose = "1.6.1"
+agp = "8.3.1"
 androidx-appcompat = "1.6.1"
 androidx-activityCompose = "1.8.2"
 compose-uitooling = "1.6.3"
@@ -12,11 +12,14 @@ materialIconsExtendedAndroid = "1.6.4"
 mpfilepicker = "3.1.0"
 uuid = "0.8.3"
 voyager = "1.0.0"
-composeImageLoader = "1.7.1"
-kermit = "2.0.0-RC4"
+composeImageLoader = "1.7.8"
 buildConfig = "4.1.1"
-kotlinx-coroutines = "1.7.3"
-ktor = "2.3.7"
+kotlinx-coroutines = "1.8.0"
+
+androidx-appcompat = "1.6.1"
+compose-uitooling = "1.6.4"
+kermit = "2.0.0-RC4"
+ktor = "2.3.8"
 composeIcons = "1.1.0"
 kotlinx-serialization = "1.6.2"
 kotlinx-datetime = "0.6.0-RC.2"
@@ -59,6 +62,8 @@ sqlDelight-driver-js = { module = "app.cash.sqldelight:web-worker-driver", versi
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+
