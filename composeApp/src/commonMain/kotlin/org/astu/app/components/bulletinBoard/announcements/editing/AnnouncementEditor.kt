@@ -79,7 +79,7 @@ class AnnouncementEditor(
             }
 
             // Аудитория
-            SelectAudienceSection(announcement.audienceRoot)
+            SelectAudienceSection(listOf(announcement.audienceRoot))
         }
     }
 

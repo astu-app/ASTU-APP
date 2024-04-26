@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import org.astu.app.components.ActionFailedDialog
 import org.astu.app.components.Loading
 import org.astu.app.components.bulletinBoard.announcements.creation.AnnouncementCreator
 import org.astu.app.theme.CurrentColorScheme
@@ -24,7 +25,7 @@ import org.astu.app.view_models.bulletInBoard.CreateAnnouncementViewModel
 class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel { CreateAnnouncementViewModel() }
+        val viewModel = rememberScreenModel { CreateAnnouncementViewModel(onReturn) }
         val creator = AnnouncementCreator(viewModel)
 
         AnnouncementActionScreenScaffold(
@@ -66,12 +67,29 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
             }
         ) {
             val state by viewModel.state.collectAsState()
-            when(state) {
-                CreateAnnouncementViewModel.State.Init -> creator.Content(creator.getDefaultModifier())
-                CreateAnnouncementViewModel.State.Uploading -> Loading()
-                CreateAnnouncementViewModel.State.UploadingDone -> onReturn()
-                CreateAnnouncementViewModel.State.Error -> TODO()
+            when (state) {
+                CreateAnnouncementViewModel.State.CreateContentLoading -> Loading()
+                CreateAnnouncementViewModel.State.CreatingAnnouncement -> creator.Content(creator.getDefaultModifier())
+                CreateAnnouncementViewModel.State.CreateContentLoadError -> showErrorDialog(viewModel)
+                CreateAnnouncementViewModel.State.NewAnnouncementUploading -> Loading()
+                CreateAnnouncementViewModel.State.NewAnnouncementUploadingDone -> onReturn()
+                CreateAnnouncementViewModel.State.NewAnnouncementUploadError -> showErrorDialog(viewModel)
+            }
+
+            if (viewModel.showErrorDialog.value) {
+                ActionFailedDialog(
+                    label = viewModel.errorDialogLabel.value,
+                    body = viewModel.errorDialogBody.value,
+                    onTryAgainRequest = viewModel.onErrorDialogTryAgain.value,
+                    onDismissRequest = viewModel.onErrorDialogDismiss.value
+                )
             }
         }
+    }
+
+
+
+    private fun showErrorDialog(viewModel: CreateAnnouncementViewModel) {
+        viewModel.showErrorDialog.value = true
     }
 }

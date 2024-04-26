@@ -14,8 +14,8 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import org.astu.app.components.ActionFailedDialog
 import org.astu.app.components.Loading
-import org.astu.app.components.LoadingFailedDialog
 import org.astu.app.components.bulletinBoard.BulletInBoard
 import org.astu.app.screens.bulletInBoard.announcementAction.CreateAnnouncementScreen
 import org.astu.app.theme.CurrentColorScheme
@@ -52,10 +52,15 @@ class BulletInBoardScreen : Screen {
         }
 
         if (viewModel.showErrorDialog.value) {
-            LoadingFailedDialog("Не удалось загрузить список объявлений.\nПовторите попытку") {
-                viewModel.loadAnnouncements()
-                viewModel.showErrorDialog.value = false
-            }
+            ActionFailedDialog(
+                label = viewModel.errorDialogLabel.value,
+                body = viewModel.errorDialogBody.value,
+                onTryAgainRequest = {
+                    viewModel.loadAnnouncements()
+                    viewModel.showErrorDialog.value = false
+                },
+                showDismissButton = false
+            )
         }
     }
 

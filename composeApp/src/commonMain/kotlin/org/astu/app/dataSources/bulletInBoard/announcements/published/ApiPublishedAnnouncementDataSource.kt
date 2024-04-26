@@ -9,11 +9,15 @@ import io.ktor.http.*
 import org.astu.app.GlobalDIContext
 import org.astu.app.dataSources.bulletInBoard.announcements.common.dtos.AnnouncementDetailsDto
 import org.astu.app.dataSources.bulletInBoard.announcements.common.dtos.AnnouncementSummaryDto
-import org.astu.app.dataSources.bulletInBoard.announcements.common.dtos.UserSummaryDto
+import org.astu.app.dataSources.bulletInBoard.announcements.common.responses.GetAnnouncementDetailsErrors
+import org.astu.app.dataSources.bulletInBoard.announcements.common.responses.GetPostedAnnouncementListErrors
 import org.astu.app.dataSources.bulletInBoard.attachments.files.dtos.FileSummaryDto
 import org.astu.app.dataSources.bulletInBoard.attachments.surveys.dtos.QuestionAnswerDetailsDto
 import org.astu.app.dataSources.bulletInBoard.attachments.surveys.dtos.QuestionDetailsDto
 import org.astu.app.dataSources.bulletInBoard.attachments.surveys.dtos.SurveyDetailsDto
+import org.astu.app.dataSources.bulletInBoard.common.readUnsuccessCode
+import org.astu.app.dataSources.bulletInBoard.common.responses.ContentWithError
+import org.astu.app.dataSources.bulletInBoard.users.common.dtos.UserSummaryDto
 import org.astu.app.models.bulletInBoard.entities.announcements.AnnouncementDetails
 import org.astu.app.models.bulletInBoard.entities.announcements.AnnouncementSummary
 import org.astu.app.models.bulletInBoard.entities.attachments.file.File
@@ -28,32 +32,45 @@ class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
     private val client: HttpClient by GlobalDIContext.instance()
 
 
-    override suspend fun getList(): List<AnnouncementSummary> {
+    override suspend fun getList(): ContentWithError<List<AnnouncementSummary>, GetPostedAnnouncementListErrors> {
         val response = client.get("api/announcements/published/get-list")
-        return response.body<Array<AnnouncementSummaryDto>>().map { a ->
+
+        if (!response.status.isSuccess()) {
+            return ContentWithError(null, error = readUnsuccessCode<GetPostedAnnouncementListErrors>(response))
+        }
+
+        val announcements = response.body<Array<AnnouncementSummaryDto>>().map { a ->
             AnnouncementSummary(uuidFrom(a.id), a.authorName, a.publishedAt, a.content, a.viewsCount, a.audienceSize, mapFiles(a.files), mapSurveys(a.surveys))
         }
+        return ContentWithError(announcements, null)
     }
 
-    override suspend fun getDetails(id: Uuid): AnnouncementDetails {
+    override suspend fun getDetails(id: Uuid): ContentWithError<AnnouncementDetails, GetAnnouncementDetailsErrors> {
         val response = client.get("api/announcements/get-details/$id") {
             contentType(ContentType.Application.Json)
         }
 
+        if (!response.status.isSuccess()) {
+            return ContentWithError(null, error = readUnsuccessCode<GetAnnouncementDetailsErrors>(response))
+        }
+
         val dto = response.body<AnnouncementDetailsDto>()
-        return AnnouncementDetails(
-            id = uuidFrom(dto.id),
-            content = dto.content,
-            authorName = dto.authorName,
-            viewsCount = dto.viewsCount,
-            audienceSize = dto.audienceSize,
-            files = mapFiles(dto.files),
-            surveys = mapSurveys(dto.surveys),
-            publishedAt = dto.publishedAt,
-            hiddenAt = dto.hiddenAt,
-            delayedPublishingAt = dto.delayedPublishingAt,
-            delayedHidingAt = dto.delayedHidingAt,
-            audience = mapAudience(dto.audience)
+        return ContentWithError(
+            AnnouncementDetails(
+                id = uuidFrom(dto.id),
+                content = dto.content,
+                authorName = dto.authorName,
+                viewsCount = dto.viewsCount,
+                audienceSize = dto.audienceSize,
+                files = mapFiles(dto.files),
+                surveys = mapSurveys(dto.surveys),
+                publishedAt = dto.publishedAt,
+                hiddenAt = dto.hiddenAt,
+                delayedPublishingAt = dto.delayedPublishingAt,
+                delayedHidingAt = dto.delayedHidingAt,
+                audience = mapAudience(dto.audience)
+            ),
+            error = null
         )
     }
 
@@ -70,11 +87,11 @@ class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
     }
 
     private fun mapQuestions(questions: List<QuestionDetailsDto>): List<QuestionDetails> {
-        return questions.map { QuestionDetails(uuidFrom(it.id), it.content, it.isMultipleChoiceAllowed, mapAnswers(it.answers)) }
+        return questions.map { QuestionDetails(uuidFrom(it.id), it.serial, it.content, it.isMultipleChoiceAllowed, mapAnswers(it.answers)) }
     }
 
     private fun mapAnswers(answers: List<QuestionAnswerDetailsDto>): List<AnswerDetails> {
-        return answers.map { AnswerDetails(uuidFrom(it.id), it.content, it.votersAmount) }
+        return answers.map { AnswerDetails(uuidFrom(it.id), it.serial, it.content, it.votersAmount) }
     }
 
     private fun mapAudience(audience: List<UserSummaryDto>): List<User> {

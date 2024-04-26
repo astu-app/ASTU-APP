@@ -1,7 +1,7 @@
 package org.astu.app.models.bulletInBoard.entities.announcements
 
-import com.benasher44.uuid.Uuid
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 
 /**
  * @param content Текстовое содержимое объявления
@@ -10,11 +10,12 @@ import kotlinx.datetime.LocalDateTime
  * @param delayedPublishingAt Срок отложенной публикации объявления
  * @param delayedHidingAt Срок отложенного сокрытия объявления
  */
+@Serializable
 data class CreateAnnouncement (
     val content: String,
-    val userIds: List<Uuid>,
-    val attachmentIds: List<Uuid>,
-    val delayedPublishingAt: LocalDateTime,
-    val delayedHidingAt: LocalDateTime,
-    // todo добавить категории объявлений
+    val userIds: List<String>,
+    val attachmentIds: List<String>,
+    val delayedPublishingAt: LocalDateTime?,
+    val delayedHidingAt: LocalDateTime?,
+    val categoryIds: List<String>,
 )

@@ -13,7 +13,12 @@ import org.astu.app.components.bulletinBoard.attachments.surveys.questions.model
 import org.astu.app.components.bulletinBoard.attachments.surveys.questions.models.QuestionContentBase
 import org.astu.app.components.bulletinBoard.attachments.surveys.questions.models.SingleChoiceQuestionContent
 import org.astu.app.components.bulletinBoard.attachments.surveys.questions.models.VotedQuestionContent
+import org.astu.app.dataSources.bulletInBoard.announcements.common.responses.CreateAnnouncementErrors
+import org.astu.app.dataSources.bulletInBoard.announcements.common.responses.GetAnnouncementDetailsErrors
+import org.astu.app.dataSources.bulletInBoard.announcements.common.responses.GetPostedAnnouncementListErrors
+import org.astu.app.dataSources.bulletInBoard.announcements.general.ApiGeneralAnnouncementDataSource
 import org.astu.app.dataSources.bulletInBoard.announcements.published.ApiPublishedAnnouncementDataSource
+import org.astu.app.dataSources.bulletInBoard.common.responses.ContentWithError
 import org.astu.app.entities.bulletInBoard.announcement.summary.AnnouncementSummaryContent
 import org.astu.app.models.bulletInBoard.entities.announcements.AnnouncementDetails
 import org.astu.app.models.bulletInBoard.entities.announcements.CreateAnnouncement
@@ -25,13 +30,30 @@ import kotlin.math.roundToInt
 
 class AnnouncementRepository {
     private val publishedAnnouncementsSource = ApiPublishedAnnouncementDataSource()
+    private val generalAnnouncementsSource = ApiGeneralAnnouncementDataSource()
 
-    suspend fun loadList(): List<AnnouncementSummaryContent> {
-        return publishedAnnouncementsSource.getList().map {
+    suspend fun loadList(): ContentWithError<List<AnnouncementSummaryContent>, GetPostedAnnouncementListErrors> {
+        val content = publishedAnnouncementsSource.getList()
+        val announcements = content.content?.map {
             AnnouncementSummaryContent(it.id, it.author, it.publicationTime, it.text, it.viewed, it.audienceSize, mapAttachments(it.files, it.surveys))
         }
 
+        return ContentWithError(announcements, content.error)
     }
+
+    suspend fun loadDetails(id: Uuid): ContentWithError<AnnouncementDetails, GetAnnouncementDetailsErrors> {
+        return publishedAnnouncementsSource.getDetails(id)
+    }
+
+    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrors? {
+        return generalAnnouncementsSource.create(announcement)
+    }
+
+    fun update() {
+
+    }
+
+
 
     private fun mapAttachments(files: List<File>?, surveys: List<SurveyDetails>?): List<AttachmentBase> {
         val attachments = mutableListOf<AttachmentBase>()
@@ -83,19 +105,5 @@ class AnnouncementRepository {
     private fun mapSingleChoiceQuestion(question: QuestionDetails): SingleChoiceQuestionContent {
         val answers = question.answers.map { answer -> SingleChoiceAnswerContent(answer.content) }
         return SingleChoiceQuestionContent(question.content, answers)
-    }
-
-
-
-    suspend fun loadDetails(id: Uuid): AnnouncementDetails {
-        return publishedAnnouncementsSource.getDetails(id)
-    }
-
-    fun create(announcement: CreateAnnouncement) {
-
-    }
-
-    fun update() {
-
     }
 }

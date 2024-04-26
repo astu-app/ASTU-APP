@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import org.astu.app.dataSources.bulletInBoard.attachments.files.dtos.FileSummaryDto
 import org.astu.app.dataSources.bulletInBoard.attachments.surveys.dtos.SurveyDetailsDto
+import org.astu.app.dataSources.bulletInBoard.users.common.dtos.UserSummaryDto
 
 @Serializable
 data class AnnouncementDetailsDto (

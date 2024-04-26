@@ -9,6 +9,7 @@ import com.benasher44.uuid.uuid4
 import org.astu.app.components.CheckboxRow
 import org.astu.app.components.bulletinBoard.announcements.common.SelectableUserSummary
 
+@Deprecated("Class is deprecated and shouldn't be user anymore")
 object UserStorage {
     val user1 = UserSummary(uuid4(), "Анисимова", "Анна", "Максимовна")
     val user2 = UserSummary(uuid4(), "Романова", "Милана", "Матвеевна")
@@ -39,7 +40,7 @@ object UserStorage {
         }
     }
 
-    fun makeSelectableUserText(user: SelectableUserSummary, modifier: Modifier = Modifier): @Composable () -> Unit {
+    fun makeSelectableUserText(user: SelectableUserSummary, modifier: Modifier = Modifier, onCheckedStateChanged: (Boolean) -> Unit): @Composable () -> Unit {
         return {
             CheckboxRow(
                 title = {
@@ -57,7 +58,8 @@ object UserStorage {
                         )
                     }
                 },
-                state = user.isSelected
+                state = user.isSelected,
+                onCheckedStateChange = onCheckedStateChanged
             )
         }
     }

@@ -39,14 +39,14 @@ fun AnnouncementDetails(
                 .fillMaxWidth()
                 .padding(top = 8.dp, bottom = 4.dp)
         )
-
         AddDivider()
 
-        details.attachments?.forEach {attachment ->
-            Attachment(attachment)
+        if (!details.attachments.isNullOrEmpty()) {
+            details.attachments.forEach { attachment ->
+                Attachment(attachment)
+            }
+            AddDivider()
         }
-
-        AddDivider()
 
         DropDown(
             details.audience.map {
@@ -60,15 +60,6 @@ fun AnnouncementDetails(
                     .wrapContentHeight()
             )
         }
-
-//        TreeDropDown(details.rootAudienceNode) { // remove
-//            Text(
-//                text = "Получатели",
-//                modifier = Modifier
-//                    .wrapContentWidth()
-//                    .wrapContentHeight()
-//            )
-//        }
     }
 }
 

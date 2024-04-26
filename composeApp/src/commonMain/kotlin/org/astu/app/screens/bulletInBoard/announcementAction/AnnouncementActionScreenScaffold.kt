@@ -54,9 +54,8 @@ fun AnnouncementActionScreenScaffold(
         Surface(
             modifier = Modifier
                 .padding(top = it.calculateTopPadding())
-                .verticalScroll(scrollState)
-        ) {
-            content()
-        }
+                .verticalScroll(scrollState),
+            content = content,
+        )
     }
 }

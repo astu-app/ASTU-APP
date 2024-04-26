@@ -53,7 +53,11 @@ actual fun makeHttpClient(): HttpClient {
             }
         }
         install(ContentNegotiation) {
-            json()
+            json(Json {
+                prettyPrint = true
+                isLenient = true
+                ignoreUnknownKeys = true
+            })
         }
         install(WebSockets){
             contentConverter = KotlinxWebsocketSerializationConverter(Json)

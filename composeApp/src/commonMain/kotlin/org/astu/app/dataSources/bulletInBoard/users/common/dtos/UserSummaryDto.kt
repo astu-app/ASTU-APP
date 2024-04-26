@@ -1,4 +1,4 @@
-package org.astu.app.dataSources.bulletInBoard.announcements.common.dtos
+package org.astu.app.dataSources.bulletInBoard.users.common.dtos
 
 import kotlinx.serialization.Serializable
 

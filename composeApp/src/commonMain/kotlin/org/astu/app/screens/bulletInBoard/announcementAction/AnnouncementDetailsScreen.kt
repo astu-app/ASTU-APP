@@ -7,8 +7,8 @@ import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.benasher44.uuid.Uuid
+import org.astu.app.components.ActionFailedDialog
 import org.astu.app.components.Loading
-import org.astu.app.components.LoadingFailedDialog
 import org.astu.app.components.bulletinBoard.announcements.details.AnnouncementDetails
 import org.astu.app.view_models.bulletInBoard.AnnouncementDetailsViewModel
 
@@ -28,15 +28,24 @@ class AnnouncementDetailsScreen(
             when(state) {
                 AnnouncementDetailsViewModel.State.Loading -> Loading()
                 AnnouncementDetailsViewModel.State.LoadingDone -> AnnouncementDetails(viewModel.content.value)
-                AnnouncementDetailsViewModel.State.Error -> TODO()
+                AnnouncementDetailsViewModel.State.Error -> showErrorDialog(viewModel)
             }
 
             if (viewModel.showErrorDialog.value) {
-                LoadingFailedDialog("Не удалось загрузить детали объявления.\nПовторите попытку") {
-                    viewModel.loadDetails()
-                    viewModel.showErrorDialog.value = false
-                }
+                ActionFailedDialog(
+                    label = viewModel.errorDialogLabel.value,
+                    body = viewModel.errorDialogBody.value,
+                    onTryAgainRequest = {
+                        viewModel.loadDetails()
+                        viewModel.showErrorDialog.value = false
+                    },
+                    onDismissRequest = onReturn
+                )
             }
         }
+    }
+
+    private fun showErrorDialog(viewModel: AnnouncementDetailsViewModel) {
+        viewModel.showErrorDialog.value = true
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
+import org.astu.app.dataSources.bulletInBoard.announcements.common.responses.GetPostedAnnouncementListErrors
 import org.astu.app.entities.bulletInBoard.announcement.summary.AnnouncementSummaryContent
 import org.astu.app.models.bulletInBoard.AnnouncementModel
 
@@ -18,6 +19,10 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
     private val model: AnnouncementModel = AnnouncementModel()
     var content: SnapshotStateList<AnnouncementSummaryContent> = mutableStateListOf()
 
+    private val unexpectedErrorTitle: String = "Ошибка"
+    private val unexpectedErrorBody: String = "Непредвиденная ошибка при загрузке ленты объявлений. Повторите попытку"
+    val errorDialogLabel: MutableState<String> = mutableStateOf(unexpectedErrorTitle)
+    val errorDialogBody: MutableState<String> = mutableStateOf(unexpectedErrorBody)
     val showErrorDialog: MutableState<Boolean> = mutableStateOf(false)
 
     init {
@@ -31,12 +36,27 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
                 content.clear()
 
                 val announcements = model.getAnnouncementList()
-                content.addAll(announcements)
+                if (announcements.isContentValid) {
+                    content.addAll(announcements.content!!)
+                } else {
+                    constructErrorDialogContent(announcements.error)
+                    showErrorDialog.value = true
+                }
 
                 mutableState.value = State.LoadingDone
             } catch (e: Exception) {
+                constructErrorDialogContent()
                 showErrorDialog.value = true
             }
+        }
+    }
+
+
+
+    private fun constructErrorDialogContent(error: GetPostedAnnouncementListErrors? = null) {
+        errorDialogBody.value = when (error) {
+            GetPostedAnnouncementListErrors.PostedAnnouncementsListAccessForbidden -> "У вас недостаточно прав для просмотра доски объявлений"
+            else -> unexpectedErrorBody
         }
     }
 }

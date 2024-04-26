@@ -38,6 +38,19 @@ fun TreeDropDown(
         .padding(vertical = 8.dp),
     title: @Composable () -> Unit,
 ) {
+    TreeDropDown(listOf(rootNode), levelIndent, modifier, title)
+}
+
+@Composable
+fun TreeDropDown(
+    rootNodes: List<INode>,
+    levelIndent: Dp = 16.dp,
+    modifier: Modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
+        .padding(vertical = 8.dp),
+    title: @Composable () -> Unit,
+) {
     var isExpanded by remember { mutableStateOf(false) }
     var currentRotation by remember { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotation) }
@@ -93,7 +106,7 @@ fun TreeDropDown(
             ),
             exit = slideOutVertically() + shrinkVertically() + fadeOut()
         ) {
-            PlaceNode(rootNode, levelIndent)
+            rootNodes.forEach { rootNode -> PlaceNode(rootNode, levelIndent) }
         }
     }
 }

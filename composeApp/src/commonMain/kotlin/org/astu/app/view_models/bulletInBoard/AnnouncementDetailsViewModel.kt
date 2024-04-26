@@ -14,6 +14,7 @@ import org.astu.app.components.bulletinBoard.attachments.surveys.common.models.S
 import org.astu.app.components.bulletinBoard.attachments.surveys.questions.models.QuestionContentBase
 import org.astu.app.components.bulletinBoard.attachments.surveys.questions.models.VotedQuestionContent
 import org.astu.app.components.bulletinBoard.common.models.UserSummary
+import org.astu.app.dataSources.bulletInBoard.announcements.common.responses.GetAnnouncementDetailsErrors
 import org.astu.app.entities.bulletInBoard.announcement.details.AnnouncementDetailsContent
 import org.astu.app.models.bulletInBoard.AnnouncementModel
 import org.astu.app.models.bulletInBoard.entities.announcements.AnnouncementDetails
@@ -39,7 +40,11 @@ class AnnouncementDetailsViewModel (
     lateinit var content: MutableState<AnnouncementDetailsContent>
     private var contentInitialized: Boolean = false
 
-    var showErrorDialog: MutableState<Boolean> = mutableStateOf(false)
+    private val unexpectedErrorTitle: String = "Ошибка"
+    private val unexpectedErrorBody: String = "Непредвиденная ошибка при загрузке подробностей объявления. Повторите попытку"
+    val errorDialogLabel: MutableState<String> = mutableStateOf(unexpectedErrorTitle)
+    val errorDialogBody: MutableState<String> = mutableStateOf(unexpectedErrorBody)
+    val showErrorDialog: MutableState<Boolean> = mutableStateOf(false)
 
     init {
         mutableState.value = State.Loading
@@ -49,14 +54,25 @@ class AnnouncementDetailsViewModel (
     fun loadDetails() {
         screenModelScope.launch {
             try {
+                val details = model.getDetails(announcementId)
+                if (!details.isContentValid) {
+                    constructErrorDialogContent(details.error)
+                    showErrorDialog.value = true
+                    return@launch
+                }
+
+                val detailsViewModel = toViewModel(details.content!!) // так как выше проверка на валидность, которая включает проверку content на not null
                 if (contentInitialized) {
-                    content.value = toViewModel(model.getDetails(announcementId))
+                    content.value = detailsViewModel
                 } else {
-                    content = mutableStateOf(toViewModel(model.getDetails(announcementId)))
+                    content = mutableStateOf(detailsViewModel)
+                    contentInitialized = true
                 }
                 mutableState.value = State.LoadingDone
+
             } catch (e: Exception) {
                 showErrorDialog.value = true
+                constructErrorDialogContent()
             }
         }
     }
@@ -112,6 +128,14 @@ class AnnouncementDetailsViewModel (
     private fun answersToViewModel(answers: List<AnswerDetails>, audienceSize: Int): List<VotedAnswerContentDetails> {
         return answers.map {
             VotedAnswerContentDetails(it.content, calculateViewsCountPercent(it.votersAmount, audienceSize), null)
+        }
+    }
+
+    private fun constructErrorDialogContent(error: GetAnnouncementDetailsErrors? = null) {
+        errorDialogBody.value = when (error) {
+            GetAnnouncementDetailsErrors.DetailsAccessForbidden -> "У вас недостаточно прав для просмотра подробностей этого объявления"
+            GetAnnouncementDetailsErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
+            else -> unexpectedErrorBody
         }
     }
 }

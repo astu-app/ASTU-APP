@@ -16,7 +16,7 @@ import org.astu.app.theme.CurrentColorScheme
 
 @Composable
 fun SelectAudienceSection(
-    rootNode: INode,
+    rootNodes: List<INode>,
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .wrapContentHeight()
@@ -27,7 +27,7 @@ fun SelectAudienceSection(
     ) {
         Column(modifier = Modifier.padding(all = 16.dp)) {
             TreeDropDown(
-                rootNode = rootNode,
+                rootNodes = rootNodes,
                 title = { Text("Аудитория") }
             )
         }
