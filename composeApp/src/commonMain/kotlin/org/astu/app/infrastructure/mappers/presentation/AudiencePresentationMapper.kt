@@ -1,4 +1,4 @@
-package org.astu.app.infrastructure.mappers
+package org.astu.app.infrastructure.mappers.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +19,12 @@ import org.astu.app.models.bulletInBoard.entities.audience.AudienceHierarchy
 import org.astu.app.models.bulletInBoard.entities.audience.User
 import org.astu.app.models.bulletInBoard.entities.audience.UserGroup
 
-class AudienceMapper(
+/**
+ * Класс, преобразующий иерархию аудитории объявления в формат представления
+ * @param audienceHierarchy аудитория объявления в иерархичной форме
+ * @param selectedMemberIds массив с идентификаторами пользователей, в который идентификаторы добавляются или удаляются при нажатии соответствующих графических элементов
+ */
+class AudiencePresentationMapper(
     private val audienceHierarchy: AudienceHierarchy,
     private val selectedMemberIds: MutableSet<Uuid>
 ) {

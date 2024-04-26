@@ -10,10 +10,10 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.astu.app.components.bulletinBoard.attachments.files.models.AttachFileSummary
 import org.astu.app.entities.bulletInBoard.audienceGraph.INode
-import org.astu.app.infrastructure.mappers.AudienceMapper
+import org.astu.app.infrastructure.mappers.presentation.AudiencePresentationMapper
+import org.astu.app.infrastructure.utils.dateTime.getDateString
+import org.astu.app.infrastructure.utils.dateTime.getTimeString
 import org.astu.app.models.bulletInBoard.entities.audience.AudienceHierarchy
-import org.astu.app.utils.dateTime.getDateString
-import org.astu.app.utils.dateTime.getTimeString
 import kotlin.time.Duration
 
 class CreateAnnouncementContent(audienceHierarchy: AudienceHierarchy) {
@@ -67,7 +67,7 @@ class CreateAnnouncementContent(audienceHierarchy: AudienceHierarchy) {
         files[1] = AttachFileSummary("Презентация.pptx", "20 мб") { files.remove(1) }
         files[2] = AttachFileSummary("Таблица.xlsx", "20 мб") { files.remove(2) }
 
-        val audienceMapper = AudienceMapper(audienceHierarchy, selectedUserIds)
+        val audienceMapper = AudiencePresentationMapper(audienceHierarchy, selectedUserIds)
         audienceRoots = audienceMapper.mapAudienceHierarchy()
     }
 }

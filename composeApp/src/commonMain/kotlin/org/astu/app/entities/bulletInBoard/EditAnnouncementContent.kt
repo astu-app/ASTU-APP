@@ -13,8 +13,8 @@ import org.astu.app.components.bulletinBoard.attachments.surveys.common.models.S
 import org.astu.app.components.bulletinBoard.common.models.UserGroupStorage
 import org.astu.app.entities.bulletInBoard.announcement.creation.NewSurvey
 import org.astu.app.entities.bulletInBoard.audienceGraph.INode
-import org.astu.app.utils.dateTime.getDateString
-import org.astu.app.utils.dateTime.getTimeString
+import org.astu.app.infrastructure.utils.dateTime.getDateString
+import org.astu.app.infrastructure.utils.dateTime.getTimeString
 import kotlin.time.Duration
 
 class EditAnnouncementContent(

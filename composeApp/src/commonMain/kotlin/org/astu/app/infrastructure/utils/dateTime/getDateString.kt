@@ -1,4 +1,4 @@
-package org.astu.app.utils.dateTime
+package org.astu.app.infrastructure.utils.dateTime
 
 import kotlinx.datetime.*
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
