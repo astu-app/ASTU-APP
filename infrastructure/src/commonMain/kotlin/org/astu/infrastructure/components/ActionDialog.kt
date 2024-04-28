@@ -1,4 +1,4 @@
-package org.astu.app.components
+package org.astu.infrastructure.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import org.astu.app.theme.CurrentColorScheme
+import org.astu.infrastructure.theme.CurrentColorScheme
 
 @Composable
 fun ActionDialog(

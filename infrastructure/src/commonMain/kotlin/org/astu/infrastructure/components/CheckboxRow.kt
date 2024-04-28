@@ -1,4 +1,4 @@
-package org.astu.app.components
+package org.astu.infrastructure.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

@@ -1,5 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose)
@@ -80,4 +78,12 @@ android {
         minSdk = 24
         targetSdk = 34
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+dependencies {
+    implementation(project(":features:bulletInBoardFeature"))
 }

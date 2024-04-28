@@ -1,4 +1,4 @@
-package org.astu.app.components
+package org.astu.infrastructure.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

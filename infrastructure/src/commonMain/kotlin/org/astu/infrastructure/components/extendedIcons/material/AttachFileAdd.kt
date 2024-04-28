@@ -1,4 +1,4 @@
-package org.astu.app.components.extendedIcons.material
+package org.astu.infrastructure.components.extendedIcons.material
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.Color

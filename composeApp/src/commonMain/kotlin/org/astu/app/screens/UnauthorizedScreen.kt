@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
-import androidx.compose.material.icons.filled.Login
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -15,10 +14,9 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import compose.icons.TablerIcons
 import compose.icons.tablericons.CalendarEvent
-import org.astu.infrastructure.UnitOfNavigationBar
 import org.astu.feature.schedule.screens.ScheduleScreen
+import org.astu.infrastructure.UnitOfNavigationBar
 import org.astu.infrastructure.components.NavigationBarScreens
-import org.astu.app.screens.bulletInBoard.BulletInBoardScreen
 
 class UnauthorizedScreen(onAuth: () -> Unit)  : Screen {
 
@@ -27,8 +25,7 @@ class UnauthorizedScreen(onAuth: () -> Unit)  : Screen {
             UnitOfNavigationBar(
                 label = { Text("Авторизация") },
                 icon = { Icon(Icons.AutoMirrored.Filled.Login, contentDescription = null) },
-//                screen = AuthScreen(onAuth) // todo
-                screen = BulletInBoardScreen()
+                screen = AuthScreen(onAuth)
             ),
             UnitOfNavigationBar(
                 label = { Text("Расписание") },

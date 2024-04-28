@@ -17,6 +17,3 @@ internal fun init() {
     val di = AppModule.init()
     GlobalDIContext.addModule(di)
 }
-
-expect fun makeHttpClient(): HttpClient
-

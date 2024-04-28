@@ -1,5 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose)
@@ -79,5 +77,10 @@ android {
     defaultConfig {
         minSdk = 24
         targetSdk = 34
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }

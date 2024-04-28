@@ -1,4 +1,4 @@
-package org.astu.app.components.dropdown
+package org.astu.infrastructure.components.dropdown
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import org.astu.app.theme.CurrentColorScheme
+import org.astu.infrastructure.theme.CurrentColorScheme
 
 @Composable
 fun DropDown(

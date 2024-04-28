@@ -7,7 +7,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
 class RootScreen : Screen {
-    private val hasAccess =  mutableStateOf(false)
+    private val hasAccess =  mutableStateOf(true) // todo заменить на false
 
     @Composable
     override fun Content() {

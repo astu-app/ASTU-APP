@@ -1,4 +1,4 @@
-package org.astu.app.components.common
+package org.astu.infrastructure.components.common
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
