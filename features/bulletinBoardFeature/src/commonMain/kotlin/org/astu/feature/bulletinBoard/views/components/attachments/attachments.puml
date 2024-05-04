@@ -1,0 +1,121 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+left to right direction
+
+interface DefaultModifierProvider {
+    getDefaultModifier(): Modifier
+}
+interface ContentProvider {
+    @Composable Content(modifier: Modifier)
+}
+
+enum AttachmentType {
+    FILE
+    SURVEY
+}
+
+abstract class AttachmentContentBase {
+    type: AttachmentType
+}
+ContentProvider <|.. AttachmentContentBase
+DefaultModifierProvider <|.. AttachmentContentBase
+AttachmentContentBase *-right- AttachmentType
+
+
+'''''''''''''''''''''''''''''''' ФАЙЛЫ
+rectangle Files {
+    abstract class FileContentBase {
+        name: String
+        size: String
+    }
+    AttachmentContentBase <|-- FileContentBase
+
+    class CurrentlyAttachedFileContent extends FileContentBase { }
+
+    enum FileDownloadStata {
+        NOT_DOWNLOADED
+        DOWNLOADING
+        DOWNLOADED
+    }
+
+    class AttachedFileContent extends FileContentBase {
+        id: Uuid
+        downloadState: FileDownloadStata
+    }
+    AttachedFileContent *-down- FileDownloadStata
+
+    class AttachedDetachableFileContent extends FileContentBase {
+        id: Uuid
+        {field} }onDetachRequest: () -> Unit)
+    }
+}
+
+'''''''''''''''''''''''''''''''' ОПРОСЫ
+rectangle Surveys {
+    ''''''''''''' Варианты ответов
+    abstract class AnswerContentBase{
+        text: String
+    }
+    ContentProvider <|.. AnswerContentBase
+    DefaultModifierProvider <|.. AnswerContentBase
+    class MultipleChoiceAnswerContent extends AnswerContentBase {
+        id: Uuid
+        selected: MutableState<Boolean>
+    }
+    class SingleChoiceAnswerContent extends AnswerContentBase {
+        id: Uuid
+    }
+
+    abstract class VotedAnswerContentBase extends AnswerContentBase {
+        id: Uuid
+        voterPercent: Int
+    }
+    class VotedAnswerContentSummary extends VotedAnswerContentBase {
+
+    }
+    class VotedAnswerContentDetails extends VotedAnswerContentBase {
+        votersRootNode: INode
+    }
+
+'    class CurrentlyCreatedAnswerContent extends AnswerContentBase {
+'    }
+
+    ''''''''''''' Вопросы
+    abstract class QuestionContentBase {
+        text: String
+        answers: List<AnswerContentBase>
+    }
+    ContentProvider <|.. QuestionContentBase
+    DefaultModifierProvider <|.. QuestionContentBase
+    AnswerContentBase *-right- QuestionContentBase
+
+    class MultipleChoiceQuestionContent extends QuestionContentBase {
+        id: Uuid
+    }
+    class SingleChoiceQuestionContent extends QuestionContentBase {
+        id: Uuid
+    }
+    class VotedQuestionContent extends QuestionContentBase {
+        id: Uuid
+    }
+'    class CurrentlyCreatedQuestionContent extends QuestionContentBase { }
+
+
+    ''''''''''''' Опросы
+    abstract class SurveyContentBase {
+        questions: List<QuestionContentBase>
+    }
+    AttachmentContentBase <|-- SurveyContentBase
+    QuestionContentBase *-- SurveyContentBase
+
+    class AttachedSurveyContent extends SurveyContentBase {
+        id: Uuid
+    }
+
+'    class CurrentlyCreatedSurveyContent extends SurveyContentBase {
+'        {field} onSurveyDeleteRequest: () -> Unit
+'    }
+}
+
+@enduml

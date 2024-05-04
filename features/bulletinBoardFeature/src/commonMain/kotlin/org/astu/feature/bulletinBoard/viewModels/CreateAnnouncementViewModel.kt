@@ -11,8 +11,8 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
-import org.astu.feature.bulletinBoard.models.dataSoruces.announcements.common.responses.CreateAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.userGroups.common.responses.GetUserHierarchyResponses
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyResponses
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
 import org.astu.feature.bulletinBoard.views.entities.announcement.creation.CreateAnnouncementContent
 
@@ -48,9 +48,9 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         mutableState.value = State.CreateContentLoading
         screenModelScope.launch {
             try {
-                val getResult = model.getCreateContent()
+                val getResult = model.getAudienceHierarchy()
                 if (getResult.isContentValid) {
-                    content.value = getResult.content // так как not-null заложен в isContentValid
+                    content.value = CreateAnnouncementContent(getResult.content!!) // так как not-null заложен в isContentValid
                     mutableState.value = State.CreatingAnnouncement
                     return@launch
                 }
@@ -115,7 +115,7 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
     }
 
     private fun getCategoryIds(): List<String> {
-        // todo
+        // todo прикрутить категории объявлений
         return emptyList()
     }
 

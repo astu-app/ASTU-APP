@@ -17,12 +17,12 @@ abstract class DropdownMenuContentBase(
             onClick = onInfoClick
         ),
         AnnouncementDropdownMenuItemContent(
-            name = "Остановить опрос объявление",
+            name = "Завершить опрос",
             icon = Icons.Outlined.StopCircle,
             onClick = onStopSurveyClick
         ),
         AnnouncementDropdownMenuItemContent(
-            name = "Удалить объявление",
+            name = "Удалить",
             icon = Icons.Outlined.Delete,
             onClick = onDeleteClick
         ),

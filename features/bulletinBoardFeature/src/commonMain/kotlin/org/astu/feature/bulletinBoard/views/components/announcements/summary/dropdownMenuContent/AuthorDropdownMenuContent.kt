@@ -15,7 +15,7 @@ class AuthorDropdownMenuContent(
         items.add(
             index = 1,
             element = AnnouncementDropdownMenuItemContent(
-                name = "Редактировать объявление",
+                name = "Редактировать",
                 icon = Icons.Outlined.Edit,
                 onClick = onEditClick,
             )
@@ -23,7 +23,7 @@ class AuthorDropdownMenuContent(
         items.add(
             index = 3,
             element = AnnouncementDropdownMenuItemContent(
-                name = "Скрыть объявление",
+                name = "Скрыть",
                 icon = Icons.Outlined.HideSource,
                 onClick = onHideClick,
             )

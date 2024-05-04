@@ -6,7 +6,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
-import org.astu.feature.bulletinBoard.models.dataSoruces.announcements.common.responses.GetPostedAnnouncementListErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 
 class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(State.Loading) {

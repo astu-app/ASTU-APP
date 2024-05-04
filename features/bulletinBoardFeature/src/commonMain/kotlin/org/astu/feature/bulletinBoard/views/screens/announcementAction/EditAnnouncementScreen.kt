@@ -19,6 +19,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.viewModels.EditAnnouncementViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.editing.AnnouncementEditor
+import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
 
@@ -28,7 +29,7 @@ class EditAnnouncementScreen(
 ) : Screen {
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel { EditAnnouncementViewModel(announcementId) }
+        val viewModel = rememberScreenModel { EditAnnouncementViewModel(announcementId, onReturn) }
         val editor = AnnouncementEditor(viewModel)
 
         AnnouncementActionScreenScaffold (
@@ -69,10 +70,28 @@ class EditAnnouncementScreen(
         ) {
             val state by viewModel.state.collectAsState()
             when(state) {
-                EditAnnouncementViewModel.State.Loading -> Loading()
-                EditAnnouncementViewModel.State.LoadingDone -> editor.Content(editor.getDefaultModifier())
-                EditAnnouncementViewModel.State.Error -> TODO()
+                EditAnnouncementViewModel.State.EditContentLoading -> Loading()
+                EditAnnouncementViewModel.State.EditingAnnouncement -> editor.Content(editor.getDefaultModifier())
+                EditAnnouncementViewModel.State.EditContentLoadingError -> showErrorDialog(viewModel)
+                EditAnnouncementViewModel.State.ChangesUploading -> Loading()
+                EditAnnouncementViewModel.State.ChangesUploadingDone -> onReturn()
+                EditAnnouncementViewModel.State.ChangesUploadingError -> showErrorDialog(viewModel)
+            }
+
+            if (viewModel.showErrorDialog.value) {
+                ActionFailedDialog(
+                    label = viewModel.errorDialogLabel.value,
+                    body = viewModel.errorDialogBody.value,
+                    onTryAgainRequest = viewModel.onErrorDialogTryAgain.value,
+                    onDismissRequest = viewModel.onErrorDialogDismiss.value
+                )
             }
         }
+    }
+
+
+
+    private fun showErrorDialog(viewModel: EditAnnouncementViewModel) {
+        viewModel.showErrorDialog.value = true
     }
 }

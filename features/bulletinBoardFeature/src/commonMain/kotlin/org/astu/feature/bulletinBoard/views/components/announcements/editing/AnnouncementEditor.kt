@@ -8,27 +8,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.astu.feature.bulletinBoard.viewModels.EditAnnouncementViewModel
-import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachFilesSection
-import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachSurveySection
-import org.astu.feature.bulletinBoard.views.components.announcements.common.DelayedMomentPicker
-import org.astu.feature.bulletinBoard.views.components.announcements.common.SelectAudienceSection
+import org.astu.feature.bulletinBoard.views.components.announcements.common.*
 import org.astu.feature.bulletinBoard.views.components.announcements.details.AnnouncementDetailsHeader
 import org.astu.feature.bulletinBoard.views.entities.ContentProvider
 import org.astu.feature.bulletinBoard.views.entities.DefaultModifierProvider
-import org.astu.feature.bulletinBoard.views.entities.EditAnnouncementContent
 import org.astu.infrastructure.theme.CurrentColorScheme
 
 class AnnouncementEditor(
     private val viewModel: EditAnnouncementViewModel,
 ) : ContentProvider, DefaultModifierProvider {
-    private val announcement: EditAnnouncementContent = viewModel.content
-
-    fun canEdit(): Boolean {
-        return viewModel.canEdit()
-    }
+    fun canEdit(): Boolean =
+        viewModel.canEdit()
 
     @Composable
     override fun Content(modifier: Modifier) {
+        val announcementSnapshot = viewModel.content.value
+        if (announcementSnapshot == null || viewModel.state.value != EditAnnouncementViewModel.State.EditingAnnouncement)
+            return
+
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier,
@@ -48,38 +45,54 @@ class AnnouncementEditor(
                 ) {
                     // Заголовок
                     AnnouncementDetailsHeader(
-                        authorName = announcement.author,
-                        publicationMoment = announcement.publicationTimeString,
-                        viewed = announcement.viewed,
-                        viewedPercent = announcement.viewedPercent,
-                        audienceSize = announcement.audienceSize
+                        authorName = announcementSnapshot.author,
+                        publicationMoment = announcementSnapshot.publicationTimeString,
+                        viewed = announcementSnapshot.viewed,
+                        viewedPercent = announcementSnapshot.viewedPercent,
+                        audienceSize = announcementSnapshot.audienceSize
                     )
 
                     // Текст
                     OutlinedTextField(
-                        value = announcement.text.value,
-                        onValueChange = { announcement.text.value = it },
+                        value = announcementSnapshot.text.value,
+                        onValueChange = { announcementSnapshot.text.value = it },
                     )
 
                     // Отложенная публикация и сокрытие
-                    DelayedPublishingMomentSetter()
-                    DelayedHidingMomentSetter()
+                    DelayedMomentPicker(
+                        switchTitle = "Автоматическая публикация",
+                        delayedMomentEnabled = announcementSnapshot.delayedPublicationEnabled,
+                        dateMillis = announcementSnapshot.delayedPublicationDateMillis,
+                        dateString = announcementSnapshot.delayedPublicationDateString,
+                        timeHours = announcementSnapshot.delayedPublicationTimeHours,
+                        timeMinutes = announcementSnapshot.delayedPublicationTimeMinutes,
+                        timeString = announcementSnapshot.delayedPublicationTimeString,
+                    )
+                    DelayedMomentPicker(
+                        switchTitle = "Автоматическое сокрытие",
+                        delayedMomentEnabled = announcementSnapshot.delayedHidingEnabled,
+                        dateMillis = announcementSnapshot.delayedHidingDateMillis,
+                        dateString = announcementSnapshot.delayedHidingDateString,
+                        timeHours = announcementSnapshot.delayedHidingTimeHours,
+                        timeMinutes = announcementSnapshot.delayedHidingTimeMinutes,
+                        timeString = announcementSnapshot.delayedHidingTimeString,
+                    )
                 }
             }
 
             // Файлы
-            AttachFilesSection(announcement.files)
+            AttachFilesSection(announcementSnapshot.files)
 
             // Опрос
-            val attachedSurvey = announcement.attachedSurvey
+            val attachedSurvey = announcementSnapshot.attachedSurvey
             if (attachedSurvey != null) {
-                attachedSurvey.Content(attachedSurvey.getDefaultModifier())
+                AttachedSurveySection(attachedSurvey)
             } else {
-                AttachSurveySection(announcement.newSurvey)
+                AttachSurveySection(announcementSnapshot.newSurvey)
             }
 
             // Аудитория
-            SelectAudienceSection(listOf(announcement.audienceRoot))
+            SelectAudienceSection(announcementSnapshot.audienceRoots)
         }
     }
 
@@ -88,33 +101,5 @@ class AnnouncementEditor(
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(all = 8.dp)
-    }
-
-
-
-    @Composable
-    private fun DelayedPublishingMomentSetter() {
-        DelayedMomentPicker(
-            switchTitle = "Автоматическая публикация",
-            delayedMomentEnabled = announcement.delayedPublicationEnabled,
-            dateMillis = announcement.delayedPublicationDateMillis,
-            dateString = announcement.delayedPublicationDateString,
-            timeHours = announcement.delayedPublicationTimeHours,
-            timeMinutes = announcement.delayedPublicationTimeMinutes,
-            timeString = announcement.delayedPublicationTimeString,
-        )
-    }
-
-    @Composable
-    private fun DelayedHidingMomentSetter() {
-        DelayedMomentPicker(
-            switchTitle = "Автоматическое сокрытие",
-            delayedMomentEnabled = announcement.delayedHidingEnabled,
-            dateMillis = announcement.delayedHidingDateMillis,
-            dateString = announcement.delayedHidingDateString,
-            timeHours = announcement.delayedHidingTimeHours,
-            timeMinutes = announcement.delayedHidingTimeMinutes,
-            timeString = announcement.delayedHidingTimeString,
-        )
     }
 }

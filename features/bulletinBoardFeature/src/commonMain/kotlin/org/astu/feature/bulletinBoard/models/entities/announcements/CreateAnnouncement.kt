@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 /**
+ * Объект содержит контент для создания объявления
  * @param content Текстовое содержимое объявления
  * @param userIds Идентификаторы пользователей, для которых создается объявление
  * @param attachmentIds Идентификаторы категорий объявлений

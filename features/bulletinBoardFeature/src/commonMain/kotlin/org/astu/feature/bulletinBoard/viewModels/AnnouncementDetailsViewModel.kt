@@ -7,7 +7,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
-import org.astu.feature.bulletinBoard.models.dataSoruces.announcements.common.responses.GetAnnouncementDetailsErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.file.File
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.AnswerDetails
@@ -16,13 +16,13 @@ import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details
 import org.astu.feature.bulletinBoard.models.entities.audience.User
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeFileSize
-import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentBase
+import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
+import org.astu.feature.bulletinBoard.views.components.attachments.files.models.AttachedFileContent
 import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileDownloadState
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileSummary
-import org.astu.feature.bulletinBoard.views.components.attachments.surveys.answers.models.VotedAnswerContentDetails
-import org.astu.feature.bulletinBoard.views.components.attachments.surveys.common.models.SurveyContent
-import org.astu.feature.bulletinBoard.views.components.attachments.surveys.questions.models.QuestionContentBase
-import org.astu.feature.bulletinBoard.views.components.attachments.surveys.questions.models.VotedQuestionContent
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.VotedAnswerContentDetails
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.QuestionContentBase
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.VotedQuestionContent
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.details.AnnouncementDetailsContent
 import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
 import kotlin.math.roundToInt
@@ -92,6 +92,9 @@ class AnnouncementDetailsViewModel (
     }
 
     private fun calculateViewsCountPercent(views: Int, audienceSize: Int): Int {
+        if (audienceSize == 0)
+            return 0
+
         return (views.toDouble() / audienceSize).roundToInt()
     }
 
@@ -99,11 +102,11 @@ class AnnouncementDetailsViewModel (
         return audience.map { UserSummary(it.id, it.firstName, it.secondName, it.patronymic) }
     }
 
-    private fun attachmentsToViewModel(files: List<File>, surveys: List<SurveyDetails>, audienceSize: Int): List<AttachmentBase> {
-        val attachments = mutableListOf<AttachmentBase>()
+    private fun attachmentsToViewModel(files: List<File>, surveys: List<SurveyDetails>, audienceSize: Int): List<AttachmentContentBase> {
+        val attachments = mutableListOf<AttachmentContentBase>()
         files.forEach {
             // todo получение состояния загрузки файла
-            attachments.add(FileSummary(it.id, it.name, humanizeFileSize(it.sizeInBytes), mutableStateOf(
+            attachments.add(AttachedFileContent(it.id, it.name, humanizeFileSize(it.sizeInBytes), mutableStateOf(
                 FileDownloadState.DOWNLOADED)))
         }
 
@@ -113,8 +116,8 @@ class AnnouncementDetailsViewModel (
         return attachments
     }
 
-    private fun surveyToViewModel(survey: SurveyDetails, audienceSize: Int): SurveyContent {
-        return SurveyContent(questionsToViewModel(survey.questions, audienceSize))
+    private fun surveyToViewModel(survey: SurveyDetails, audienceSize: Int): AttachedSurveyContent {
+        return AttachedSurveyContent(survey.id, questionsToViewModel(survey.questions, audienceSize))
     }
 
     private fun questionsToViewModel(questions: List<QuestionDetails>, audienceSize: Int): List<QuestionContentBase> {
@@ -128,7 +131,7 @@ class AnnouncementDetailsViewModel (
 
     private fun answersToViewModel(answers: List<AnswerDetails>, audienceSize: Int): List<VotedAnswerContentDetails> {
         return answers.map {
-            VotedAnswerContentDetails(it.content, calculateViewsCountPercent(it.votersAmount, audienceSize), null)
+            VotedAnswerContentDetails(it.id, it.content, calculateViewsCountPercent(it.votersAmount, audienceSize), null)
         }
     }
 

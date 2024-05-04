@@ -17,7 +17,8 @@ import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import kotlinx.coroutines.launch
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.AttachFileSummary
+import org.astu.feature.bulletinBoard.views.components.attachments.files.models.CurrentlyAttachedFileContent
+import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileContentBase
 import org.astu.infrastructure.components.common.getButtonColors
 import org.astu.infrastructure.components.extendedIcons.material.AttachFileAdd
 import org.astu.infrastructure.theme.CurrentColorScheme
@@ -27,7 +28,7 @@ import org.astu.infrastructure.theme.CurrentColorScheme
  * @param files словарь файлов в формате fileId : file
  */
 @Composable
-fun AttachFilesSection(files: SnapshotStateMap<Int, AttachFileSummary>) {
+fun AttachFilesSection(files: SnapshotStateMap<Int, FileContentBase>) {
     var lastFileId = remember { files.size }
 
     val scope = rememberCoroutineScope()
@@ -41,7 +42,7 @@ fun AttachFilesSection(files: SnapshotStateMap<Int, AttachFileSummary>) {
                 pickedFiles.firstOrNull()?.let { file ->
                     // Do something with the selected file
                     // You can get the ByteArray of the file
-                    files[id] = AttachFileSummary(
+                    files[id] = CurrentlyAttachedFileContent(
                         name = file.getName(context) ?: "name",
                         size = "size",
                     ) {

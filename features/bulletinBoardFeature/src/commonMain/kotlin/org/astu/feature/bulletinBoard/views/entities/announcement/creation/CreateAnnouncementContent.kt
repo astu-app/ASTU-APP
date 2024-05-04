@@ -9,11 +9,12 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.astu.feature.bulletinBoard.models.entities.audience.AudienceHierarchy
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.AttachFileSummary
+import org.astu.feature.bulletinBoard.views.components.attachments.files.models.CurrentlyAttachedFileContent
+import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileContentBase
 import org.astu.feature.bulletinBoard.views.dateTime.getDateString
 import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
-import org.astu.feature.bulletinBoard.views.mappers.AudiencePresentationMapper
+import org.astu.feature.bulletinBoard.views.entities.audienceGraph.mappers.AudiencePresentationMapper
 import kotlin.time.Duration
 
 class CreateAnnouncementContent(audienceHierarchy: AudienceHierarchy) {
@@ -35,7 +36,7 @@ class CreateAnnouncementContent(audienceHierarchy: AudienceHierarchy) {
     var delayedHidingTimeMinutes: MutableState<Int> = mutableStateOf(0)
     var delayedHidingTimeString: MutableState<String>
 
-    var files: SnapshotStateMap<Int, AttachFileSummary> = mutableStateMapOf()
+    var files: SnapshotStateMap<Int, FileContentBase> = mutableStateMapOf()
     var survey: MutableState<NewSurvey?> = mutableStateOf(null)
 
     val audienceRoots: List<INode>
@@ -63,9 +64,9 @@ class CreateAnnouncementContent(audienceHierarchy: AudienceHierarchy) {
         delayedHidingTimeString =
             mutableStateOf(getTimeString(delayedHidingTimeHours.value, delayedHidingTimeMinutes.value))
 
-        files[0] = AttachFileSummary("Документ.docx", "20 мб") { files.remove(0) }
-        files[1] = AttachFileSummary("Презентация.pptx", "20 мб") { files.remove(1) }
-        files[2] = AttachFileSummary("Таблица.xlsx", "20 мб") { files.remove(2) }
+        files[0] = CurrentlyAttachedFileContent("Документ.docx", "20 мб") { files.remove(0) }
+        files[1] = CurrentlyAttachedFileContent("Презентация.pptx", "20 мб") { files.remove(1) }
+        files[2] = CurrentlyAttachedFileContent("Таблица.xlsx", "20 мб") { files.remove(2) }
 
         val audienceMapper = AudiencePresentationMapper(audienceHierarchy, selectedUserIds)
         audienceRoots = audienceMapper.mapAudienceHierarchy()

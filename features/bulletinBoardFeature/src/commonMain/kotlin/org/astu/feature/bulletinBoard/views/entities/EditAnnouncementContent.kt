@@ -5,73 +5,133 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.benasher44.uuid.Uuid
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.AttachFileSummary
-import org.astu.feature.bulletinBoard.views.components.attachments.surveys.common.models.SurveyContent
+import kotlinx.datetime.*
+import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
+import org.astu.feature.bulletinBoard.models.entities.audience.SelectableUser
+import org.astu.feature.bulletinBoard.models.entities.audience.getUserGroupHierarchyMembers
+import org.astu.feature.bulletinBoard.views.components.attachments.files.models.AttachedDetachableFileContent
+import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileContentBase
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.dateTime.getDateString
+import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeFromEpochMillis
+import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeString
 import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
 import org.astu.feature.bulletinBoard.views.entities.announcement.creation.NewSurvey
+import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentMappers.toPresentations
+import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentMappers.votedSurveyToPresentation
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
+import org.astu.feature.bulletinBoard.views.entities.audienceGraph.mappers.AudiencePresentationMapper
+import kotlin.math.round
+import kotlin.math.roundToInt
 import kotlin.time.Duration
 
-class EditAnnouncementContent(
-    val id: Uuid,
-    val author: String = "Белов Сергей Валерьевич",
-    val publicationTimeString: String = "Опубликовано 15 фев 15:50",
-    val viewed: Int = 145,
-    val viewedPercent: Int = 48,
-    val audienceSize: Int = 300,
-    var text: MutableState<String> = mutableStateOf("Boulder persian newsletter northwest flavor possess painting, mobility caused internship hypothetical closest change breakdown, fork accepts browsing running finally sensors cet, plan basically waters sent."),
+class EditAnnouncementContent(private val editContent: ContentForAnnouncementEditing) {
+    val id: Uuid = editContent.id
+    val author: String = editContent.authorName
+    lateinit var publicationTimeString: String
+    val viewed: Int = editContent.viewsCount
+    val viewedPercent: Int = round(editContent.viewsCount * 1f / editContent.audienceSize).roundToInt()
+    val audienceSize: Int = editContent.audienceSize
+    var text: MutableState<String> = mutableStateOf(editContent.content)
 
-) {
-    val delayedPublicationEnabled: MutableState<Boolean> = mutableStateOf(false)
-    var delayedPublicationDateMillis: MutableState<Long>
-    var delayedPublicationDateString: MutableState<String>
+    val delayedPublicationEnabled: MutableState<Boolean> = mutableStateOf(editContent.delayedPublishingAt != null)
+    lateinit var delayedPublicationDateMillis: MutableState<Long>
+    lateinit var delayedPublicationDateString: MutableState<String>
 
-    var delayedPublicationTimeHours: MutableState<Int>
-    var delayedPublicationTimeMinutes: MutableState<Int> = mutableStateOf(0)
-    var delayedPublicationTimeString: MutableState<String>
+    lateinit var delayedPublicationTimeHours: MutableState<Int>
+    lateinit var delayedPublicationTimeMinutes: MutableState<Int>
+    lateinit var delayedPublicationTimeString: MutableState<String>
+    val delayedPublicationAt: LocalDateTime?
+        get() {
+            val date = getDateTimeFromEpochMillis(delayedPublicationDateMillis.value)
+            val time = LocalTime(delayedPublicationTimeHours.value, delayedPublicationTimeMinutes.value)
+            return LocalDateTime(date.date, time)
+        }
 
-    val delayedHidingEnabled: MutableState<Boolean> = mutableStateOf(false)
-    var delayedHidingDateMillis: MutableState<Long>
-    var delayedHidingDateString: MutableState<String>
+    val delayedHidingEnabled: MutableState<Boolean> = mutableStateOf(editContent.delayedHidingAt != null)
+    lateinit var delayedHidingDateMillis: MutableState<Long>
+    lateinit var delayedHidingDateString: MutableState<String>
 
-    var delayedHidingTimeHours: MutableState<Int>
-    var delayedHidingTimeMinutes: MutableState<Int> = mutableStateOf(0)
-    var delayedHidingTimeString: MutableState<String>
+    lateinit var delayedHidingTimeHours: MutableState<Int>
+    lateinit var delayedHidingTimeMinutes: MutableState<Int>
+    lateinit var delayedHidingTimeString: MutableState<String>
+    val delayedHidingAt: LocalDateTime?
+        get() {
+            val date = getDateTimeFromEpochMillis(delayedHidingDateMillis.value)
+            val time = LocalTime(delayedHidingTimeHours.value, delayedHidingTimeMinutes.value)
+            return LocalDateTime(date.date, time)
+        }
 
-    val files: SnapshotStateMap<Int, AttachFileSummary> = mutableStateMapOf()
-    var attachedSurvey: SurveyContent? = null
+    val files: SnapshotStateMap<Int, FileContentBase>
+    val attachedSurvey: AttachedSurveyContent?
     var newSurvey: MutableState<NewSurvey?> = mutableStateOf(null)
 
-    val audienceRoot: INode = UserGroupStorage.makeSelectableAudience()
+    val audienceRoots: List<INode>
+    val selectedUserIds: MutableSet<Uuid>
 
 
     init {
-        val now = Clock.System.now()
-        val nowMillis = now.toEpochMilliseconds()
-        delayedPublicationDateMillis = mutableStateOf(nowMillis)
-        delayedPublicationDateString = mutableStateOf(getDateString(delayedPublicationDateMillis.value))
+        setPublicationTimeString()
+        setDelayedMoments()
 
-        val tomorrow = now + Duration.parse("1d")
-        val tomorrowMillis = tomorrow.toEpochMilliseconds()
-        delayedHidingDateMillis = mutableStateOf(tomorrowMillis)
+        files = mutableStateMapOf()
+        var fileSerial = 0
+        files.putAll(editContent.files
+            .toPresentations()
+            .associateBy ({ fileSerial++ }, { it as AttachedDetachableFileContent })
+        )
+
+        attachedSurvey = editContent.surveys?.elementAtOrNull(0)?.votedSurveyToPresentation() as AttachedSurveyContent?
+
+        selectedUserIds = editContent.audienceHierarchy.roots
+            .flatMap {
+                it
+                    .getUserGroupHierarchyMembers()
+                    .filter { (it as SelectableUser).isSelected }
+                    .map { it.id }
+            }.toMutableSet()
+
+        val audienceMapper = AudiencePresentationMapper(editContent.audienceHierarchy, selectedUserIds)
+        audienceRoots = audienceMapper.mapAudienceHierarchy()
+    }
+
+    private fun setPublicationTimeString() {
+        if (editContent.publishedAt == null) {
+            publicationTimeString = "Еще не опубликовано"
+        } else {
+            publicationTimeString = "Опубликовано ${getDateTimeString(editContent.publishedAt)}"
+        }
+    }
+
+    private fun setDelayedMoments() {
+        val now = Clock.System.now()
+
+        // Момент отложенной публикации. В качестве момента отложенной публикации кстанавливаем текущий момент времени,
+        // если отложенная публикация не была задана.
+        val delayedPublishingAt = editContent.delayedPublishingAt?.toInstant(TimeZone.currentSystemDefault()) ?: now
+        val delayedPublicationDateMillis = delayedPublishingAt.toEpochMilliseconds()
+        this.delayedPublicationDateMillis = mutableStateOf(delayedPublicationDateMillis)
+        delayedPublicationDateString = mutableStateOf(getDateString(this.delayedPublicationDateMillis.value))
+
+        // День, следующий за днем отложенной публикации.
+        val nextDayAfterDelayedPublication = delayedPublishingAt + Duration.parse("1d")
+        val nextDayAfterDelayedPublicationMillis = nextDayAfterDelayedPublication.toEpochMilliseconds()
+        delayedHidingDateMillis = mutableStateOf(nextDayAfterDelayedPublicationMillis)
         delayedHidingDateString = mutableStateOf(getDateString(delayedHidingDateMillis.value))
 
+        // Если момент отложенной публикации или момент отложенного сокрытия не задан, то в час этих моментов
+        // устанавливаем час, следующий за текущим моментом времени
         val hourLater = now + Duration.parse("1h")
+        val hourLaterValue = hourLater.toLocalDateTime(TimeZone.currentSystemDefault()).hour
 
-        delayedPublicationTimeHours = mutableStateOf(hourLater.toLocalDateTime(TimeZone.currentSystemDefault()).hour)
+        delayedPublicationTimeHours = mutableStateOf(editContent.delayedPublishingAt?.hour ?: hourLaterValue)
+        delayedPublicationTimeMinutes = mutableStateOf(editContent.delayedPublishingAt?.minute ?: 0)
         delayedPublicationTimeString =
             mutableStateOf(getTimeString(delayedPublicationTimeHours.value, delayedPublicationTimeMinutes.value))
 
-        delayedHidingTimeHours = delayedPublicationTimeHours
+        delayedHidingTimeHours = mutableStateOf(editContent.delayedHidingAt?.hour ?: hourLaterValue)
+        delayedHidingTimeMinutes = mutableStateOf(editContent.delayedHidingAt?.minute ?: 0)
         delayedHidingTimeString =
             mutableStateOf(getTimeString(delayedHidingTimeHours.value, delayedHidingTimeMinutes.value))
-
-        files[0] = AttachFileSummary("Документ.docx", "20 мб") { files.remove(0) }
-        files[1] = AttachFileSummary("Презентация.pptx", "20 мб") { files.remove(1) }
-        files[2] = AttachFileSummary("Таблица.xlsx", "20 мб") { files.remove(2) }
     }
 }

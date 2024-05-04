@@ -104,7 +104,9 @@ fun TreeDropDown(
                 // Fade in with the initial alpha of 0.3f.
                 initialAlpha = 0.3f
             ),
-            exit = slideOutVertically() + shrinkVertically() + fadeOut()
+            exit = slideOutVertically() + shrinkVertically() + fadeOut(),
+            // offset используется для того, чтобы первый элемент дерева был на одном уровне с заголовком дерева
+            modifier = Modifier.offset(x = -levelIndent)
         ) {
             rootNodes.forEach { rootNode -> PlaceNode(rootNode, levelIndent) }
         }
@@ -124,7 +126,7 @@ private fun PlaceNode(
     ) {
         DropDownMenuItem(node.content)
         if (node is Node) {
-            node.nodes.forEach { PlaceNode(it, indent) }
+            node.children.forEach { PlaceNode(it, indent) }
         }
     }
 }

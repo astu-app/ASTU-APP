@@ -1,8 +1,8 @@
 package org.astu.feature.bulletinBoard.models.repositories
 
-import org.astu.feature.bulletinBoard.models.dataSoruces.common.responses.ContentWithError
-import org.astu.feature.bulletinBoard.models.dataSoruces.userGroups.announcementAudience.ApiAnnouncementAudienceDataSource
-import org.astu.feature.bulletinBoard.models.dataSoruces.userGroups.common.responses.GetUserHierarchyResponses
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.ApiAnnouncementAudienceDataSource
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyResponses
 import org.astu.feature.bulletinBoard.models.entities.audience.AudienceHierarchy
 
 

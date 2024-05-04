@@ -2,13 +2,14 @@ package org.astu.feature.bulletinBoard.views.components.announcements.details
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.astu.feature.bulletinBoard.views.components.attachments.Attachment
-import org.astu.feature.bulletinBoard.views.entities.UserStorage
 import org.astu.feature.bulletinBoard.views.entities.announcement.details.AnnouncementDetailsContent
+import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
 import org.astu.infrastructure.components.dropdown.DropDown
 import org.astu.infrastructure.theme.CurrentColorScheme
 
@@ -50,7 +51,7 @@ fun AnnouncementDetails(
 
         DropDown(
             details.audience.map {
-                UserStorage.makeStaticUserText(it)
+                makeStaticUserText(it)
             }
         ) {
             Text(
@@ -64,7 +65,7 @@ fun AnnouncementDetails(
 }
 
 @Composable
-private inline fun AddDivider() {
+private fun AddDivider() {
     HorizontalDivider(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,4 +73,22 @@ private inline fun AddDivider() {
         thickness = 1.dp,
         color = CurrentColorScheme.outlineVariant
     )
+}
+
+private fun makeStaticUserText(user: UserSummary, modifier: Modifier = Modifier): @Composable () -> Unit {
+    return {
+        Column(modifier = modifier) {
+            Text(
+                text = user.firstName
+            )
+            val secondPartOfName =
+                if (user.patronymic != null)
+                    "${user.secondName} ${user.patronymic}"
+                else user.secondName
+            Text(
+                text = secondPartOfName,
+                style = MaterialTheme.typography.labelMedium,
+            )
+        }
+    }
 }
