@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.astu.feature.bulletinBoard.viewModels.CreateAnnouncementViewModel
+import org.astu.feature.bulletinBoard.viewModels.announcements.CreateAnnouncementViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachFilesSection
 import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachSurveySection
 import org.astu.feature.bulletinBoard.views.components.announcements.common.DelayedMomentPicker

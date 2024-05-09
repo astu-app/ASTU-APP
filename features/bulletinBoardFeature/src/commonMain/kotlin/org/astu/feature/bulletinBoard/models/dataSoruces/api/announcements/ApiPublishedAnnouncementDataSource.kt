@@ -31,16 +31,16 @@ class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
             return ContentWithError(null, error = readUnsuccessCode<GetPostedAnnouncementListErrors>(response))
         }
 
-        val announcements = response.body<Array<AnnouncementSummaryDto>>().map { a ->
+        val announcements = response.body<Array<AnnouncementSummaryDto>>().map { announcement ->
             AnnouncementSummary(
-                uuidFrom(a.id),
-                a.authorName,
-                a.publishedAt,
-                a.content,
-                a.viewsCount,
-                a.audienceSize,
-                a.files.toModels(),
-                a.surveys?.toModels() ?: emptyList()
+                id = uuidFrom(announcement.id),
+                author = announcement.authorName,
+                publicationTime = announcement.publishedAt,
+                text = announcement.content,
+                viewed = announcement.viewsCount,
+                audienceSize = announcement.audienceSize,
+                files = announcement.files.toModels(),
+                surveys = announcement.surveys?.toModels() ?: emptyList()
             )
         }
         return ContentWithError(announcements, null)

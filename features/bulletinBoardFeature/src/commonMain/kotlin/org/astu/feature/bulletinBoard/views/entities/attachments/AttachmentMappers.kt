@@ -36,11 +36,11 @@ object AttachmentMappers {
 
     /* *************************************** Survey *************************************** */
     fun SurveyDetails.votedSurveyToPresentation(): SurveyContentBase =
-        AttachedSurveyContent(this.id, mapVotedQuestions(this.questions, this.votersAmount))
+        AttachedSurveyContent(this.id, mapVotedQuestions(this.questions, this.votersAmount), this.isVotedByUser)
 
     @JvmName("SurveyDetailsToPresentation")
     fun SurveyDetails.toPresentation(): SurveyContentBase =
-        AttachedSurveyContent(this.id, mapQuestions(this.questions, this.votersAmount, this.voteFinishedAt != null))
+        AttachedSurveyContent(this.id, mapQuestions(this.questions, this.votersAmount, this.voteFinishedAt != null, this.isOpen), this.isVotedByUser)
 
     @JvmName("SurveyDetailsCollectionToPresentations")
     fun Collection<SurveyDetails>?.toPresentations(): List<AttachmentContentBase> =
@@ -50,49 +50,61 @@ object AttachmentMappers {
         questions: List<QuestionDetails>,
         surveyVotersAmount: Int,
     ): List<VotedQuestionContent> {
-        return questions.map { mapVotedQuestion(it, surveyVotersAmount) }
+        return questions
+            .sortedBy { question -> question.serial }
+            .map { mapVotedQuestion(it, surveyVotersAmount) }
     }
 
     fun mapQuestions(
         questions: List<QuestionDetails>,
         surveyVotersAmount: Int,
-        voteFinished: Boolean
+        voteFinished: Boolean,
+        isOpen: Boolean
     ): List<QuestionContentBase> {
-        return questions.map { question ->
-            if (voteFinished) {
-                mapVotedQuestion(question, surveyVotersAmount)
-            } else if (question.isMultipleChoiceAllowed) {
-                mapMultipleChoiceQuestion(question)
-            } else {
-                mapSingleChoiceQuestion(question)
-            }
-        }
+        return questions
+            .sortedBy { question -> question.serial }
+            .map { question ->
+                if (voteFinished || !isOpen) {
+                    mapVotedQuestion(question, surveyVotersAmount)
+                } else if (question.isMultipleChoiceAllowed) {
+                    mapMultipleChoiceQuestion(question)
+                } else {
+                    mapSingleChoiceQuestion(question)
+                }
+         }
     }
 
     fun mapVotedQuestion(question: QuestionDetails, surveyVotersAmount: Int): VotedQuestionContent {
-        val answers = question.answers.map { answer ->
-            VotedAnswerContentSummary(
-                answer.id,
-                answer.content,
-                calculateVotersPercentage(answer.votersAmount, surveyVotersAmount)
-            )
-        }
-        return VotedQuestionContent(question.content, answers)
+        val answers = question.answers
+            .sortedBy { answer -> answer.serial }
+            .map { answer ->
+                VotedAnswerContentSummary(
+                    answer.id,
+                    answer.content,
+                    calculateVotersPercentage(answer.votersAmount, surveyVotersAmount)
+                )
+            }
+        return VotedQuestionContent(question.id, question.content, answers)
     }
 
     fun mapMultipleChoiceQuestion(question: QuestionDetails): MultipleChoiceQuestionContent {
-        val answers = question.answers.map { answer ->
-            MultipleChoiceAnswerContent(
-                answer.id,
-                answer.content,
-                mutableStateOf(false)
-            )
-        }
-        return MultipleChoiceQuestionContent(question.content, answers)
+        val answers = question.answers
+            .sortedBy {answer -> answer.serial }
+            .map { answer ->
+                MultipleChoiceAnswerContent(
+                    answer.id,
+                    answer.content,
+                    mutableStateOf(answer.canVote),
+                    mutableStateOf(false)
+                )
+            }
+        return MultipleChoiceQuestionContent(question.id, question.content, answers)
     }
 
     fun mapSingleChoiceQuestion(question: QuestionDetails): SingleChoiceQuestionContent {
-        val answers = question.answers.map { answer -> SingleChoiceAnswerContent(answer.id, answer.content) }
-        return SingleChoiceQuestionContent(question.content, answers)
+        val answers = question.answers
+            .sortedBy {answer -> answer.serial }
+            .map { answer -> SingleChoiceAnswerContent(answer.id, answer.content, mutableStateOf(answer.canVote)) }
+        return SingleChoiceQuestionContent(question.id, question.content, answers)
     }
 }

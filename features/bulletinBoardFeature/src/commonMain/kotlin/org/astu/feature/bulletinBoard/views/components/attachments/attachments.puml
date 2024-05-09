@@ -55,20 +55,22 @@ rectangle Files {
 rectangle Surveys {
     ''''''''''''' Варианты ответов
     abstract class AnswerContentBase{
+            id: Uuid
         text: String
     }
     ContentProvider <|.. AnswerContentBase
     DefaultModifierProvider <|.. AnswerContentBase
-    class MultipleChoiceAnswerContent extends AnswerContentBase {
-        id: Uuid
+    abstract class UnvotedAnswerContentBase extends AnswerContentBase {
+        canVote: MutableState<Boolean>
+        isSelected(): Boolean
+    }
+    class MultipleChoiceAnswerContent extends UnvotedAnswerContentBase {
         selected: MutableState<Boolean>
     }
-    class SingleChoiceAnswerContent extends AnswerContentBase {
-        id: Uuid
+    class SingleChoiceAnswerContent extends UnvotedAnswerContentBase {
     }
 
     abstract class VotedAnswerContentBase extends AnswerContentBase {
-        id: Uuid
         voterPercent: Int
     }
     class VotedAnswerContentSummary extends VotedAnswerContentBase {
@@ -78,11 +80,9 @@ rectangle Surveys {
         votersRootNode: INode
     }
 
-'    class CurrentlyCreatedAnswerContent extends AnswerContentBase {
-'    }
-
     ''''''''''''' Вопросы
     abstract class QuestionContentBase {
+        id: Uuid
         text: String
         answers: List<AnswerContentBase>
     }
@@ -90,32 +90,26 @@ rectangle Surveys {
     DefaultModifierProvider <|.. QuestionContentBase
     AnswerContentBase *-right- QuestionContentBase
 
-    class MultipleChoiceQuestionContent extends QuestionContentBase {
-        id: Uuid
+    abstract class UnvotedQuestionContentBase extends QuestionContentBase {
     }
-    class SingleChoiceQuestionContent extends QuestionContentBase {
-        id: Uuid
+    class MultipleChoiceQuestionContent extends UnvotedQuestionContentBase {
+    }
+    class SingleChoiceQuestionContent extends UnvotedQuestionContentBase {
     }
     class VotedQuestionContent extends QuestionContentBase {
-        id: Uuid
     }
-'    class CurrentlyCreatedQuestionContent extends QuestionContentBase { }
 
 
     ''''''''''''' Опросы
     abstract class SurveyContentBase {
+        id: Uuid
         questions: List<QuestionContentBase>
     }
     AttachmentContentBase <|-- SurveyContentBase
     QuestionContentBase *-- SurveyContentBase
 
     class AttachedSurveyContent extends SurveyContentBase {
-        id: Uuid
     }
-
-'    class CurrentlyCreatedSurveyContent extends SurveyContentBase {
-'        {field} onSurveyDeleteRequest: () -> Unit
-'    }
 }
 
 @enduml

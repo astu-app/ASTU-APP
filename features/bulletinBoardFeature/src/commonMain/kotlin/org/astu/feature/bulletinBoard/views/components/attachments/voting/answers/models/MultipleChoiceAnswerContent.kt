@@ -15,11 +15,16 @@ import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
 
 class MultipleChoiceAnswerContent(
-    val id: Uuid,
+    id: Uuid,
     text: String,
+    canVote: MutableState<Boolean>,
     var selected: MutableState<Boolean> = mutableStateOf(false)
-) : AnswerContentBase(text)
+) : UnvotedAnswerContentBase(id, text, canVote)
 {
+    override fun isSelected(): Boolean {
+        return selected.value
+    }
+
     @Composable
     override fun Content(modifier: Modifier) {
         Row(
@@ -31,6 +36,7 @@ class MultipleChoiceAnswerContent(
                 onCheckedChange = {
                     selected.value = !selected.value
                 },
+                enabled = canVote.value,
             )
             Text(text)
         }

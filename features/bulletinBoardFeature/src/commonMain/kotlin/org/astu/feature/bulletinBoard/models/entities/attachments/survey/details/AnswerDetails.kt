@@ -7,4 +7,5 @@ data class AnswerDetails(
     val serial: Int,
     val content: String,
     val votersAmount: Int,
+    val canVote: Boolean,
 )

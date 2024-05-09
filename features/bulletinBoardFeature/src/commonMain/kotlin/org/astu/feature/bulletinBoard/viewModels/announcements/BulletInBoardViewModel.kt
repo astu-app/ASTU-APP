@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.viewModels
+package org.astu.feature.bulletinBoard.viewModels.announcements
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList

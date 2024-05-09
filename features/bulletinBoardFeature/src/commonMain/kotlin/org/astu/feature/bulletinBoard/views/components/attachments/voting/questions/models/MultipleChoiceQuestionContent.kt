@@ -8,12 +8,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.MultipleChoiceAnswerContent
 
 class MultipleChoiceQuestionContent(
+    id: Uuid,
     text: String,
     answers: List<MultipleChoiceAnswerContent>
-) : QuestionContentBase(text, answers) {
+) : UnvotedQuestionContentBase(id, text, answers) {
     @Composable
     override fun Content(modifier: Modifier) {
         Column(

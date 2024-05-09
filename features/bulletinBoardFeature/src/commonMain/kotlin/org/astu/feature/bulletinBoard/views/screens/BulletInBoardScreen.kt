@@ -1,20 +1,18 @@
 package org.astu.feature.bulletinBoard.views.screens
 
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.astu.feature.bulletinBoard.viewModels.BulletInBoardViewModel
+import org.astu.feature.bulletinBoard.viewModels.announcements.BulletInBoardViewModel
 import org.astu.feature.bulletinBoard.views.components.BulletInBoard
 import org.astu.feature.bulletinBoard.views.screens.announcementAction.CreateAnnouncementScreen
 import org.astu.infrastructure.components.ActionFailedDialog
@@ -25,9 +23,6 @@ class BulletInBoardScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { BulletInBoardViewModel() }
-
-        val scrollState = rememberScrollState()
-        LaunchedEffect(Unit) { scrollState.animateScrollTo(100) }
 
         val navigator = LocalNavigator.currentOrThrow
         Scaffold(
@@ -46,7 +41,7 @@ class BulletInBoardScreen : Screen {
             val state by viewModel.state.collectAsState()
             when(state) {
                 BulletInBoardViewModel.State.Loading -> Loading()
-                BulletInBoardViewModel.State.LoadingDone -> BulletInBoard(viewModel.content, scrollState)
+                BulletInBoardViewModel.State.LoadingDone -> BulletInBoard(viewModel.content)
                 BulletInBoardViewModel.State.Error -> showErrorDialog(viewModel)
             }
         }

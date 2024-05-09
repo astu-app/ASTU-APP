@@ -18,10 +18,10 @@ import org.astu.feature.bulletinBoard.views.entities.DefaultModifierProvider
 import org.astu.infrastructure.theme.CurrentColorScheme
 
 abstract class VotedAnswerContentBase(
-    val id: Uuid,
+    id: Uuid,
     text: String,
     private val voterPercent: Int
-) : AnswerContentBase(text),
+) : AnswerContentBase(id, text),
     DefaultModifierProvider, ContentProvider {
     @Composable
     protected fun DrawVotedContentSummary(modifier: Modifier) {

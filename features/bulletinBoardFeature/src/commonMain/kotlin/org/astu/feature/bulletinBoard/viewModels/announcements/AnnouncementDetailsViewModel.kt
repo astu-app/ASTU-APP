@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.viewModels
+package org.astu.feature.bulletinBoard.viewModels.announcements
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -6,6 +6,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.launch
+import org.astu.feature.bulletinBoard.common.utils.calculateVotersPercentage
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
@@ -25,7 +26,6 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.questi
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.details.AnnouncementDetailsContent
 import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
-import kotlin.math.roundToInt
 
 class AnnouncementDetailsViewModel (
     private val announcementId: Uuid
@@ -53,6 +53,7 @@ class AnnouncementDetailsViewModel (
 
     fun loadDetails() {
         screenModelScope.launch {
+            mutableState.value = State.Loading
             try {
                 val details = model.getDetails(announcementId)
                 if (!details.isContentValid) {
@@ -83,26 +84,19 @@ class AnnouncementDetailsViewModel (
             author = details.authorName,
             publicationTime = humanizeDateTime(details.publishedAt),
             viewed = details.viewsCount,
-            viewedPercent = calculateViewsCountPercent(details.viewsCount, details.audienceSize),
+            viewedPercent = calculateVotersPercentage(details.viewsCount, details.audienceSize),
             audienceSize = details.audienceSize,
             text = details.content,
-            attachments = attachmentsToViewModel(details.files, details.surveys, details.audienceSize),
+            attachments = attachmentsToViewModel(details.files, details.surveys),
             audience = audienceToViewModel(details.audience),
         )
-    }
-
-    private fun calculateViewsCountPercent(views: Int, audienceSize: Int): Int {
-        if (audienceSize == 0)
-            return 0
-
-        return (views.toDouble() / audienceSize).roundToInt()
     }
 
     private fun audienceToViewModel(audience: List<User>): List<UserSummary> {
         return audience.map { UserSummary(it.id, it.firstName, it.secondName, it.patronymic) }
     }
 
-    private fun attachmentsToViewModel(files: List<File>, surveys: List<SurveyDetails>, audienceSize: Int): List<AttachmentContentBase> {
+    private fun attachmentsToViewModel(files: List<File>, surveys: List<SurveyDetails>): List<AttachmentContentBase> {
         val attachments = mutableListOf<AttachmentContentBase>()
         files.forEach {
             // todo получение состояния загрузки файла
@@ -111,27 +105,28 @@ class AnnouncementDetailsViewModel (
         }
 
         val survey = surveys.firstOrNull() ?: return attachments
-        attachments.add(surveyToViewModel(survey, audienceSize))
+        attachments.add(surveyToViewModel(survey))
 
         return attachments
     }
 
-    private fun surveyToViewModel(survey: SurveyDetails, audienceSize: Int): AttachedSurveyContent {
-        return AttachedSurveyContent(survey.id, questionsToViewModel(survey.questions, audienceSize))
+    private fun surveyToViewModel(survey: SurveyDetails): AttachedSurveyContent {
+        return AttachedSurveyContent(survey.id, questionsToViewModel(survey.questions, survey.votersAmount), survey.isVotedByUser)
     }
 
-    private fun questionsToViewModel(questions: List<QuestionDetails>, audienceSize: Int): List<QuestionContentBase> {
+    private fun questionsToViewModel(questions: List<QuestionDetails>, surveyVotersAmoune: Int): List<QuestionContentBase> {
         return questions.map {
             VotedQuestionContent(
+                it.id,
                 it.content,
-                answersToViewModel(it.answers, audienceSize)
+                answersToViewModel(it.answers, surveyVotersAmoune)
             )
         }
     }
 
-    private fun answersToViewModel(answers: List<AnswerDetails>, audienceSize: Int): List<VotedAnswerContentDetails> {
+    private fun answersToViewModel(answers: List<AnswerDetails>, surveyVotersAmoune: Int): List<VotedAnswerContentDetails> {
         return answers.map {
-            VotedAnswerContentDetails(it.id, it.content, calculateViewsCountPercent(it.votersAmount, audienceSize), null)
+            VotedAnswerContentDetails(it.id, it.content, calculateVotersPercentage(it.votersAmount, surveyVotersAmoune), null)
         }
     }
 

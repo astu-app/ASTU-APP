@@ -8,6 +8,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,15 +16,20 @@ import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
 
 class SingleChoiceAnswerContent(
-    val id: Uuid,
+    id: Uuid,
     text: String,
-) : AnswerContentBase(text) {
+    canVote: MutableState<Boolean>,
+) : UnvotedAnswerContentBase(id, text, canVote) {
     private var stateId: MutableState<Int?> = mutableStateOf(null)
     private var stateKeeper: MutableState<RadioButtonsStateKeeper?> = mutableStateOf(null)
 
     fun setSelectedStateParams(stateId: Int, stateKeeper: RadioButtonsStateKeeper) {
         this.stateId.value = stateId
         this.stateKeeper.value = stateKeeper
+    }
+
+    override fun isSelected(): Boolean {
+        return stateKeeper.value?.getSelected() == stateId.value
     }
 
     @Composable
@@ -35,11 +41,14 @@ class SingleChoiceAnswerContent(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
         ) {
+            val selected by mutableStateOf(isSelected())
+
             RadioButton(
-                selected = stateKeeper.value!!.getSelected() == stateId.value,
+                selected = selected,
                 onClick = {
                     stateKeeper.value!!.selectedStateId = stateId.value!!
-                }
+                },
+                enabled = canVote.value,
             )
             Text(
                 text = stateKeeper.value!!.getState(stateId.value!!)?.text ?: "Не удалось получить текст ответа",

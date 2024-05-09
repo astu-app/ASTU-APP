@@ -13,13 +13,15 @@ object AttachmentMappers {
     @JvmName("SurveyDetailsDtoToModel")
     fun SurveyDetailsDto.toModel(): SurveyDetails =
         SurveyDetails(
-            uuidFrom(this.id),
-            this.isOpen,
-            this.isAnonymous,
-            this.votersAmount,
-            this.autoClosingAt,
-            this.voteFinishedAt,
-            this.questions.toModels()
+            id = uuidFrom(this.id),
+            isVotedByUser = this.isVotedByRequester,
+            isOpen = this.isOpen,
+            isAnonymous = this.isAnonymous,
+            resultsOpenBeforeClosing = this.resultsOpenBeforeClosing,
+            votersAmount = this.votersAmount,
+            autoClosingAt = this.autoClosingAt,
+            voteFinishedAt = this.voteFinishedAt,
+            questions = this.questions.toModels(!this.isVotedByRequester)
         )
 
     @JvmName("SurveyDetailsDtoCollectionToModels")
@@ -27,24 +29,24 @@ object AttachmentMappers {
         this?.map { it.toModel() } ?: emptyList()
 
     @JvmName("QuestionDetailsDtoToModel")
-    fun QuestionDetailsDto.toModel(): QuestionDetails =
+    fun QuestionDetailsDto.toModel(canVote: Boolean = true): QuestionDetails =
         QuestionDetails(
             uuidFrom(this.id),
             this.serial,
             this.content,
             this.isMultipleChoiceAllowed,
-            this.answers.toModels()
+            this.answers.toModels(canVote)
         )
 
     @JvmName("QuestionDetailsDtoCollectionToModels")
-    fun Collection<QuestionDetailsDto>.toModels(): List<QuestionDetails> =
-        this.map { it.toModel() }
+    fun Collection<QuestionDetailsDto>.toModels(canVote: Boolean = true): List<QuestionDetails> =
+        this.map { it.toModel(canVote) }
 
     @JvmName("QuestionAnswerDetailsDtoToModel")
-    fun QuestionAnswerDetailsDto.toModel(): AnswerDetails =
-        AnswerDetails(uuidFrom(this.id), this.serial, this.content, this.votersAmount)
+    fun QuestionAnswerDetailsDto.toModel(canVote: Boolean = true): AnswerDetails =
+        AnswerDetails(uuidFrom(this.id), this.serial, this.content, this.votersAmount, canVote)
 
     @JvmName("QuestionAnswerDetailsDtoCollectionToModels")
-    fun Collection<QuestionAnswerDetailsDto>.toModels(): List<AnswerDetails> =
-        this.map { it.toModel() }
+    fun Collection<QuestionAnswerDetailsDto>.toModels(canVote: Boolean = true): List<AnswerDetails> =
+        this.map { it.toModel(canVote) }
 }

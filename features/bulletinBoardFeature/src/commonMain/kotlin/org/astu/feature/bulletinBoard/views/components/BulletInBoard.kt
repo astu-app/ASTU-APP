@@ -1,9 +1,7 @@
 package org.astu.feature.bulletinBoard.views.components
 
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.astu.feature.bulletinBoard.views.components.announcements.summary.AnnouncementSummary
@@ -11,16 +9,11 @@ import org.astu.feature.bulletinBoard.views.entities.announcement.summary.Announ
 
 @Composable
 fun BulletInBoard(
-    announcements: List<AnnouncementSummaryContent>,
-    scrollState: ScrollState,
+    announcements: List<AnnouncementSummaryContent>
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-    ) {
-        announcements.forEach { announcement ->
-            AnnouncementSummary(announcement)
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(announcements.size) { index ->
+            AnnouncementSummary(announcements[index])
         }
     }
 }

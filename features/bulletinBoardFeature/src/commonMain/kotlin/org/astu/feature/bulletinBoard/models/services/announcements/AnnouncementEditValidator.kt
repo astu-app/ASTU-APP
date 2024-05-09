@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.models.updating
+package org.astu.feature.bulletinBoard.models.services.announcements
 
 import kotlinx.datetime.Clock
 import org.astu.feature.bulletinBoard.views.entities.EditAnnouncementContent

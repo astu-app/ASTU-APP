@@ -15,7 +15,7 @@ class VotedAnswerContentSummary(
 ) : VotedAnswerContentBase(id, text, voterPercent) {
     @Composable
     override fun Content(modifier: Modifier) {
-        DrawVotedContentSummary(modifier)
+        super.DrawVotedContentSummary(modifier)
     }
 
     override fun getDefaultModifier(): Modifier {

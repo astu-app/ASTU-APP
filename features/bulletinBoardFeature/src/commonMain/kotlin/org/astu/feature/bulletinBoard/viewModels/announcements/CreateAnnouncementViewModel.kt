@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.viewModels
+package org.astu.feature.bulletinBoard.viewModels.announcements
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

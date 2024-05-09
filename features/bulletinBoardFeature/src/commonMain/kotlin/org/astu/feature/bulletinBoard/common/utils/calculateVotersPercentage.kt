@@ -11,5 +11,5 @@ fun calculateVotersPercentage(answerVotersCount: Int, surveyVotersCount: Int): I
     if (surveyVotersCount == 0)
         return 0
 
-    return (answerVotersCount.toDouble() / surveyVotersCount).roundToInt()
+    return (answerVotersCount.toDouble() / surveyVotersCount).roundToInt() * 100
 }

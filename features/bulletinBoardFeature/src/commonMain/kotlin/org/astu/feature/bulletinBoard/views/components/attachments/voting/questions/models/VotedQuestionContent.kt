@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.VotedAnswerContentBase
 
 class VotedQuestionContent(
+    id: Uuid,
     text: String,
     answers: List<VotedAnswerContentBase>
-) : QuestionContentBase(text, answers) {
+) : QuestionContentBase(id, text, answers) {
     @Composable
     override fun Content(modifier: Modifier) {
         Column(

@@ -5,8 +5,10 @@ import kotlinx.datetime.LocalDateTime
 
 data class SurveyDetails(
     val id: Uuid,
+    val isVotedByUser: Boolean,
     val isOpen: Boolean,
     val isAnonymous: Boolean,
+    val resultsOpenBeforeClosing: Boolean,
     val votersAmount: Int,
     val autoClosingAt: LocalDateTime?,
     val voteFinishedAt: LocalDateTime?,

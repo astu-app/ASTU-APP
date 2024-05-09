@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
-import org.astu.feature.bulletinBoard.viewModels.CreateAnnouncementViewModel
+import org.astu.feature.bulletinBoard.viewModels.announcements.CreateAnnouncementViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.creation.AnnouncementCreator
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading

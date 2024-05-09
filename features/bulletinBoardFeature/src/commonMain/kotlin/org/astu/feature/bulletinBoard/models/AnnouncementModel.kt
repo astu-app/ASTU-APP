@@ -14,8 +14,8 @@ import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnounce
 import org.astu.feature.bulletinBoard.models.entities.audience.AudienceHierarchy
 import org.astu.feature.bulletinBoard.models.repositories.AnnouncementRepository
 import org.astu.feature.bulletinBoard.models.repositories.UserGroupRepository
-import org.astu.feature.bulletinBoard.models.updating.AnnouncementCreateValidator
-import org.astu.feature.bulletinBoard.models.updating.AnnouncementEditValidator
+import org.astu.feature.bulletinBoard.models.services.announcements.AnnouncementCreateValidator
+import org.astu.feature.bulletinBoard.models.services.announcements.AnnouncementEditValidator
 import org.astu.feature.bulletinBoard.views.entities.EditAnnouncementContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.creation.CreateAnnouncementContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
