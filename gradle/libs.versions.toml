@@ -20,6 +20,7 @@ kotlinx-serialization = "1.6.2"
 kotlinx-datetime = "0.6.0-RC.2"
 kodein = "7.19.0"
 sqlDelight = "2.0.1"
+material3Android = "1.2.1"
 
 [libraries]
 
@@ -51,6 +52,7 @@ sqlDelight-driver-sqlite = { module = "app.cash.sqldelight:sqlite-driver", versi
 sqlDelight-driver-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
 sqlDelight-driver-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 sqlDelight-driver-js = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqlDelight" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 
 [plugins]
 

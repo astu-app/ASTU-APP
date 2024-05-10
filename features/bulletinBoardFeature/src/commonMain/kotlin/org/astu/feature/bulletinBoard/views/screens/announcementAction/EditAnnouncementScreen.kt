@@ -1,6 +1,5 @@
 package org.astu.feature.bulletinBoard.views.screens.announcementAction
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,30 +40,23 @@ class EditAnnouncementScreen(
                         .fillMaxWidth()
                         .padding(end = 4.dp)
                 ) {
-                    Text(
-                        text = "Редактировать",
-                        modifier = Modifier.weight(1f)
+                    Text("Редактировать")
+                }
+            },
+            actions = {
+                Button(
+                    enabled = editor.canEdit(),
+                    onClick = { viewModel.edit() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = CurrentColorScheme.surface,
+                        disabledContainerColor = CurrentColorScheme.surface,
+                        contentColor = CurrentColorScheme.primary,
                     )
-
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.weight(0.9f)
-                    ) {
-                        Button(
-                            enabled = editor.canEdit(),
-                            onClick = { viewModel.edit() },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = CurrentColorScheme.surface,
-                                disabledContainerColor = CurrentColorScheme.surface,
-                                contentColor = CurrentColorScheme.primary,
-                            )
-                        ) {
-                            Text(
-                                text = "Сохранить",
-                                style = MaterialTheme.typography.titleLarge,
-                            )
-                        }
-                    }
+                ) {
+                    Text(
+                        text = "Сохранить",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
                 }
             }
         ) {

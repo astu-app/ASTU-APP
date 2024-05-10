@@ -1,5 +1,6 @@
 package org.astu.feature.bulletinBoard.views.screens.announcementAction
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +21,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
  * @param returnScreenIcon иконка возврата с экрана
  * @param animateScrollTo
  * @param modifier модификатор, который будет применен к этому контейнеру
+ * @param floatingActionButton плавающая в правом нижнем углу кнопка
+ * @param actions действия, отображаемые в конце TopBar
  * @param content контент контейнера
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,6 +34,7 @@ fun AnnouncementActionScreenScaffold(
     animateScrollTo: Int = 100,
     modifier: Modifier = Modifier.fillMaxSize(),
     floatingActionButton: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Scaffold(
@@ -44,7 +48,8 @@ fun AnnouncementActionScreenScaffold(
                             contentDescription = "Покинуть экран"
                         )
                     }
-                }
+                },
+                actions = actions
             )
         },
         floatingActionButton = floatingActionButton,

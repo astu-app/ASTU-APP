@@ -1,6 +1,5 @@
 package org.astu.feature.bulletinBoard.views.screens.announcementAction
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,7 +20,6 @@ import org.astu.feature.bulletinBoard.views.components.announcements.creation.An
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
-import org.astu.infrastructure.utils.recomposeHighlighter
 
 class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
     @Composable
@@ -38,33 +36,25 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
                         .fillMaxWidth()
                         .padding(end = 4.dp)
                 ) {
-                    Text(
-                        text = "Новое объявление",
-                        modifier = Modifier.weight(1f)
+                    Text("Новое объявление")
+                }
+            },
+            actions = {
+                Button(
+                    enabled = creator.canCreate(),
+                    onClick = {
+                        viewModel.create()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = CurrentColorScheme.surface,
+                        disabledContainerColor = CurrentColorScheme.surface,
+                        contentColor = CurrentColorScheme.primary,
                     )
-
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.weight(0.7f)
-                    ) {
-                        Button(
-                            enabled = creator.canCreate(),
-                            onClick = {
-                                viewModel.create()
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = CurrentColorScheme.surface,
-                                disabledContainerColor = CurrentColorScheme.surface,
-                                contentColor = CurrentColorScheme.primary,
-                            ),
-                            modifier = Modifier.recomposeHighlighter()
-                        ) {
-                            Text(
-                                text = "Создать",
-                                style = MaterialTheme.typography.titleLarge,
-                            )
-                        }
-                    }
+                ) {
+                    Text(
+                        text = "Создать",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
                 }
             }
         ) {
