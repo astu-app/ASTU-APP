@@ -12,7 +12,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.FileMappers.toModels
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.AttachmentMappers.toModels
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.SurveyToModelMappers.toModels
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsuccessCode
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels

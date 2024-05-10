@@ -8,6 +8,7 @@ import io.ktor.client.plugins.websocket.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.astu.app.security.SslSettings
 import org.astu.feature.schedule.ApiTableAstuScheduleDataSource
@@ -19,8 +20,10 @@ import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.provider
 import org.kodein.di.singleton
+import java.time.Duration
 
 actual object AppModule : FeatureModule {
+    @OptIn(ExperimentalSerializationApi::class)
     actual override fun init(): DependencyInjector = KodeinDependencyInjector (
         DI {
             bind<ScheduleDataSource>() with singleton { ApiTableAstuScheduleDataSource() }
@@ -31,12 +34,13 @@ actual object AppModule : FeatureModule {
                             sslSocketFactory(SslSettings.sslContext()!!.socketFactory, SslSettings.trustManager())
                             followRedirects(true)
                             hostnameVerifier(SslSettings.hostNameVerifier())
+                            callTimeout(Duration.ofSeconds(10))
                         }
                     }
                     defaultRequest {
 //                      host = "192.168.1.12:7222"
-//                      host = "192.168.1.11:7222"
-                        host = "10.0.2.2:7222"
+                      host = "192.168.1.11:7222"
+//                        host = "10.0.2.2:7222"
                         url {
                             protocol = URLProtocol.HTTPS
                         }
@@ -46,6 +50,8 @@ actual object AppModule : FeatureModule {
                             prettyPrint = true
                             isLenient = true
                             ignoreUnknownKeys = true
+                            encodeDefaults = true
+                            explicitNulls = true
                         })
                     }
                     install(WebSockets){

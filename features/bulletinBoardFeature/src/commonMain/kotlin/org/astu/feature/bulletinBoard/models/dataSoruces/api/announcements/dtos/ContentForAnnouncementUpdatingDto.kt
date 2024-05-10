@@ -5,7 +5,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.dtos.FileSummaryDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.dtos.SurveyDetailsDto
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.dtos.details.SurveyDetailsDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupHierarchyDto
 
 /**

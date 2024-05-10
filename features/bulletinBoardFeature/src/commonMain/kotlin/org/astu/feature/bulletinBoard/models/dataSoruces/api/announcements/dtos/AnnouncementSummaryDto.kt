@@ -3,7 +3,7 @@ package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.dtos.FileSummaryDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.dtos.SurveyDetailsDto
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.dtos.details.SurveyDetailsDto
 
 /**
  * @param id Идентификатор объявления

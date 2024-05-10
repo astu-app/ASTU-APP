@@ -3,18 +3,15 @@ package org.astu.feature.bulletinBoard.models.repositories
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.ApiGeneralAnnouncementDataSource
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.ApiPublishedAnnouncementDataSource
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.*
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.ApiSurveyDataSource
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.surveys.ApiSurveyDataSource
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
 import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
-import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentMappers.mapAttachments
+import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.mapAttachments
 
 class AnnouncementRepository {
     private val publishedAnnouncementsSource = ApiPublishedAnnouncementDataSource()
@@ -42,7 +39,7 @@ class AnnouncementRepository {
         return publishedAnnouncementsSource.getDetails(id)
     }
 
-    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrors? {
+    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrorsAggregate? {
         return generalAnnouncementsSource.create(announcement)
     }
 
@@ -50,7 +47,7 @@ class AnnouncementRepository {
         return generalAnnouncementsSource.getUpdateForAnnouncementEditing(id)
     }
 
-    suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrors? {
+    suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrorsAggregate? {
         return generalAnnouncementsSource.edit(announcement)
     }
 }

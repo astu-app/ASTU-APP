@@ -16,9 +16,10 @@ class AnnouncementEditValidator(private val announcement: EditAnnouncementConten
             .plus(announcement.delayedPublicationTimeMinutes.value * 60_000)
 
         return announcement.text.value.isNotBlank()
+                && announcement.selectedUserIds.isNotEmpty()
                 && isDelayedPublicationMomentValid(nowMillis, delayedPublicationMomentMillis, delayedHidingMomentMillis)
                 && isDelayedHidingMomentValid(nowMillis, delayedPublicationMomentMillis, delayedHidingMomentMillis)
-                && isSurveyValid()
+                && isSurveyValid(nowMillis)
     }
 
 
@@ -58,14 +59,14 @@ class AnnouncementEditValidator(private val announcement: EditAnnouncementConten
         return valid
     }
 
-    private fun isSurveyValid(): Boolean {
+    private fun isSurveyValid(nowMillis: Long): Boolean {
         if (announcement.attachedSurvey != null)
             return true
 
         val newSurveyValue = announcement.newSurvey.value
 
         val surveyIsNotNull = newSurveyValue != null
-        val surveyIsValid = if (surveyIsNotNull) newSurveyValue!!.isValid() else true
+        val surveyIsValid = if (surveyIsNotNull) newSurveyValue!!.isValid(nowMillis) else true
         return surveyIsValid
     }
 }

@@ -1,8 +1,10 @@
 package org.astu.feature.bulletinBoard.views.entities.announcement.creation
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.benasher44.uuid.Uuid
 import kotlinx.datetime.Clock
@@ -13,6 +15,7 @@ import org.astu.feature.bulletinBoard.views.components.attachments.files.models.
 import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileContentBase
 import org.astu.feature.bulletinBoard.views.dateTime.getDateString
 import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
+import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.mappers.AudiencePresentationMapper
 import kotlin.time.Duration
@@ -40,7 +43,7 @@ class CreateAnnouncementContent(audienceHierarchy: AudienceHierarchy) {
     var survey: MutableState<NewSurvey?> = mutableStateOf(null)
 
     val audienceRoots: List<INode>
-    val selectedUserIds: MutableSet<Uuid> = mutableSetOf()
+    val selectedUserIds: SnapshotStateList<Uuid> = mutableStateListOf()
 
 
     init {

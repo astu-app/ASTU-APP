@@ -16,9 +16,9 @@ import org.astu.feature.bulletinBoard.views.dateTime.getDateString
 import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeFromEpochMillis
 import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeString
 import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
-import org.astu.feature.bulletinBoard.views.entities.announcement.creation.NewSurvey
-import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentMappers.toPresentations
-import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentMappers.votedSurveyToPresentation
+import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.toPresentations
+import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.votedSurveyToPresentation
+import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.mappers.AudiencePresentationMapper
 import kotlin.math.round

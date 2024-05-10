@@ -1,16 +1,23 @@
 package org.astu.feature.bulletinBoard.views.screens.announcementAction
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.viewModels.announcements.AnnouncementDetailsViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.details.AnnouncementDetails
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
+import org.astu.infrastructure.theme.CurrentColorScheme
 
 class AnnouncementDetailsScreen(
     private val announcementId: Uuid,
@@ -19,10 +26,22 @@ class AnnouncementDetailsScreen(
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { AnnouncementDetailsViewModel(announcementId) }
+        val navigator = LocalNavigator.currentOrThrow
 
         AnnouncementActionScreenScaffold(
             onReturn = onReturn,
             topBarTitle = { Text("Объявление") },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        val editAnnouncementScreen = EditAnnouncementScreen(announcementId) { navigator.pop() }
+                        navigator.push(editAnnouncementScreen)
+                    },
+                    containerColor = CurrentColorScheme.tertiaryContainer,
+                ) {
+                    Icon(Icons.Outlined.Edit, null)
+                }
+            }
         ) {
             val state by viewModel.state.collectAsState()
             when(state) {

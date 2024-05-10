@@ -5,7 +5,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.SurveyModel
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.surveys.responses.VoteInSurveyErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.VoteInSurveyErrors
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.SurveyMappers.getVotes
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.SurveyMappers.toModel

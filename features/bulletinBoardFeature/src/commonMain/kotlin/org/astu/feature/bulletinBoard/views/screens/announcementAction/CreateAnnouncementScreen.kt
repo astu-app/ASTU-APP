@@ -21,6 +21,7 @@ import org.astu.feature.bulletinBoard.views.components.announcements.creation.An
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
+import org.astu.infrastructure.utils.recomposeHighlighter
 
 class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
     @Composable
@@ -55,7 +56,8 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
                                 containerColor = CurrentColorScheme.surface,
                                 disabledContainerColor = CurrentColorScheme.surface,
                                 contentColor = CurrentColorScheme.primary,
-                            )
+                            ),
+                            modifier = Modifier.recomposeHighlighter()
                         ) {
                             Text(
                                 text = "Создать",

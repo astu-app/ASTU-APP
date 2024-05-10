@@ -10,7 +10,7 @@ import org.astu.feature.bulletinBoard.common.utils.calculateVotersPercentage
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
-import org.astu.feature.bulletinBoard.models.entities.attachments.file.File
+import org.astu.feature.bulletinBoard.models.entities.attachments.file.details.File
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.AnswerDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.QuestionDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.SurveyDetails

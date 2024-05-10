@@ -1,7 +1,7 @@
 package org.astu.feature.bulletinBoard.views.entities.announcement.summary
 
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementSummary
-import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentMappers.mapAttachments
+import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.mapAttachments
 import kotlin.jvm.JvmName
 
 object AnnouncementSummaryMappers {

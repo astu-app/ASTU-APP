@@ -1,10 +1,7 @@
 package org.astu.feature.bulletinBoard.models
 
 import com.benasher44.uuid.Uuid
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyResponses
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
@@ -33,7 +30,7 @@ class AnnouncementModel {
         return announcementRepository.loadDetails(id)
     }
 
-    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrors? {
+    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrorsAggregate? {
         return announcementRepository.create(announcement)
     }
 
@@ -66,7 +63,7 @@ class AnnouncementModel {
         return editValidator.canEdit()
     }
 
-    suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrors? {
+    suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrorsAggregate? {
         return announcementRepository.edit(announcement)
     }
 }

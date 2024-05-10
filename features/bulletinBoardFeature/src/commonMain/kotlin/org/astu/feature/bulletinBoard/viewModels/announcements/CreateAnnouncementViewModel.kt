@@ -6,15 +6,16 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import co.touchlab.kermit.Logger
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import org.astu.feature.bulletinBoard.common.utils.localDateTimeFromComponents
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrorsAggregate
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyResponses
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
 import org.astu.feature.bulletinBoard.views.entities.announcement.creation.CreateAnnouncementContent
+import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToModelMappers.toModel
 
 class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScreenModel<CreateAnnouncementViewModel.State>(
     State.CreateContentLoading
@@ -76,7 +77,6 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
             try {
                 val createAnnouncementModel = toModel() ?: return@launch
 
-                // todo upload attachments
                 val error = model.create(createAnnouncementModel)
                 if (error == null) {
                     mutableState.value = State.NewAnnouncementUploadingDone
@@ -101,10 +101,11 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         else CreateAnnouncement(
             content = contentSnapshot.textContent.value,
             userIds = getUserIds(),
-            attachmentIds = uploadedAttachments,
             delayedPublishingAt = getDelayedPublicationMoment(),
             delayedHidingAt = getDelayedHidingMoment(),
-            categoryIds = getCategoryIds()
+            categoryIds = getCategoryIds(),
+            survey = contentSnapshot.survey.value?.toModel(),
+            files = null // todo прикрутить файлы
         )
     }
 
@@ -129,7 +130,7 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         val hour = contentSnapshot.delayedPublicationTimeHours.value
         val minute = contentSnapshot.delayedPublicationTimeMinutes.value
 
-        return getDelayedMoment(dateMillis, hour, minute)
+        return localDateTimeFromComponents(dateMillis, hour, minute)
     }
 
     private fun getDelayedHidingMoment(): LocalDateTime? {
@@ -142,22 +143,7 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         val hour = contentSnapshot.delayedHidingTimeHours.value
         val minute = contentSnapshot.delayedHidingTimeMinutes.value
 
-        return getDelayedMoment(dateMillis, hour, minute)
-    }
-
-    private fun getDelayedMoment(dateMillis: Long, delayedTimeHours: Int, delayedTimeMinutes: Int): LocalDateTime {
-        val instant = Instant.fromEpochMilliseconds(dateMillis)
-        val date = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-
-        val delayedHidingAt = LocalDateTime(
-            year = date.year,
-            monthNumber = date.monthNumber,
-            dayOfMonth = date.dayOfMonth,
-            hour = delayedTimeHours,
-            minute = delayedTimeMinutes,
-        )
-
-        return delayedHidingAt
+        return localDateTimeFromComponents(dateMillis, hour, minute)
     }
 
     private fun setErrorDialogStateForCreateContentLoading(error: GetUserHierarchyResponses? = null) {
@@ -179,7 +165,7 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         }
     }
 
-    private fun setErrorDialogStateForAnnouncementCreating(error: CreateAnnouncementErrors? = null) {
+    private fun setErrorDialogStateForAnnouncementCreating(error: CreateAnnouncementErrorsAggregate? = null) {
         errorDialogBody.value = constructCreateErrorDialogContent(error)
         onErrorDialogTryAgain.value = {
             create()
@@ -191,18 +177,34 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         }
     }
 
-    private fun constructCreateErrorDialogContent(error: CreateAnnouncementErrors?): String {
-        return when (error) {
-            CreateAnnouncementErrors.AudienceNullOrEmpty -> "Аудитория объявления не задана"
-            CreateAnnouncementErrors.ContentNullOrEmpty -> "Текст объявления не задан"
-            CreateAnnouncementErrors.AnnouncementCreationForbidden -> "У вас недостаточно прав для создания объявлений"
-            CreateAnnouncementErrors.AnnouncementCategoriesDoNotExist -> "Не удалось прикрепить одно или несколько категория объявлений"
-            CreateAnnouncementErrors.AttachmentsDoNotExist -> "Не удалось прикрепить одно или несколько вложений"
-            CreateAnnouncementErrors.PieceOfAudienceDoesNotExist -> "Не удалось прикрепить одного или нескольких из указанных пользователей"
-            CreateAnnouncementErrors.DelayedPublishingMomentIsInPast -> "Момент отложенной публикации объявления не может наступить в прошлом"
-            CreateAnnouncementErrors.DelayedHidingMomentIsInPast -> "Момент отложенного сокрытия объявления не может наступить в прошлом"
-            CreateAnnouncementErrors.DelayedPublishingMomentAfterDelayedHidingMoment -> "Момент отложенной публикации объявления не может наступить после момента отложенного сокрытия"
-            else -> "Непредвиденная ошибка при создании объявления. Повторите попытку"
-        }
+    private fun constructCreateErrorDialogContent(error: CreateAnnouncementErrorsAggregate?): String {
+        if (error?.createAnnouncementError != null)
+            return when (error.createAnnouncementError) {
+                CreateAnnouncementErrors.AudienceNullOrEmpty -> "Аудитория объявления не задана"
+                CreateAnnouncementErrors.ContentNullOrEmpty -> "Текст объявления не задан"
+                CreateAnnouncementErrors.AnnouncementCreationForbidden -> "У вас недостаточно прав для создания объявлений"
+                CreateAnnouncementErrors.AnnouncementCategoriesDoNotExist -> "Не удалось прикрепить одно или несколько категория объявлений"
+                CreateAnnouncementErrors.AttachmentsDoNotExist -> "Не удалось прикрепить одно или несколько вложений"
+                CreateAnnouncementErrors.PieceOfAudienceDoesNotExist -> "Не удалось прикрепить одного или нескольких из указанных пользователей"
+                CreateAnnouncementErrors.DelayedPublishingMomentIsInPast -> "Момент отложенной публикации объявления не может наступить в прошлом"
+                CreateAnnouncementErrors.DelayedHidingMomentIsInPast -> "Момент отложенного сокрытия объявления не может наступить в прошлом"
+                CreateAnnouncementErrors.DelayedPublishingMomentAfterDelayedHidingMoment -> "Момент отложенной публикации объявления не может наступить после момента отложенного сокрытия"
+                else -> "Непредвиденная ошибка при создании объявления. Повторите попытку"
+            }
+
+        if (error?.createSurveyError != null)
+            return when (error.createSurveyError) {
+                CreateSurveyErrors.CreateSurveyForbidden -> "У вас недостаточно прав для создания опроса"
+                CreateSurveyErrors.SurveyContainsQuestionSerialsDuplicates -> "Опрос содержит вопросы с одинаковыми порядковыми номерами"
+                CreateSurveyErrors.QuestionContainsAnswersSerialsDuplicates -> "Вопрос(ы) содержит варианты ответов с одинаковыми порядковыми номерами"
+                else -> "Непредвиденная ошибка при создании опроса. Повторите попытку"
+            }
+
+        if (error?.createFilesError != null)
+            return when (error.createFilesError) {
+                else -> "Непредвиденная ошибка при создании файлов. Повторите попытку"
+            }
+
+        return "Непредвиденная ошибка при создании объявления. Повторите попытку"
     }
 }

@@ -27,7 +27,7 @@ import org.astu.infrastructure.components.CheckboxRow
  */
 class AudiencePresentationMapper(
     private val audienceHierarchy: AudienceHierarchy,
-    private val selectedMemberIds: MutableSet<Uuid>
+    private val selectedMemberIds: MutableCollection<Uuid>
 ) {
     private val mappedNodes: MutableMap<Uuid, ISelectableNode> = mutableMapOf()
 
@@ -55,7 +55,8 @@ class AudiencePresentationMapper(
             selectableUserGroup.parentNodes.forEach { it.receiveNotificationChildSelectionChanges() }
 
             if (newState) {
-                selectedMemberIds.addAll(memberIds)
+                memberIds.forEach { if (!selectedMemberIds.contains(it)) selectedMemberIds.add(it) }
+//                selectedMemberIds.addAll(memberIds)
             } else {
                 selectedMemberIds.removeAll(memberIds)
             }
@@ -109,7 +110,8 @@ class AudiencePresentationMapper(
             selectableUser.parentNodes.forEach { it.receiveNotificationChildSelectionChanges() }
 
             if (newState) {
-                selectedMemberIds.add(member.id)
+                if (!selectedMemberIds.contains(member.id)) selectedMemberIds.add(member.id)
+//                selectedMemberIds.add(member.id)
             } else {
                 selectedMemberIds.remove(member.id)
             }

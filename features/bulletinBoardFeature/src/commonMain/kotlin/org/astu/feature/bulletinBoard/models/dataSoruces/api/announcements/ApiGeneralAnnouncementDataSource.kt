@@ -6,31 +6,58 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.GeneralAnnouncementDataSource
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.AnnouncementMappers.toDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.AnnouncementMappers.toModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.ContentForAnnouncementUpdatingDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrorsAggregate
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrorsAggregate
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.responses.UploadFilesErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.ApiSurveyDataSource
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsuccessCode
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
 import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
+import org.astu.feature.bulletinBoard.models.entities.attachments.file.creation.CreateFile
+import org.astu.feature.bulletinBoard.models.entities.attachments.survey.creation.CreateSurvey
 import org.astu.infrastructure.GlobalDIContext
 
 class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
     private val client: HttpClient by GlobalDIContext.inject<HttpClient>()
 
+    private val surveyDataSource = ApiSurveyDataSource()
 
-    override suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrors? {
+
+    override suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrorsAggregate? {
+        val newSurveyIdContent = if (announcement.survey != null) uploadSurvey(announcement.survey) else null
+        if (newSurveyIdContent != null && !newSurveyIdContent.isContentValid) {
+            return CreateAnnouncementErrorsAggregate(createSurveyError = newSurveyIdContent.error)
+        }
+        val newFileIdsContent = if (announcement.files != null) uploadFiles(announcement.files) else null
+        if (newFileIdsContent != null && !newFileIdsContent.isContentValid) {
+            return CreateAnnouncementErrorsAggregate(createFilesError = newFileIdsContent.error)
+        }
+
+        val newSurveyId = newSurveyIdContent!!.content // так как проверка на not-null вшита выше в newSurveyIdContent.isContentValid
+        val newFileIds = newFileIdsContent!!.content // так как проверка на not-null вшита выше в newFileIdsContent.isContentValid
+
+        val dto = announcement.toDto(constructAttachmentIds(newSurveyId?.toString(), newFileIds))
         val response = client.post("api/announcements/create") {
             contentType(ContentType.Application.Json)
-            setBody(announcement)
+            setBody(dto)
         }
 
         if (response.status.isSuccess())
             return null
 
-        return readUnsuccessCode<CreateAnnouncementErrors>(response)
+        return CreateAnnouncementErrorsAggregate(
+            createAnnouncementError = readUnsuccessCode<CreateAnnouncementErrors>(
+                response
+            )
+        )
     }
 
     override suspend fun getUpdateForAnnouncementEditing(id: Uuid): ContentWithError<ContentForAnnouncementEditing, EditAnnouncementErrors> {
@@ -45,15 +72,58 @@ class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
         return ContentWithError(dto.toModel(), error = null,)
     }
 
-    override suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrors? {
+    override suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrorsAggregate? {
+        val newSurveyIdContent = if (announcement.newSurvey != null) uploadSurvey(announcement.newSurvey) else null
+        if (newSurveyIdContent != null && !newSurveyIdContent.isContentValid) {
+            return EditAnnouncementErrorsAggregate(createSurveyError = newSurveyIdContent.error)
+        }
+        val newFileIdsContent = if (announcement.newFiles != null) uploadFiles(announcement.newFiles) else null
+        if (newFileIdsContent != null && !newFileIdsContent.isContentValid) {
+            return EditAnnouncementErrorsAggregate(createFilesError = newFileIdsContent.error)
+        }
+
+        val newSurveyId = newSurveyIdContent!!.content // так как проверка на not-null вшита выше в newSurveyIdContent.isContentValid
+        val newFileIds = newFileIdsContent!!.content // так как проверка на not-null вшита выше в newFileIdsContent.isContentValid
+
+        val dto = announcement.toDto(constructAttachmentIds(newSurveyId?.toString(), newFileIds))
         val response = client.put("api/announcements/update") {
             contentType(ContentType.Application.Json)
-            setBody(announcement)
+            setBody(dto)
         }
 
         if (response.status.isSuccess())
             return null
 
-        return readUnsuccessCode<EditAnnouncementErrors>(response)
+        return EditAnnouncementErrorsAggregate(
+            editAnnouncementError = readUnsuccessCode<EditAnnouncementErrors>(
+                response
+            )
+        )
+    }
+
+
+
+    private suspend fun uploadSurvey(survey: CreateSurvey): ContentWithError<Uuid, CreateSurveyErrors> {
+        return surveyDataSource.create(survey)
+    }
+
+    private suspend fun uploadFiles(files: List<CreateFile>): ContentWithError<List<String>, UploadFilesErrors> {
+        return ContentWithError(content = null, error = null)
+    }
+
+    private suspend fun constructAttachmentIds(surveyId: String?, fileIds: List<String>?): List<String> {
+        /*
+         * всевозможные варианты:
+         * null, null
+         * null, not null
+         * not null, null
+         * not null, not null
+         */
+
+        if (surveyId == null && fileIds == null) return emptyList()
+        if (surveyId == null && fileIds != null) return fileIds
+        if (surveyId != null && fileIds == null) return listOf(surveyId)
+
+        return fileIds!!.plusElement(surveyId!!); // !! так как проверки на null присутствуют выше
     }
 }

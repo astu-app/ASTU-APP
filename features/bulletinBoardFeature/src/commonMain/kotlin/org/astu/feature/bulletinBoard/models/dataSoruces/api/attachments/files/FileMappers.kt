@@ -2,8 +2,8 @@ package org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files
 
 import com.benasher44.uuid.uuidFrom
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.dtos.FileSummaryDto
-import org.astu.feature.bulletinBoard.models.entities.attachments.file.File
-import org.astu.feature.bulletinBoard.models.entities.attachments.file.FileType
+import org.astu.feature.bulletinBoard.models.entities.attachments.file.details.File
+import org.astu.feature.bulletinBoard.models.entities.attachments.file.details.FileType
 import kotlin.jvm.JvmName
 
 object FileMappers {

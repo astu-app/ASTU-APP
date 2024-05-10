@@ -1,8 +1,9 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces
 
 import com.benasher44.uuid.Uuid
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrorsAggregate
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrorsAggregate
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
@@ -15,7 +16,7 @@ interface GeneralAnnouncementDataSource {
      * @param announcement данные для создания объявления
      * @return Код неуспешного ответа или null, если запрос выполнен успешно
      */
-    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrors?
+    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrorsAggregate?
 
     /**
      * Выполнить запрос на получение данных для редактирования объявления
@@ -29,5 +30,5 @@ interface GeneralAnnouncementDataSource {
      * @param announcement данные для редактирования объявления
      * @return Код неуспешного ответа или null, если запрос выполнен успешно
      */
-    suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrors?
+    suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrorsAggregate?
 }

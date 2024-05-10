@@ -30,6 +30,7 @@ fun AnnouncementActionScreenScaffold(
     returnScreenIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     animateScrollTo: Int = 100,
     modifier: Modifier = Modifier.fillMaxSize(),
+    floatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Scaffold(
@@ -46,6 +47,7 @@ fun AnnouncementActionScreenScaffold(
                 }
             )
         },
+        floatingActionButton = floatingActionButton,
         modifier = modifier
     ) {
         val scrollState = rememberScrollState()

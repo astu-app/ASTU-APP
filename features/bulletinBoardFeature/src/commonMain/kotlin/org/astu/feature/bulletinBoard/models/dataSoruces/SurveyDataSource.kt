@@ -1,11 +1,11 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces
 
 import com.benasher44.uuid.Uuid
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CloseSurveyErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.DownloadSurveyResultsErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.VoteInSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.surveys.responses.CloseSurveyErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.surveys.responses.CreateSurveyErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.surveys.responses.DownloadSurveyResultsErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.surveys.responses.VoteInSurveyErrors
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.creation.CreateSurvey
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.voting.VoteInSurvey
 

@@ -10,10 +10,15 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrorsAggregate
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementEditContentErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
+import org.astu.feature.bulletinBoard.models.entities.audience.SelectableUser
+import org.astu.feature.bulletinBoard.models.entities.common.UpdateIdentifierList
 import org.astu.feature.bulletinBoard.views.entities.EditAnnouncementContent
+import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToModelMappers.toModel
 
 class EditAnnouncementViewModel(
     private val announcementId: Uuid,
@@ -68,7 +73,7 @@ class EditAnnouncementViewModel(
         }
     }
 
-    private fun edit() {
+    fun edit() {
         mutableState.value = State.ChangesUploading
         screenModelScope.launch {
             try {
@@ -100,13 +105,16 @@ class EditAnnouncementViewModel(
         else EditAnnouncement(
             id = announcementId,
             content = getUpdatedContent(contentSnapshot, originalSnapshot),
-            categoryIds = getUpdatedCategoryIds(contentSnapshot, originalSnapshot),
-            audienceIds = getUpdatedAudienceIds(contentSnapshot, originalSnapshot),
-            attachmentIds = getupdatedAttachmentIds(contentSnapshot, originalSnapshot),
+            categories = getUpdatedCategoryIds(contentSnapshot, originalSnapshot),
+            users = getUpdatedAudienceIds(contentSnapshot, originalSnapshot),
             delayedPublishingAtChanged = isDelayedPublishingChanged(contentSnapshot, originalSnapshot),
             delayedPublishingAt = getChangedDelayedPublicationMoment(contentSnapshot, originalSnapshot),
             delayedHidingAtChanged = isDelayedHidingChanged(contentSnapshot, originalSnapshot),
             delayedHidingAt = getChangedDelayedHidingMoment(contentSnapshot, originalSnapshot),
+
+            attachmentIdsToRemove = getupdatedAttachmentIds(contentSnapshot, originalSnapshot),
+            newSurvey = contentSnapshot.newSurvey.value?.toModel(),
+            newFiles = null, // todo прикрутить файлы
         )
     }
 
@@ -116,30 +124,53 @@ class EditAnnouncementViewModel(
     private fun getUpdatedCategoryIds(
         content: EditAnnouncementContent,
         original: ContentForAnnouncementEditing
-    ): List<Uuid>? =
+    ): UpdateIdentifierList? =
         null // todo прикрутить категории объвлений
 
     private fun getUpdatedAudienceIds(
         content: EditAnnouncementContent,
         original: ContentForAnnouncementEditing
-    ): List<Uuid>? {
-        val originalIds = original.audienceHierarchy.allMembers
-        val changedIds = content.selectedUserIds
-        return if (originalIds.intersect(changedIds).isNotEmpty()) changedIds.toList() else null
+    ): UpdateIdentifierList? {
+        val originalIds = original.audienceHierarchy.allMembers.filter { (it as SelectableUser).isSelected }.map { it.id }
+        val updatedIds = content.selectedUserIds
+
+        val idsChanged = originalIds.intersect(updatedIds).isNotEmpty()
+        if (!idsChanged)
+            return null
+
+        return UpdateIdentifierList(
+            toAdd = updatedIds subtract originalIds,
+            toRemove = originalIds subtract updatedIds,
+        )
     }
 
     private fun getupdatedAttachmentIds(
         content: EditAnnouncementContent,
         original: ContentForAnnouncementEditing
-    ): List<Uuid>? {
-        return null // todo прикрутить вложения
+    ): Set<Uuid>? {
+        val originalIds = original.files.map { it.id } + (original.surveys?.map { it.id } ?: emptyList())
+        val updatedIds = content.selectedUserIds
+
+        val idsChanged = originalIds.intersect(updatedIds).isNotEmpty()
+        if (!idsChanged)
+            return null
+
+        val toRemove = originalIds subtract updatedIds
+        return if (toRemove.isNotEmpty()) toRemove else null
     }
 
     private fun isDelayedPublishingChanged(
         content: EditAnnouncementContent,
         original: ContentForAnnouncementEditing
     ) : Boolean {
-        return content.delayedPublicationAt != original.delayedPublishingAt
+        val contentDelayedPublicationEnabled = content.delayedPublicationEnabled.value
+        val originalDelayedPublicationEnabled = original.delayedPublishingAt != null
+
+        if (contentDelayedPublicationEnabled == false && originalDelayedPublicationEnabled == false) return false
+        if (contentDelayedPublicationEnabled != originalDelayedPublicationEnabled) return true
+
+        // contentDelayedPublicationEnabled == true && originalDelayedPublicationEnabled == true
+        return content.delayedPublicationAt == original.delayedPublishingAt
     }
 
     private fun getChangedDelayedPublicationMoment(
@@ -153,7 +184,14 @@ class EditAnnouncementViewModel(
         content: EditAnnouncementContent,
         original: ContentForAnnouncementEditing
     ) : Boolean {
-        return content.delayedPublicationAt != original.delayedPublishingAt
+        val contentDelayedHidingEnabled = content.delayedHidingEnabled.value
+        val originalDelayedHidingEnabled = original.delayedHidingAt != null
+
+        if (contentDelayedHidingEnabled == false && originalDelayedHidingEnabled == false) return false
+        if (contentDelayedHidingEnabled != originalDelayedHidingEnabled) return true
+
+        // contentDelayedHidingEnabled == true && originalDelayedHidingEnabled == true
+        return content.delayedHidingAt == original.delayedPublishingAt
     }
 
     private fun getChangedDelayedHidingMoment(
@@ -183,7 +221,7 @@ class EditAnnouncementViewModel(
         }
     }
 
-    private fun setErrorDialogStateForAnnouncementCreating(error:  EditAnnouncementErrors? = null) {
+    private fun setErrorDialogStateForAnnouncementCreating(error:  EditAnnouncementErrorsAggregate? = null) {
         errorDialogBody.value = constructCreateErrorDialogContent(error)
         onErrorDialogTryAgain.value = {
             edit()
@@ -195,21 +233,37 @@ class EditAnnouncementViewModel(
         }
     }
 
-    private fun constructCreateErrorDialogContent(error:  EditAnnouncementErrors?): String {
-        return when (error) {
-            EditAnnouncementErrors.ContentEmpty -> "Текст объявления не должен быть пустым"
-            EditAnnouncementErrors.AudienceEmpty -> "Нельзя очистить аудиторию объявления"
-            EditAnnouncementErrors.AnnouncementEditingForbidden -> "У вас недостаточно прав для изменения этого объявления"
-            EditAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено. Повторите попытку позднее"
-            EditAnnouncementErrors.AnnouncementCategoriesDoesNotExist -> "Категория объявлений не найдена. Повторите попытку позднее"
-            EditAnnouncementErrors.AttachmentsDoNotExist -> "Вложение не найдено. Повторите попытку позднее"
-            EditAnnouncementErrors.PieceOfAudienceDoesNotExist -> "Пользователь не найден. Повторите попытку позднее"
-            EditAnnouncementErrors.DelayedPublishingMomentIsInPast -> "Момент отложенной публикации уже наступил в прошлом"
-            EditAnnouncementErrors.DelayedHidingMomentIsInPast -> "Момент отложенного сокрытия уже наступил в прошлом"
-            EditAnnouncementErrors.AutoHidingAnAlreadyHiddenAnnouncement -> "Нельзя задать момент отложенного сокрытия объявлению, которое уже было скрыто"
-            EditAnnouncementErrors.AutoPublishingPublishedAndNonHiddenAnnouncement -> "Нельзя задать момент автоматической публикации объявлению, которое уже было опубликовано"
-            EditAnnouncementErrors.CannotDetachSurvey -> "Нельзя открепить опрос"
-            else -> "Непредвиденная ошибка при изменении объявления. Повторите попытку позднее"
-        }
+    private fun constructCreateErrorDialogContent(error:  EditAnnouncementErrorsAggregate?): String {
+        if (error?.editAnnouncementError != null)
+            return when (error.editAnnouncementError) {
+                EditAnnouncementErrors.ContentEmpty -> "Текст объявления не должен быть пустым"
+                EditAnnouncementErrors.AudienceEmpty -> "Нельзя очистить аудиторию объявления"
+                EditAnnouncementErrors.AnnouncementEditingForbidden -> "У вас недостаточно прав для изменения этого объявления"
+                EditAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено. Повторите попытку позднее"
+                EditAnnouncementErrors.AnnouncementCategoriesDoesNotExist -> "Категория объявлений не найдена. Повторите попытку позднее"
+                EditAnnouncementErrors.AttachmentsDoNotExist -> "Вложение не найдено. Повторите попытку позднее"
+                EditAnnouncementErrors.PieceOfAudienceDoesNotExist -> "Пользователь не найден. Повторите попытку позднее"
+                EditAnnouncementErrors.DelayedPublishingMomentIsInPast -> "Момент отложенной публикации уже наступил в прошлом"
+                EditAnnouncementErrors.DelayedHidingMomentIsInPast -> "Момент отложенного сокрытия уже наступил в прошлом"
+                EditAnnouncementErrors.AutoHidingAnAlreadyHiddenAnnouncement -> "Нельзя задать момент отложенного сокрытия объявлению, которое уже было скрыто"
+                EditAnnouncementErrors.AutoPublishingPublishedAndNonHiddenAnnouncement -> "Нельзя задать момент автоматической публикации объявлению, которое уже было опубликовано"
+                EditAnnouncementErrors.CannotDetachSurvey -> "Нельзя открепить опрос"
+                else -> "Непредвиденная ошибка при изменении объявления. Повторите попытку позднее"
+            }
+
+        if (error?.createSurveyError != null)
+            return when (error.createSurveyError) {
+                CreateSurveyErrors.CreateSurveyForbidden -> "У вас недостаточно прав для создания опроса"
+                CreateSurveyErrors.SurveyContainsQuestionSerialsDuplicates -> "Опрос содержит вопросы с одинаковыми порядковыми номерами"
+                CreateSurveyErrors.QuestionContainsAnswersSerialsDuplicates -> "Вопрос(ы) содержит варианты ответов с одинаковыми порядковыми номерами"
+                else -> "Непредвиденная ошибка при создании опроса. Повторите попытку"
+            }
+
+        if (error?.createFilesError != null)
+            return when (error.createFilesError) {
+                else -> "Непредвиденная ошибка при создании файлов. Повторите попытку"
+            }
+
+        return "Непредвиденная ошибка при изменении объявления. Повторите попытку позднее"
     }
 }

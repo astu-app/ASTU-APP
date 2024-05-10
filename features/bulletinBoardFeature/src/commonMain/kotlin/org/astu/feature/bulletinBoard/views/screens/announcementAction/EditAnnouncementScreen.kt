@@ -52,7 +52,7 @@ class EditAnnouncementScreen(
                     ) {
                         Button(
                             enabled = editor.canEdit(),
-                            onClick = { },
+                            onClick = { viewModel.edit() },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = CurrentColorScheme.surface,
                                 disabledContainerColor = CurrentColorScheme.surface,

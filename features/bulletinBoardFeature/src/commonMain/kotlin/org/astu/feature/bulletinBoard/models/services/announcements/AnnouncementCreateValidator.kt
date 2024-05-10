@@ -16,9 +16,10 @@ class AnnouncementCreateValidator(private val announcement: CreateAnnouncementCo
             .plus(announcement.delayedPublicationTimeMinutes.value * 60_000)
 
         return announcement.textContent.value.isNotBlank()
+                && announcement.selectedUserIds.isNotEmpty()
                 && isDelayedPublicationMomentValid(nowMillis, delayedPublicationMomentMillis, delayedHidingMomentMillis)
                 && isDelayedHidingMomentValid(nowMillis, delayedPublicationMomentMillis, delayedHidingMomentMillis)
-                && isSurveyValid()
+                && isSurveyValid(nowMillis)
     }
 
 
@@ -58,11 +59,11 @@ class AnnouncementCreateValidator(private val announcement: CreateAnnouncementCo
         return valid
     }
 
-    private fun isSurveyValid(): Boolean {
+    private fun isSurveyValid(nowMillis: Long): Boolean {
         val surveyValue = announcement.survey.value
 
         val surveyIsNotNull = surveyValue != null
-        val surveyIsValid = if (surveyIsNotNull) surveyValue!!.isValid() else true
+        val surveyIsValid = if (surveyIsNotNull) surveyValue!!.isValid(nowMillis) else true
         return surveyIsValid
     }
 }
