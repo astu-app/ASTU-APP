@@ -3,6 +3,7 @@ package org.astu.feature.bulletinBoard.models.dataSoruces
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.HidePostedAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementSummary
@@ -13,6 +14,12 @@ interface PublishedAnnouncementDataSource {
      * @return Полученный список объявления или null, если запрос выполнен неуспешно
      */
     suspend fun getList(): ContentWithError<List<AnnouncementSummary>, GetPostedAnnouncementListErrors>
+
+    /**
+     * Выполнить запрос на сокрытие опубликованного объявления
+     * @return Код ошибки или null, если запрос выполнен неуспешно
+     */
+    suspend fun hide(id: Uuid): HidePostedAnnouncementErrors?
 
     /**
      * Выполнить запрос на получение деталей объявления

@@ -8,13 +8,13 @@ object AnnouncementSummaryMappers {
     @JvmName("AnnouncementSummaryToPresentation")
     fun AnnouncementSummary.toPresentation(): AnnouncementSummaryContent =
         AnnouncementSummaryContent(
-            this.id,
-            this.author,
-            this.publicationTime,
-            this.text,
-            this.viewed,
-            this.audienceSize,
-            mapAttachments(this.files, this.surveys)
+            id = this.id,
+            author = this.author,
+            publicationTime = this.publicationTime,
+            text = this.text,
+            viewed = this.viewed,
+            audienceSize = this.audienceSize,
+            attachments = mapAttachments(this.files, this.surveys)
         )
 
     @JvmName("AnnouncementSummaryCollectionToPresentations")

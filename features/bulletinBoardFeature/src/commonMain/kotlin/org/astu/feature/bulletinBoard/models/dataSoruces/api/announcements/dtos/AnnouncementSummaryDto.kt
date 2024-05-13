@@ -20,7 +20,7 @@ data class AnnouncementSummaryDto (
     val id: String,
     val authorName: String,
     val content: String,
-    val publishedAt: LocalDateTime,
+    val publishedAt: LocalDateTime?,
     val viewsCount: Int,
     val audienceSize: Int,
     val files: List<FileSummaryDto>?,

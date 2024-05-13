@@ -22,7 +22,7 @@ class ApiSurveyDataSource : SurveyDataSource {
     private val client by GlobalDIContext.inject<HttpClient>()
 
     override suspend fun create(survey: CreateSurvey): ContentWithError<Uuid, CreateSurveyErrors> {
-        var dto = survey.toDto()
+        val dto = survey.toDto()
         val response = client.post("api/surveys/create") {
             contentType(ContentType.Application.Json)
             setBody(dto)
@@ -50,7 +50,7 @@ class ApiSurveyDataSource : SurveyDataSource {
     }
 
     override suspend fun close(id: Uuid): CloseSurveyErrors? {
-        val dto = id.toString()
+        val dto = "\"$id\""
         val response = client.post("api/surveys/close-survey") {
             contentType(ContentType.Application.Json)
             setBody(dto)

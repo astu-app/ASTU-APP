@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.screens.announcementAction
+package org.astu.feature.bulletinBoard.views.screens.announcements.actions
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,23 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
-import com.benasher44.uuid.Uuid
-import org.astu.feature.bulletinBoard.viewModels.announcements.EditAnnouncementViewModel
-import org.astu.feature.bulletinBoard.views.components.announcements.editing.AnnouncementEditor
+import org.astu.feature.bulletinBoard.viewModels.announcements.actions.CreateAnnouncementViewModel
+import org.astu.feature.bulletinBoard.views.components.announcements.creation.AnnouncementCreator
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
 
-class EditAnnouncementScreen(
-    private val announcementId: Uuid,
-    private val onReturn: () -> Unit
-) : Screen {
+class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel { EditAnnouncementViewModel(announcementId, onReturn) }
-        val editor = AnnouncementEditor(viewModel)
+        val viewModel = rememberScreenModel { CreateAnnouncementViewModel(onReturn) }
+        val creator = AnnouncementCreator(viewModel)
 
-        AnnouncementActionScreenScaffold (
+        AnnouncementActionScreenScaffold(
             onReturn = onReturn,
             topBarTitle = {
                 Row(
@@ -40,13 +36,15 @@ class EditAnnouncementScreen(
                         .fillMaxWidth()
                         .padding(end = 4.dp)
                 ) {
-                    Text("Редактировать")
+                    Text("Новое объявление")
                 }
             },
             actions = {
                 Button(
-                    enabled = editor.canEdit(),
-                    onClick = { viewModel.edit() },
+                    enabled = creator.canCreate(),
+                    onClick = {
+                        viewModel.create()
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = CurrentColorScheme.surface,
                         disabledContainerColor = CurrentColorScheme.surface,
@@ -54,20 +52,20 @@ class EditAnnouncementScreen(
                     )
                 ) {
                     Text(
-                        text = "Сохранить",
+                        text = "Создать",
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
             }
         ) {
             val state by viewModel.state.collectAsState()
-            when(state) {
-                EditAnnouncementViewModel.State.EditContentLoading -> Loading()
-                EditAnnouncementViewModel.State.EditingAnnouncement -> editor.Content(editor.getDefaultModifier())
-                EditAnnouncementViewModel.State.EditContentLoadingError -> showErrorDialog(viewModel)
-                EditAnnouncementViewModel.State.ChangesUploading -> Loading()
-                EditAnnouncementViewModel.State.ChangesUploadingDone -> onReturn()
-                EditAnnouncementViewModel.State.ChangesUploadingError -> showErrorDialog(viewModel)
+            when (state) {
+                CreateAnnouncementViewModel.State.CreateContentLoading -> Loading()
+                CreateAnnouncementViewModel.State.CreatingAnnouncement -> creator.Content(creator.getDefaultModifier())
+                CreateAnnouncementViewModel.State.CreateContentLoadError -> showErrorDialog(viewModel)
+                CreateAnnouncementViewModel.State.NewAnnouncementUploading -> Loading()
+                CreateAnnouncementViewModel.State.NewAnnouncementUploadingDone -> onReturn()
+                CreateAnnouncementViewModel.State.NewAnnouncementUploadError -> showErrorDialog(viewModel)
             }
 
             if (viewModel.showErrorDialog.value) {
@@ -83,7 +81,7 @@ class EditAnnouncementScreen(
 
 
 
-    private fun showErrorDialog(viewModel: EditAnnouncementViewModel) {
+    private fun showErrorDialog(viewModel: CreateAnnouncementViewModel) {
         viewModel.showErrorDialog.value = true
     }
 }

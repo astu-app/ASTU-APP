@@ -8,47 +8,44 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.DeleteAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.HidePostedAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.services.surveys.SurveyService
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetDelayedPublishedAnnouncementsErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.PublishImmediatelyDelayedAnnouncementErrors
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 
-class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(State.Loading) {
+class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScreenModel<DelayedPublishedAnnouncementsViewModel.State>(State.Loading) {
     sealed class State {
         data object Loading : State()
         data object LoadingDone : State()
         data object LoadingAnnouncementsError : State()
-        data object StoppingSurvey : State()
-        data object StoppingSurveyError : State()
-        data object HidingAnnouncement : State()
-        data object HidingAnnouncementError : State()
+        data object PublishingAnnouncement : State()
+        data object PublishingAnnouncementError : State()
         data object DeletingAnnouncement : State()
         data object DeletingAnnouncementError : State()
     }
 
-    private val announcementModel: AnnouncementModel = AnnouncementModel()
-    private val surveyService: SurveyService = SurveyService()
+    private val model: AnnouncementModel = AnnouncementModel()
     var content: SnapshotStateList<AnnouncementSummaryContent> = mutableStateListOf()
 
     private val unexpectedErrorTitle: String = "Ошибка"
-    private val unexpectedErrorBody: String = "Неожиданная ошибка. Повторите попытку"
-    var errorDialogLabel by mutableStateOf(unexpectedErrorTitle)
+    private val unexpectedErrorBody: String = "Непредвиденная ошибка при загрузке списка объявлений, ожидающих отложенную публикацию. Повторите попытку"
+    val errorDialogLabel by mutableStateOf(unexpectedErrorTitle)
     var errorDialogBody by mutableStateOf(unexpectedErrorBody)
     var showErrorDialog by mutableStateOf(false)
     var onErrorDialogTryAgainRequest by mutableStateOf({ })
     var onErrorDialogDismissRequest by mutableStateOf({ })
 
     init {
-        mutableState.value = State.Loading
         loadAnnouncements()
     }
 
     fun loadAnnouncements() {
         screenModelScope.launch {
             try {
+                mutableState.value = State.Loading
+
                 content.clear()
 
-                val announcements = announcementModel.getAnnouncementList()
+                val announcements = model.getDelayedPublishedAnnouncementList()
                 if (announcements.isContentValid) {
                     content.addAll(announcements.content!!)
                     mutableState.value = State.LoadingDone
@@ -65,36 +62,12 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         }
     }
 
-    fun closeSurveys(surveyIds: List<Uuid>) {
-        screenModelScope.launch {
-            try {
-                content.clear()
-
-                surveyIds.forEach { surveyId ->
-                    val error = surveyService.close(surveyId)
-                    if (error != null) {
-                        mutableState.value = State.LoadingDone
-                        return@launch
-                    } else {
-                        constructAnnouncementsLoadingErrorDialogContent(error)
-                        mutableState.value = State.StoppingSurveyError
-                    }
-                }
-
-                mutableState.value = State.LoadingDone
-            } catch (e: Exception) {
-                constructAnnouncementsLoadingErrorDialogContent()
-                mutableState.value = State.StoppingSurveyError
-            }
-        }
-    }
-
     fun delete(id: Uuid) {
         screenModelScope.launch {
             try {
                 mutableState.value = State.DeletingAnnouncement
 
-                val error = announcementModel.delete(id)
+                val error = model.delete(id)
                 if (error != null) {
                     constructAnnouncementDeletingErrorDialogContent(id, error)
                     mutableState.value = State.DeletingAnnouncementError
@@ -111,15 +84,15 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         }
     }
 
-    fun hide(id: Uuid) {
+    fun publishImmediately(id: Uuid) {
         screenModelScope.launch {
             try {
-                mutableState.value = State.HidingAnnouncement
+                mutableState.value = State.PublishingAnnouncement
 
-                val error = announcementModel.hide(id)
+                val error = model.publishImmediately(id)
                 if (error != null) {
-                    constructAnnouncementHidingErrorDialogContent(id, error)
-                    mutableState.value = State.HidingAnnouncementError
+                    constructAnnouncementPublishingErrorDialogContent(id, error)
+                    mutableState.value = State.PublishingAnnouncementError
 
                 } else {
                     mutableState.value = State.LoadingDone
@@ -127,17 +100,17 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
                 }
 
             } catch (e: Exception) {
-                constructAnnouncementHidingErrorDialogContent(id)
-                mutableState.value = State.HidingAnnouncementError
+                constructAnnouncementPublishingErrorDialogContent(id)
+                mutableState.value = State.PublishingAnnouncementError
             }
         }
     }
 
 
 
-    private fun constructAnnouncementsLoadingErrorDialogContent(error: GetPostedAnnouncementListErrors? = null) {
+    private fun constructAnnouncementsLoadingErrorDialogContent(error: GetDelayedPublishedAnnouncementsErrors? = null) {
         errorDialogBody = when (error) {
-            GetPostedAnnouncementListErrors.PostedAnnouncementsListAccessForbidden -> "У вас недостаточно прав для просмотра ленты объявлений"
+            GetDelayedPublishedAnnouncementsErrors.GetDelayedPublishingAnnouncementListResponsesAccessForbidden -> "У вас недостаточно прав для просмотра списка объявлений, ожидающих отложенного сокрытия"
             else -> unexpectedErrorBody
         }
         onErrorDialogTryAgainRequest = {
@@ -146,6 +119,7 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         }
         onErrorDialogDismissRequest = {
             showErrorDialog = false
+            onReturn.invoke()
         }
     }
 
@@ -164,16 +138,14 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         }
     }
 
-    private fun constructAnnouncementHidingErrorDialogContent(announcementId: Uuid, error: HidePostedAnnouncementErrors? = null) {
+    private fun constructAnnouncementPublishingErrorDialogContent(announcementId: Uuid, error: PublishImmediatelyDelayedAnnouncementErrors? = null) {
         errorDialogBody = when (error) {
-            HidePostedAnnouncementErrors.AnnouncementHidingForbidden -> "У вас недостаточно прав для сокрытия объявления"
-            HidePostedAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            HidePostedAnnouncementErrors.AnnouncementAlreadyHidden -> "Нельзя скрыть уже скрытое объявление"
-            HidePostedAnnouncementErrors.AnnouncementNotYetPublished -> "Нельзя скрыть объявление, которое еще не было опубликовано"
+            PublishImmediatelyDelayedAnnouncementErrors.ImmediatePublishingForbidden -> "У вас недостаточно прав для немедленной публикации объявления"
+            PublishImmediatelyDelayedAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
             else -> unexpectedErrorBody
         }
         onErrorDialogTryAgainRequest = {
-            hide(announcementId)
+            publishImmediately(announcementId)
             showErrorDialog = false
         }
         onErrorDialogDismissRequest = {

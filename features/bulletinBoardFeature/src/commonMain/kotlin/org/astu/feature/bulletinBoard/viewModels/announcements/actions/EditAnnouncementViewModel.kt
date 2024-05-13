@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.viewModels.announcements
+package org.astu.feature.bulletinBoard.viewModels.announcements.actions
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -191,14 +191,14 @@ class EditAnnouncementViewModel(
         if (contentDelayedHidingEnabled != originalDelayedHidingEnabled) return true
 
         // contentDelayedHidingEnabled == true && originalDelayedHidingEnabled == true
-        return content.delayedHidingAt == original.delayedPublishingAt
+        return content.delayedHidingAt == original.delayedHidingAt
     }
 
     private fun getChangedDelayedHidingMoment(
         content: EditAnnouncementContent,
         original: ContentForAnnouncementEditing
     ): LocalDateTime? {
-        return if (isDelayedHidingChanged(content, original)) content.delayedPublicationAt else null
+        return if (isDelayedHidingChanged(content, original)) content.delayedHidingAt else null
     }
 
     private fun setErrorDialogStateForEditContentLoading(error:  GetAnnouncementEditContentErrors? = null) {

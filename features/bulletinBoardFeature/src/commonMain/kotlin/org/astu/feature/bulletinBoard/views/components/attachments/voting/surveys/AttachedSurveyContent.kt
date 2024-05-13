@@ -18,7 +18,12 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.questi
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.VotedQuestionContent
 import org.astu.infrastructure.components.ActionFailedDialog
 
-class AttachedSurveyContent(val id: Uuid, questions: List<QuestionContentBase>, val isVotedByUser: Boolean) : SurveyContentBase(questions) {
+class AttachedSurveyContent(
+    val id: Uuid,
+    questions: List<QuestionContentBase>,
+    val isVotedByUser: Boolean,
+    val isOpen: Boolean,
+) : SurveyContentBase(questions) {
     @Composable
     override fun Content(modifier: Modifier) {
         val viewModel = remember { AttachedSurveyViewModel(this, isVotedByUser) }

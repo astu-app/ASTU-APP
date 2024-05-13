@@ -8,47 +8,44 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.DeleteAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.HidePostedAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.services.surveys.SurveyService
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetHiddenAnnouncementListErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.RestoreHiddenAnnouncementErrors
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 
-class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(State.Loading) {
+class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScreenModel<HiddenAnnouncementsViewModel.State>(State.Loading) {
     sealed class State {
         data object Loading : State()
         data object LoadingDone : State()
         data object LoadingAnnouncementsError : State()
-        data object StoppingSurvey : State()
-        data object StoppingSurveyError : State()
-        data object HidingAnnouncement : State()
-        data object HidingAnnouncementError : State()
         data object DeletingAnnouncement : State()
         data object DeletingAnnouncementError : State()
+        data object RestoringAnnouncement : State()
+        data object RestoringAnnouncementError : State()
     }
 
-    private val announcementModel: AnnouncementModel = AnnouncementModel()
-    private val surveyService: SurveyService = SurveyService()
+    private val model: AnnouncementModel = AnnouncementModel()
     var content: SnapshotStateList<AnnouncementSummaryContent> = mutableStateListOf()
 
     private val unexpectedErrorTitle: String = "Ошибка"
-    private val unexpectedErrorBody: String = "Неожиданная ошибка. Повторите попытку"
-    var errorDialogLabel by mutableStateOf(unexpectedErrorTitle)
+    private val unexpectedErrorBody: String = "Непредвиденная ошибка при загрузке списка скрытых объявлений. Повторите попытку"
+    val errorDialogLabel by mutableStateOf(unexpectedErrorTitle)
     var errorDialogBody by mutableStateOf(unexpectedErrorBody)
     var showErrorDialog by mutableStateOf(false)
     var onErrorDialogTryAgainRequest by mutableStateOf({ })
     var onErrorDialogDismissRequest by mutableStateOf({ })
 
     init {
-        mutableState.value = State.Loading
         loadAnnouncements()
     }
 
     fun loadAnnouncements() {
         screenModelScope.launch {
             try {
+                mutableState.value = State.Loading
+
                 content.clear()
 
-                val announcements = announcementModel.getAnnouncementList()
+                val announcements = model.getHiddenAnnouncementList()
                 if (announcements.isContentValid) {
                     content.addAll(announcements.content!!)
                     mutableState.value = State.LoadingDone
@@ -65,36 +62,12 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         }
     }
 
-    fun closeSurveys(surveyIds: List<Uuid>) {
-        screenModelScope.launch {
-            try {
-                content.clear()
-
-                surveyIds.forEach { surveyId ->
-                    val error = surveyService.close(surveyId)
-                    if (error != null) {
-                        mutableState.value = State.LoadingDone
-                        return@launch
-                    } else {
-                        constructAnnouncementsLoadingErrorDialogContent(error)
-                        mutableState.value = State.StoppingSurveyError
-                    }
-                }
-
-                mutableState.value = State.LoadingDone
-            } catch (e: Exception) {
-                constructAnnouncementsLoadingErrorDialogContent()
-                mutableState.value = State.StoppingSurveyError
-            }
-        }
-    }
-
     fun delete(id: Uuid) {
         screenModelScope.launch {
             try {
                 mutableState.value = State.DeletingAnnouncement
 
-                val error = announcementModel.delete(id)
+                val error = model.delete(id)
                 if (error != null) {
                     constructAnnouncementDeletingErrorDialogContent(id, error)
                     mutableState.value = State.DeletingAnnouncementError
@@ -111,15 +84,15 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         }
     }
 
-    fun hide(id: Uuid) {
+    fun restore(id: Uuid) {
         screenModelScope.launch {
             try {
-                mutableState.value = State.HidingAnnouncement
+                mutableState.value = State.RestoringAnnouncement
 
-                val error = announcementModel.hide(id)
+                val error = model.restore(id)
                 if (error != null) {
-                    constructAnnouncementHidingErrorDialogContent(id, error)
-                    mutableState.value = State.HidingAnnouncementError
+                    constructAnnouncementRestoringErrorDialogContent(id, error)
+                    mutableState.value = State.RestoringAnnouncementError
 
                 } else {
                     mutableState.value = State.LoadingDone
@@ -127,17 +100,17 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
                 }
 
             } catch (e: Exception) {
-                constructAnnouncementHidingErrorDialogContent(id)
-                mutableState.value = State.HidingAnnouncementError
+                constructAnnouncementRestoringErrorDialogContent(id)
+                mutableState.value = State.RestoringAnnouncementError
             }
         }
     }
 
 
 
-    private fun constructAnnouncementsLoadingErrorDialogContent(error: GetPostedAnnouncementListErrors? = null) {
+    private fun constructAnnouncementsLoadingErrorDialogContent(error: GetHiddenAnnouncementListErrors? = null) {
         errorDialogBody = when (error) {
-            GetPostedAnnouncementListErrors.PostedAnnouncementsListAccessForbidden -> "У вас недостаточно прав для просмотра ленты объявлений"
+            GetHiddenAnnouncementListErrors.HiddenAnnouncementsListAccessForbidden -> "У вас недостаточно прав для просмотра списка скрытых объявлений"
             else -> unexpectedErrorBody
         }
         onErrorDialogTryAgainRequest = {
@@ -146,6 +119,7 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         }
         onErrorDialogDismissRequest = {
             showErrorDialog = false
+            onReturn.invoke()
         }
     }
 
@@ -164,16 +138,15 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         }
     }
 
-    private fun constructAnnouncementHidingErrorDialogContent(announcementId: Uuid, error: HidePostedAnnouncementErrors? = null) {
+    private fun constructAnnouncementRestoringErrorDialogContent(announcementId: Uuid, error: RestoreHiddenAnnouncementErrors? = null) {
         errorDialogBody = when (error) {
-            HidePostedAnnouncementErrors.AnnouncementHidingForbidden -> "У вас недостаточно прав для сокрытия объявления"
-            HidePostedAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            HidePostedAnnouncementErrors.AnnouncementAlreadyHidden -> "Нельзя скрыть уже скрытое объявление"
-            HidePostedAnnouncementErrors.AnnouncementNotYetPublished -> "Нельзя скрыть объявление, которое еще не было опубликовано"
+            RestoreHiddenAnnouncementErrors.RestoreForbidden -> "У вас недостаточно прав для восстановления объявления"
+            RestoreHiddenAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
+            RestoreHiddenAnnouncementErrors.AnnouncementNotHidden -> "Нельзя восстановить объявление, которое не было скрыто"
             else -> unexpectedErrorBody
         }
         onErrorDialogTryAgainRequest = {
-            hide(announcementId)
+            restore(announcementId)
             showErrorDialog = false
         }
         onErrorDialogDismissRequest = {

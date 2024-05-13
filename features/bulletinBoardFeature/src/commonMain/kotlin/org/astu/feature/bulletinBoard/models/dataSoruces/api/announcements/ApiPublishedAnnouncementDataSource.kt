@@ -1,21 +1,20 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements
 
 import com.benasher44.uuid.Uuid
-import com.benasher44.uuid.uuidFrom
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.PublishedAnnouncementDataSource
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.AnnouncementMappers.toModel
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.AnnouncementMappers.toModels
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.AnnouncementDetailsDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.AnnouncementSummaryDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.FileMappers.toModels
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.SurveyToModelMappers.toModels
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.HidePostedAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsuccessCode
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementSummary
 import org.astu.infrastructure.GlobalDIContext
@@ -31,18 +30,7 @@ class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
             return ContentWithError(null, error = readUnsuccessCode<GetPostedAnnouncementListErrors>(response))
         }
 
-        val announcements = response.body<Array<AnnouncementSummaryDto>>().map { announcement ->
-            AnnouncementSummary(
-                id = uuidFrom(announcement.id),
-                author = announcement.authorName,
-                publicationTime = announcement.publishedAt,
-                text = announcement.content,
-                viewed = announcement.viewsCount,
-                audienceSize = announcement.audienceSize,
-                files = announcement.files.toModels(),
-                surveys = announcement.surveys?.toModels() ?: emptyList()
-            )
-        }
+        val announcements = response.body<Array<AnnouncementSummaryDto>>().toModels()
         return ContentWithError(announcements, null)
     }
 
@@ -56,22 +44,19 @@ class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
         }
 
         val dto = response.body<AnnouncementDetailsDto>()
-        return ContentWithError(
-            AnnouncementDetails(
-                id = uuidFrom(dto.id),
-                content = dto.content,
-                authorName = dto.authorName,
-                viewsCount = dto.viewsCount,
-                audienceSize = dto.audienceSize,
-                files = dto.files.toModels(),
-                surveys = dto.surveys?.toModels() ?: emptyList(),
-                publishedAt = dto.publishedAt,
-                hiddenAt = dto.hiddenAt,
-                delayedPublishingAt = dto.delayedPublishingAt,
-                delayedHidingAt = dto.delayedHidingAt,
-                audience = dto.audience.toModels()
-            ),
-            error = null
-        )
+        return ContentWithError(dto.toModel(), error = null)
+    }
+
+    override suspend fun hide(id: Uuid): HidePostedAnnouncementErrors? {
+        val response = client.post("api/announcements/published/hide") {
+            contentType(ContentType.Application.Json)
+            setBody("\"$id\"")
+        }
+
+        if (!response.status.isSuccess()) {
+            return readUnsuccessCode<HidePostedAnnouncementErrors>(response)
+        }
+
+        return null
     }
 }

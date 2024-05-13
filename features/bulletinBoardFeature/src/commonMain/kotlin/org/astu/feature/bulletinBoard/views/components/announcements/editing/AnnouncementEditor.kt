@@ -7,7 +7,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.astu.feature.bulletinBoard.viewModels.announcements.EditAnnouncementViewModel
+import org.astu.feature.bulletinBoard.viewModels.announcements.actions.EditAnnouncementViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.common.*
 import org.astu.feature.bulletinBoard.views.components.announcements.details.AnnouncementDetailsHeader
 import org.astu.feature.bulletinBoard.views.entities.ContentProvider

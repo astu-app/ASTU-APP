@@ -2,6 +2,7 @@ package org.astu.feature.bulletinBoard.models.dataSoruces
 
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrorsAggregate
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.DeleteAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrorsAggregate
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
@@ -31,4 +32,11 @@ interface GeneralAnnouncementDataSource {
      * @return Код неуспешного ответа или null, если запрос выполнен успешно
      */
     suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrorsAggregate?
+
+    /**
+     * Выполнить запрос на редактирование объявления
+     * @param id идентификатор удаляемого объявления
+     * @return Код неуспешного ответа или null, если запрос выполнен успешно
+     */
+    suspend fun delete(id: Uuid): DeleteAnnouncementErrors?
 }

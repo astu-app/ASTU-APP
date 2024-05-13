@@ -36,11 +36,11 @@ object AttachmentToPresentationMappers {
 
     /* *************************************** Survey *************************************** */
     fun SurveyDetails.votedSurveyToPresentation(): SurveyContentBase =
-        AttachedSurveyContent(this.id, mapVotedQuestions(this.questions, this.votersAmount), this.isVotedByUser)
+        AttachedSurveyContent(this.id, mapVotedQuestions(this.questions, this.votersAmount), this.isVotedByUser, this.isOpen)
 
     @JvmName("SurveyDetailsToPresentation")
     fun SurveyDetails.toPresentation(): SurveyContentBase =
-        AttachedSurveyContent(this.id, mapQuestions(this.questions, this.votersAmount, this.voteFinishedAt != null, this.isOpen), this.isVotedByUser)
+        AttachedSurveyContent(this.id, mapQuestions(this.questions, this.votersAmount, this.voteFinishedAt != null, this.isOpen), this.isVotedByUser, this.isOpen)
 
     @JvmName("SurveyDetailsCollectionToPresentations")
     fun Collection<SurveyDetails>?.toPresentations(): List<AttachmentContentBase> =

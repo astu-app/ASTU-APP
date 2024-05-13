@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.screens.announcementAction
+package org.astu.feature.bulletinBoard.views.screens.announcements.actions
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
@@ -13,7 +13,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.benasher44.uuid.Uuid
-import org.astu.feature.bulletinBoard.viewModels.announcements.AnnouncementDetailsViewModel
+import org.astu.feature.bulletinBoard.viewModels.announcements.actions.AnnouncementDetailsViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.details.AnnouncementDetails
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading

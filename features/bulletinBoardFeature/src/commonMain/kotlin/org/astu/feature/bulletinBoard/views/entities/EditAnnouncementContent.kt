@@ -41,7 +41,7 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
     lateinit var delayedPublicationTimeHours: MutableState<Int>
     lateinit var delayedPublicationTimeMinutes: MutableState<Int>
     lateinit var delayedPublicationTimeString: MutableState<String>
-    val delayedPublicationAt: LocalDateTime?
+    val delayedPublicationAt: LocalDateTime
         get() {
             val date = getDateTimeFromEpochMillis(delayedPublicationDateMillis.value)
             val time = LocalTime(delayedPublicationTimeHours.value, delayedPublicationTimeMinutes.value)
@@ -55,7 +55,7 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
     lateinit var delayedHidingTimeHours: MutableState<Int>
     lateinit var delayedHidingTimeMinutes: MutableState<Int>
     lateinit var delayedHidingTimeString: MutableState<String>
-    val delayedHidingAt: LocalDateTime?
+    val delayedHidingAt: LocalDateTime
         get() {
             val date = getDateTimeFromEpochMillis(delayedHidingDateMillis.value)
             val time = LocalTime(delayedHidingTimeHours.value, delayedHidingTimeMinutes.value)

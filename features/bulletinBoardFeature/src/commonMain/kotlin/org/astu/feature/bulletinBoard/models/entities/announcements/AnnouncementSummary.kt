@@ -8,7 +8,7 @@ import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details
 data class AnnouncementSummary (
     val id: Uuid,
     val author: String,
-    val publicationTime: LocalDateTime,
+    val publicationTime: LocalDateTime?,
     val text: String,
     val viewed: Int,
     val audienceSize: Int,

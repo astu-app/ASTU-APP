@@ -2,12 +2,14 @@ package org.astu.feature.bulletinBoard.views.components.announcements.summary.dr
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.StopCircle
+import androidx.compose.material.icons.outlined.Publish
 
-abstract class DropdownMenuContentBase(
+class DelayedPublishedAnnouncementDropdownMenuContent(
     onInfoClick: () -> Unit,
-    onStopSurveyClick: () -> Unit,
+    onPublishImmediately: () -> Unit,
+    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
     val items: MutableList<AnnouncementDropdownMenuItemContent> = mutableListOf(
@@ -17,9 +19,14 @@ abstract class DropdownMenuContentBase(
             onClick = onInfoClick
         ),
         AnnouncementDropdownMenuItemContent(
-            name = "Завершить опрос",
-            icon = Icons.Outlined.StopCircle,
-            onClick = onStopSurveyClick
+            name = "Опубликовать сейчас",
+            icon = Icons.Outlined.Publish,
+            onClick = onPublishImmediately
+        ),
+        AnnouncementDropdownMenuItemContent(
+            name = "Редактировать",
+            icon = Icons.Outlined.Edit,
+            onClick = onEditClick,
         ),
         AnnouncementDropdownMenuItemContent(
             name = "Удалить",

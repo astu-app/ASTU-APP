@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.viewModels.announcements
+package org.astu.feature.bulletinBoard.viewModels.announcements.actions
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -111,15 +111,20 @@ class AnnouncementDetailsViewModel (
     }
 
     private fun surveyToViewModel(survey: SurveyDetails): AttachedSurveyContent {
-        return AttachedSurveyContent(survey.id, questionsToViewModel(survey.questions, survey.votersAmount), survey.isVotedByUser)
+        return AttachedSurveyContent(
+            id = survey.id,
+            questions = questionsToViewModel(survey.questions, survey.votersAmount),
+            isVotedByUser = survey.isVotedByUser,
+            isOpen = survey.isOpen
+        )
     }
 
-    private fun questionsToViewModel(questions: List<QuestionDetails>, surveyVotersAmoune: Int): List<QuestionContentBase> {
+    private fun questionsToViewModel(questions: List<QuestionDetails>, surveyVotersAmount: Int): List<QuestionContentBase> {
         return questions.map {
             VotedQuestionContent(
-                it.id,
-                it.content,
-                answersToViewModel(it.answers, surveyVotersAmoune)
+                id = it.id,
+                text = it.content,
+                answers = answersToViewModel(it.answers, surveyVotersAmount)
             )
         }
     }

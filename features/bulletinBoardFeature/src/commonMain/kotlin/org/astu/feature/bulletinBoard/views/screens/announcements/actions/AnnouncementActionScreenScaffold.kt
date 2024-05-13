@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.screens.announcementAction
+package org.astu.feature.bulletinBoard.views.screens.announcements.actions
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize

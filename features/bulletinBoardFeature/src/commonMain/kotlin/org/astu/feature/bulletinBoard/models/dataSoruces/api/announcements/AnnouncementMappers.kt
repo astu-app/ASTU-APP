@@ -1,17 +1,14 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements
 
 import com.benasher44.uuid.uuidFrom
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.ContentForAnnouncementUpdatingDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.CreateAnnouncementDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.UpdateAnnouncementDto
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.FileMappers.toModels
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.SurveyToModelMappers.toModels
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.dtos.UpdateIdentifierListDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.mappers.UpdateIdentifierListMappers.toDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupMappers.toModel
-import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
-import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
-import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
+import org.astu.feature.bulletinBoard.models.entities.announcements.*
 import kotlin.jvm.JvmName
 
 object AnnouncementMappers {
@@ -33,7 +30,7 @@ object AnnouncementMappers {
         )
 
     /**
-     * @param attachmentIds идентфиикаторы вложений в фармате uuid
+     * @param attachmentIds идентификаторы вложений в формате uuid
      */
     fun CreateAnnouncement.toDto(attachmentIds: List<String>): CreateAnnouncementDto =
         CreateAnnouncementDto(
@@ -59,5 +56,43 @@ object AnnouncementMappers {
             delayedPublishingAt = this.delayedPublishingAt,
             delayedHidingAtChanged = this.delayedHidingAtChanged,
             delayedHidingAt = this.delayedHidingAt,
+        )
+
+    @JvmName("AnnouncementSummaryDtoArrayToModels")
+    fun Array<AnnouncementSummaryDto>.toModels(): List<AnnouncementSummary> =
+        this.map { it.toModel() }
+
+    @JvmName("AnnouncementSummaryDtoCollectionToModels")
+    fun Collection<AnnouncementSummaryDto>.toModels(): List<AnnouncementSummary> =
+        this.map { it.toModel() }
+
+    @JvmName("AnnouncementSummaryDtoToModel")
+    fun AnnouncementSummaryDto.toModel(): AnnouncementSummary =
+        AnnouncementSummary(
+            id = uuidFrom(this.id),
+            author = this.authorName,
+            publicationTime = this.publishedAt,
+            text = this.content,
+            viewed = this.viewsCount,
+            audienceSize = this.audienceSize,
+            files = this.files.toModels(),
+            surveys = this.surveys?.toModels() ?: emptyList()
+        )
+
+    @JvmName("AnnouncementDetailsDtoToModel")
+    fun AnnouncementDetailsDto.toModel(): AnnouncementDetails =
+        AnnouncementDetails(
+            id = uuidFrom(this.id),
+            content = this.content,
+            authorName = this.authorName,
+            viewsCount = this.viewsCount,
+            audienceSize = this.audienceSize,
+            files = this.files.toModels(),
+            surveys = this.surveys?.toModels() ?: emptyList(),
+            publishedAt = this.publishedAt,
+            hiddenAt = this.hiddenAt,
+            delayedPublishingAt = this.delayedPublishingAt,
+            delayedHidingAt = this.delayedHidingAt,
+            audience = this.audience.toModels()
         )
 }

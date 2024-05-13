@@ -4,13 +4,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.HideSource
 
-class AuthorDropdownMenuContent(
+class AuthorDropdownMenuContent (
     onInfoClick: () -> Unit,
-    onEditClick: () -> Unit,
-    onStopSurveyClick: () -> Unit,
-    onHideClick: () -> Unit,
     onDeleteClick: () -> Unit,
-) : DropdownMenuContentBase(onInfoClick, onStopSurveyClick, onDeleteClick) {
+    onStopSurveyClick: (() -> Unit)?,
+    onEditClick: () -> Unit,
+    onHideClick: () -> Unit,
+) : PostedAnnouncementDropdownMenuContentBase(onInfoClick, onDeleteClick, onStopSurveyClick) {
+
     init {
         items.add(
             index = 1,

@@ -66,4 +66,32 @@ class AnnouncementModel {
     suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrorsAggregate? {
         return announcementRepository.edit(announcement)
     }
+
+    suspend fun delete(id: Uuid): DeleteAnnouncementErrors? {
+        return announcementRepository.delete(id)
+    }
+
+    suspend fun getHiddenAnnouncementList(): ContentWithError<List<AnnouncementSummaryContent>, GetHiddenAnnouncementListErrors> {
+        return announcementRepository.loadHiddenList()
+    }
+
+    suspend fun restore(id: Uuid): RestoreHiddenAnnouncementErrors? {
+        return announcementRepository.restore(id)
+    }
+
+    suspend fun hide(id: Uuid): HidePostedAnnouncementErrors? {
+        return announcementRepository.hide(id)
+    }
+
+    suspend fun getDelayedPublishedAnnouncementList(): ContentWithError<List<AnnouncementSummaryContent>, GetDelayedPublishedAnnouncementsErrors> {
+        return announcementRepository.getDelayedPublishedAnnouncementList()
+    }
+
+    suspend fun publishImmediately(id: Uuid): PublishImmediatelyDelayedAnnouncementErrors? {
+        return announcementRepository.publishImmediately(id)
+    }
+
+    suspend fun getDelayedHiddenAnnouncementList(): ContentWithError<List<AnnouncementSummaryContent>, GetDelayedHiddenAnnouncementListErrors> {
+        return announcementRepository.getDelayedHiddenAnnouncementList()
+    }
 }

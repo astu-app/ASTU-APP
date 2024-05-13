@@ -4,4 +4,4 @@ class AdminDropdownMenuContent(
     onInfoClick: () -> Unit,
     onStopSurveyClick: () -> Unit,
     onDeleteClick: () -> Unit,
-) : DropdownMenuContentBase(onInfoClick, onStopSurveyClick, onDeleteClick)
+) : PostedAnnouncementDropdownMenuContentBase(onInfoClick, onDeleteClick, onStopSurveyClick)

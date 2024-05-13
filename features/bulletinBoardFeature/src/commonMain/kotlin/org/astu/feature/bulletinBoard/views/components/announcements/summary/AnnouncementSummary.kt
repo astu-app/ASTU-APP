@@ -5,33 +5,28 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import co.touchlab.kermit.Logger
-import co.touchlab.kermit.Severity
-import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
-import org.astu.feature.bulletinBoard.views.components.announcements.summary.dropdownMenuContent.AuthorDropdownMenuContent
-import org.astu.feature.bulletinBoard.views.components.announcements.summary.dropdownMenuContent.DropdownMenuContentBase
 import org.astu.feature.bulletinBoard.views.components.attachments.Attachment
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
-import org.astu.feature.bulletinBoard.views.screens.announcementAction.AnnouncementDetailsScreen
-import org.astu.feature.bulletinBoard.views.screens.announcementAction.EditAnnouncementScreen
+import org.astu.feature.bulletinBoard.views.screens.announcements.actions.AnnouncementDetailsScreen
 import org.astu.infrastructure.theme.CurrentColorScheme
 
-@OptIn(FormatStringsInDatetimeFormats::class)
 @Composable
 fun AnnouncementSummary(
     content: AnnouncementSummaryContent,
+    announcementDropDown: @Composable (DpOffset, MutableState<Boolean>) -> Unit,
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .padding(
@@ -41,10 +36,8 @@ fun AnnouncementSummary(
 ) {
     val navigator = LocalNavigator.currentOrThrow
 
-    var showDropdownMenu by remember { mutableStateOf(false) }
+    val showDropdownMenu = remember { mutableStateOf(false) }
     var pressOffset by remember { mutableStateOf(DpOffset.Zero) }
-    var dropdownHeight by remember { mutableStateOf(0.dp) }
-    val density = LocalDensity.current
 
     Card(
         colors = CardDefaults.cardColors(
@@ -68,7 +61,7 @@ fun AnnouncementSummary(
                         },
                         onLongPress = {
                             pressOffset = DpOffset(it.x.toDp(), it.y.toDp())
-                            showDropdownMenu = true
+                            showDropdownMenu.value = true
                         }
                     )
                 }
@@ -103,58 +96,6 @@ fun AnnouncementSummary(
             }
         }
 
-        val dropdownMenuContent = remember {
-            createDropdownMenuContent(
-                openInfoScreen = { navigator.push(AnnouncementDetailsScreen(content.id) { navigator.pop() }) },
-                openEditScreen = { navigator.push(EditAnnouncementScreen(content.id) { navigator.pop() }) },
-            )
-        }
-        // при pressOffset == DpOffset.Zero левый верхний угол меню совпадает с верхним левым углом карты объявления
-        DropdownMenu(
-            expanded = showDropdownMenu,
-            onDismissRequest = { showDropdownMenu = false },
-            offset = pressOffset.copy(y = pressOffset.y + dropdownHeight),
-            modifier = Modifier.onSizeChanged { dropdownHeight = with(density) { it.height.toDp() } }
-        ) {
-            dropdownMenuContent.items.forEach { item ->
-                if (item.icon != null) {
-                    DropdownMenuItem(
-                        text = { Text(item.name) },
-                        onClick = {
-                            showDropdownMenu = false
-                            item.onClick()
-                        },
-                        leadingIcon = { Icon(item.icon, null) }
-                    )
-                } else {
-                    DropdownMenuItem(
-                        text = {
-                            Text(item.name)
-                            showDropdownMenu = false
-                        },
-                        onClick = item.onClick,
-                    )
-                }
-            }
-        }
+        announcementDropDown(pressOffset, showDropdownMenu)
     }
-}
-
-private fun createDropdownMenuContent(
-    openInfoScreen: () -> Unit,
-    openEditScreen: () -> Unit,
-): DropdownMenuContentBase {
-    return AuthorDropdownMenuContent(
-        onInfoClick = {
-            Logger.log(Severity.Info, "Dropdown", null, "On Info Click")
-            openInfoScreen()
-        },
-        onEditClick = {
-            Logger.log(Severity.Info, "Dropdown", null, "On Edit Click")
-            openEditScreen()
-        },
-        onStopSurveyClick = { Logger.log(Severity.Info, "Dropdown", null, "On StopSurvey Click") },
-        onHideClick = { Logger.log(Severity.Info, "Dropdown", null, "On Hide Click") },
-        onDeleteClick = { Logger.log(Severity.Info, "Dropdown", null, "On Delete Click") },
-    )
 }

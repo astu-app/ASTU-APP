@@ -9,10 +9,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.GeneralAnnouncementData
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.AnnouncementMappers.toDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.AnnouncementMappers.toModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.ContentForAnnouncementUpdatingDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrorsAggregate
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrorsAggregate
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.responses.UploadFilesErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.ApiSurveyDataSource
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
@@ -41,8 +38,8 @@ class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
             return CreateAnnouncementErrorsAggregate(createFilesError = newFileIdsContent.error)
         }
 
-        val newSurveyId = newSurveyIdContent!!.content // так как проверка на not-null вшита выше в newSurveyIdContent.isContentValid
-        val newFileIds = newFileIdsContent!!.content // так как проверка на not-null вшита выше в newFileIdsContent.isContentValid
+        val newSurveyId = newSurveyIdContent?.content
+        val newFileIds = newFileIdsContent?.content
 
         val dto = announcement.toDto(constructAttachmentIds(newSurveyId?.toString(), newFileIds))
         val response = client.post("api/announcements/create") {
@@ -68,7 +65,7 @@ class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
         if (!response.status.isSuccess())
             return ContentWithError(null, readUnsuccessCode<EditAnnouncementErrors>(response))
 
-        var dto = response.body<ContentForAnnouncementUpdatingDto>();
+        val dto = response.body<ContentForAnnouncementUpdatingDto>();
         return ContentWithError(dto.toModel(), error = null,)
     }
 
@@ -82,8 +79,8 @@ class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
             return EditAnnouncementErrorsAggregate(createFilesError = newFileIdsContent.error)
         }
 
-        val newSurveyId = newSurveyIdContent!!.content // так как проверка на not-null вшита выше в newSurveyIdContent.isContentValid
-        val newFileIds = newFileIdsContent!!.content // так как проверка на not-null вшита выше в newFileIdsContent.isContentValid
+        val newSurveyId = newSurveyIdContent?.content
+        val newFileIds = newFileIdsContent?.content
 
         val dto = announcement.toDto(constructAttachmentIds(newSurveyId?.toString(), newFileIds))
         val response = client.put("api/announcements/update") {
@@ -101,17 +98,30 @@ class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
         )
     }
 
+    override suspend fun delete(id: Uuid): DeleteAnnouncementErrors? {
+        val dto = "\"${id}\""
+        val response = client.delete("api/announcements/delete/") {
+            contentType(ContentType.Application.Json)
+            setBody(dto)
+        }
+
+        if (response.status.isSuccess())
+            return null
+
+        return readUnsuccessCode<DeleteAnnouncementErrors>(response)
+    }
+
 
 
     private suspend fun uploadSurvey(survey: CreateSurvey): ContentWithError<Uuid, CreateSurveyErrors> {
         return surveyDataSource.create(survey)
     }
 
-    private suspend fun uploadFiles(files: List<CreateFile>): ContentWithError<List<String>, UploadFilesErrors> {
-        return ContentWithError(content = null, error = null)
+    private fun uploadFiles(files: List<CreateFile>): ContentWithError<List<String>, UploadFilesErrors> {
+        return ContentWithError(content = null, error = null) // todo прикрутить файлы
     }
 
-    private suspend fun constructAttachmentIds(surveyId: String?, fileIds: List<String>?): List<String> {
+    private fun constructAttachmentIds(surveyId: String?, fileIds: List<String>?): List<String> {
         /*
          * всевозможные варианты:
          * null, null
