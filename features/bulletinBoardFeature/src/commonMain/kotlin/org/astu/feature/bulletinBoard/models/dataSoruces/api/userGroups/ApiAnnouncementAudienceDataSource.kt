@@ -13,15 +13,15 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.Use
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupSummaryWithMembersDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyResponses
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
-import org.astu.feature.bulletinBoard.models.entities.audience.AudienceHierarchy
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
 import org.astu.infrastructure.GlobalDIContext
 
 class ApiAnnouncementAudienceDataSource : AnnouncementAudienceDataSource {
     private val client: HttpClient by GlobalDIContext.inject<HttpClient>()
 
 
-    override suspend fun getAudienceForCreation(): ContentWithError<AudienceHierarchy, GetUserHierarchyResponses> {
+    override suspend fun getAudienceForCreation(): ContentWithError<UserGroupHierarchy, GetUserHierarchyResponses> {
         val response = client.get("api/usergroups/get-user-hierarchy")
 
         if (!response.status.isSuccess())
@@ -35,10 +35,10 @@ class ApiAnnouncementAudienceDataSource : AnnouncementAudienceDataSource {
 
 
     // todo вынести в класс с мапперами
-    private fun mapHierarchy(dto: UserGroupHierarchyDto): AudienceHierarchy {
+    private fun mapHierarchy(dto: UserGroupHierarchyDto): UserGroupHierarchy {
         val userGroupPlainMap = mapUserGroupsToPlainMap(dto.userGroups)
         val roots = dto.roots.map { mapUserGroup(it, userGroupPlainMap) }
-        return AudienceHierarchy(roots)
+        return UserGroupHierarchy(roots)
     }
 
     private fun mapUserGroup(nodeDto: UserGroupHierarchyNodeDto, userGroupPlainMap: Map<String, UserGroup>): UserGroup {

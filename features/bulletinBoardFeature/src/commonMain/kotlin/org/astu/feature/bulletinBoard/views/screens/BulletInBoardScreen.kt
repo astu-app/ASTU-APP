@@ -32,6 +32,7 @@ import org.astu.feature.bulletinBoard.views.screens.announcements.HiddenAnnounce
 import org.astu.feature.bulletinBoard.views.screens.announcements.actions.AnnouncementDetailsScreen
 import org.astu.feature.bulletinBoard.views.screens.announcements.actions.CreateAnnouncementScreen
 import org.astu.feature.bulletinBoard.views.screens.announcements.actions.EditAnnouncementScreen
+import org.astu.feature.bulletinBoard.views.screens.userGroups.UserGroupsScreen
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
@@ -150,7 +151,10 @@ class BulletInBoardScreen : Screen {
                     modifier = Modifier
                         .padding(5.dp)
                         .fillMaxWidth()
-                        .clickable { Logger.d("Пункт меню \"Группы пользователей\" выбран") }
+                        .clickable {
+                            val userGroupsScreen = UserGroupsScreen { navigator.pop() }
+                            navigator.push(userGroupsScreen)
+                        }
                         .padding(5.dp)
                 )
 

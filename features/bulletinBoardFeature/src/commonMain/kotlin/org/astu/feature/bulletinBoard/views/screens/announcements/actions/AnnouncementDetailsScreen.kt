@@ -15,6 +15,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.viewModels.announcements.actions.AnnouncementDetailsViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.details.AnnouncementDetails
+import org.astu.feature.bulletinBoard.views.screens.ActionScreenScaffold
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
@@ -28,7 +29,7 @@ class AnnouncementDetailsScreen(
         val viewModel = rememberScreenModel { AnnouncementDetailsViewModel(announcementId) }
         val navigator = LocalNavigator.currentOrThrow
 
-        AnnouncementActionScreenScaffold(
+        ActionScreenScaffold(
             onReturn = onReturn,
             topBarTitle = { Text("Объявление") },
             floatingActionButton = {

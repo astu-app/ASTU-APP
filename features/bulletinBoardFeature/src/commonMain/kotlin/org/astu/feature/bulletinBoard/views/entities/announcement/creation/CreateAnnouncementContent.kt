@@ -10,7 +10,7 @@ import com.benasher44.uuid.Uuid
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.astu.feature.bulletinBoard.models.entities.audience.AudienceHierarchy
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
 import org.astu.feature.bulletinBoard.views.components.attachments.files.models.CurrentlyAttachedFileContent
 import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileContentBase
 import org.astu.feature.bulletinBoard.views.dateTime.getDateString
@@ -20,7 +20,7 @@ import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.mappers.AudiencePresentationMapper
 import kotlin.time.Duration
 
-class CreateAnnouncementContent(audienceHierarchy: AudienceHierarchy) {
+class CreateAnnouncementContent(audienceHierarchy: UserGroupHierarchy) {
     var textContent: MutableState<String> = mutableStateOf("")
 
     val delayedPublicationEnabled: MutableState<Boolean> = mutableStateOf(false)

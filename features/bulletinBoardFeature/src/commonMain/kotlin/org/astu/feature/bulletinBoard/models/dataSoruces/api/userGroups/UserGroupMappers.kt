@@ -5,19 +5,19 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.Use
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupHierarchyNodeDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupSummaryWithMembersDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
-import org.astu.feature.bulletinBoard.models.entities.audience.AudienceHierarchy
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
 import kotlin.jvm.JvmName
 
 object UserGroupMappers {
     @JvmName("UserGroupHierarchyDtoToModel")
-    fun UserGroupHierarchyDto.toModel(): AudienceHierarchy {
+    fun UserGroupHierarchyDto.toModel(): UserGroupHierarchy {
         var mappedUserGroups = this.userGroups
             .toModels()
             .associateBy { it.id.toString() }
 
         val mappedRoots = roots.map { mapAudienceHierarchy(it, null, mappedUserGroups) }
-        return AudienceHierarchy(mappedRoots)
+        return UserGroupHierarchy(mappedRoots)
     }
 
     @JvmName("UserGroupSummaryWithMembersDtoToModel")

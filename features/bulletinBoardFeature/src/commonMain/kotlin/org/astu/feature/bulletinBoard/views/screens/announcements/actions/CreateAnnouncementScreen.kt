@@ -17,6 +17,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import org.astu.feature.bulletinBoard.viewModels.announcements.actions.CreateAnnouncementViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.creation.AnnouncementCreator
+import org.astu.feature.bulletinBoard.views.screens.ActionScreenScaffold
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
@@ -27,7 +28,7 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
         val viewModel = rememberScreenModel { CreateAnnouncementViewModel(onReturn) }
         val creator = AnnouncementCreator(viewModel)
 
-        AnnouncementActionScreenScaffold(
+        ActionScreenScaffold(
             onReturn = onReturn,
             topBarTitle = {
                 Row(

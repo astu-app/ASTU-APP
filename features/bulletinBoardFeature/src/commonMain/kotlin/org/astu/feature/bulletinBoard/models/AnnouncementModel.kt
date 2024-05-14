@@ -8,7 +8,7 @@ import org.astu.feature.bulletinBoard.models.entities.announcements.Announcement
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
 import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
-import org.astu.feature.bulletinBoard.models.entities.audience.AudienceHierarchy
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
 import org.astu.feature.bulletinBoard.models.repositories.AnnouncementRepository
 import org.astu.feature.bulletinBoard.models.repositories.UserGroupRepository
 import org.astu.feature.bulletinBoard.models.services.announcements.AnnouncementCreateValidator
@@ -34,7 +34,7 @@ class AnnouncementModel {
         return announcementRepository.create(announcement)
     }
 
-    suspend fun getAudienceHierarchy(): ContentWithError<AudienceHierarchy, GetUserHierarchyResponses> {
+    suspend fun getAudienceHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyResponses> {
         val audience = userGroupRepository.getAudience()
         if (!audience.isContentValid) {
             return ContentWithError(null, audience.error)

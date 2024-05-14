@@ -18,6 +18,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.viewModels.announcements.actions.EditAnnouncementViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.editing.AnnouncementEditor
+import org.astu.feature.bulletinBoard.views.screens.ActionScreenScaffold
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
@@ -31,7 +32,7 @@ class EditAnnouncementScreen(
         val viewModel = rememberScreenModel { EditAnnouncementViewModel(announcementId, onReturn) }
         val editor = AnnouncementEditor(viewModel)
 
-        AnnouncementActionScreenScaffold (
+        ActionScreenScaffold (
             onReturn = onReturn,
             topBarTitle = {
                 Row(

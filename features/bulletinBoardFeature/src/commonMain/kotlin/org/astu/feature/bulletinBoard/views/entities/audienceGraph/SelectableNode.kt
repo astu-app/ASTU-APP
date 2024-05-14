@@ -13,7 +13,7 @@ class SelectableNode(
     override val isSelected: MutableState<Boolean> = mutableStateOf(false),
     content: @Composable () -> Unit,
 ) : Node(children, content), ISelectableNode {
-    override val parentNodes: MutableList<ISelectableNode> = mutableListOf()
+    override val parentNodes: MutableList<INode> = mutableListOf()
 
     override fun setSelectionState(state: Boolean) {
         isSelected.value = state

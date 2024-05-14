@@ -6,10 +6,6 @@ import androidx.compose.runtime.MutableState
  * Интерфейс узла графа, который может быть выбоан
  */
 interface ISelectableNode : INode {
-    /**
-     * Родительские узлы текущего узла
-     */
-    val parentNodes: MutableList<ISelectableNode>
 
     /**
      * Cостояние выбора текущего узла - true, если все дочерние узлы имеют состояние свойства isSelected = true, иначе - false

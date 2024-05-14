@@ -6,7 +6,7 @@ import androidx.compose.ui.util.fastDistinctBy
  * Иерархия групп пользователей
  * @param roots список корней иерархии
  */
-data class AudienceHierarchy(val roots: List<UserGroup>) {
+data class UserGroupHierarchy(val roots: List<UserGroup>) {
     val allMembers: List<User> = getAllHierarchyMembers()
 
 

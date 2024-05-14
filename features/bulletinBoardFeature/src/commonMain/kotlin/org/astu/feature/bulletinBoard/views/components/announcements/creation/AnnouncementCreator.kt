@@ -13,7 +13,7 @@ import org.astu.feature.bulletinBoard.viewModels.announcements.actions.CreateAnn
 import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachFilesSection
 import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachSurveySection
 import org.astu.feature.bulletinBoard.views.components.announcements.common.DelayedMomentPicker
-import org.astu.feature.bulletinBoard.views.components.announcements.common.SelectAudienceSection
+import org.astu.feature.bulletinBoard.views.components.announcements.common.DisplayAudienceHierarchySection
 import org.astu.feature.bulletinBoard.views.entities.ContentProvider
 import org.astu.feature.bulletinBoard.views.entities.DefaultModifierProvider
 import org.astu.feature.bulletinBoard.views.entities.announcement.creation.CreateAnnouncementContent
@@ -75,7 +75,7 @@ class AnnouncementCreator(
             AttachSurveySection(announcement.value!!.survey)
 
             // Аудитория
-            SelectAudienceSection(announcement.value!!.audienceRoots)
+            DisplayAudienceHierarchySection(announcement.value!!.audienceRoots)
         }
     }
 

@@ -7,7 +7,7 @@ class SelectableLeaf(
     override val isSelected: MutableState<Boolean>,
     content: @Composable () -> Unit,
 ) : Leaf(content), ISelectableNode {
-    override val parentNodes: MutableList<ISelectableNode> = mutableListOf()
+    override val parentNodes: MutableList<INode> = mutableListOf()
 
     override fun setSelectionState(state: Boolean) {
         isSelected.value = state

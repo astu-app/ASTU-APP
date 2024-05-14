@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.screens.announcements.actions
+package org.astu.feature.bulletinBoard.views.screens
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnnouncementActionScreenScaffold(
+fun ActionScreenScaffold(
     onReturn: () -> Unit,
     topBarTitle: @Composable () -> Unit,
     returnScreenIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,

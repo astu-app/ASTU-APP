@@ -3,6 +3,7 @@
 
 interface INode {
     {field} content: @Composable () -> Unit
+    {field} parentNodes: MutableList<INode>
 }
 
 class Node {
@@ -20,7 +21,6 @@ INode <|-- Leaf
 
 interface ISelectableNode {
     {field} isSelected: MutableState<Boolean>
-    {field} parentNodes: MutableList<ISelectableNode>
     {method} setSelectionState(state: Boolean): Unit
     {method} receiveNotificationChildSelectionChanges(): Unit
 }

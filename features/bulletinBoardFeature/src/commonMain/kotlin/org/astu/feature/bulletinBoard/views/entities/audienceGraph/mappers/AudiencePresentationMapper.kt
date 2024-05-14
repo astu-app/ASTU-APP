@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import com.benasher44.uuid.Uuid
-import org.astu.feature.bulletinBoard.models.entities.audience.AudienceHierarchy
 import org.astu.feature.bulletinBoard.models.entities.audience.User
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
 import org.astu.feature.bulletinBoard.views.components.announcements.common.SelectableUserSummary
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.ISelectableNode
@@ -26,7 +26,7 @@ import org.astu.infrastructure.components.CheckboxRow
  * @param selectedMemberIds массив с идентификаторами пользователей, в который идентификаторы добавляются или удаляются при нажатии соответствующих графических элементов
  */
 class AudiencePresentationMapper(
-    private val audienceHierarchy: AudienceHierarchy,
+    private val audienceHierarchy: UserGroupHierarchy,
     private val selectedMemberIds: MutableCollection<Uuid>
 ) {
     private val mappedNodes: MutableMap<Uuid, ISelectableNode> = mutableMapOf()
@@ -52,7 +52,7 @@ class AudiencePresentationMapper(
         selectableUserGroup.content = makeSelectableUserGroupText(userGroup.name, selectableUserGroup) { newState ->
             selectableUserGroup.setSelectionState(newState)
             selectableUserGroup.receiveNotificationChildSelectionChanges()
-            selectableUserGroup.parentNodes.forEach { it.receiveNotificationChildSelectionChanges() }
+            selectableUserGroup.parentNodes.forEach { (it as ISelectableNode).receiveNotificationChildSelectionChanges() }
 
             if (newState) {
                 memberIds.forEach { if (!selectedMemberIds.contains(it)) selectedMemberIds.add(it) }
@@ -107,7 +107,7 @@ class AudiencePresentationMapper(
 
         selectableUser.content = makeSelectableUserText(selectableUserSummary) { newState ->
             selectableUser.setSelectionState(newState)
-            selectableUser.parentNodes.forEach { it.receiveNotificationChildSelectionChanges() }
+            selectableUser.parentNodes.forEach { (it as ISelectableNode).receiveNotificationChildSelectionChanges() }
 
             if (newState) {
                 if (!selectedMemberIds.contains(member.id)) selectedMemberIds.add(member.id)

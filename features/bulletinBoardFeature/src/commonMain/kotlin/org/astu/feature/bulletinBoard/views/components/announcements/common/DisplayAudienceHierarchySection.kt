@@ -10,12 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.astu.feature.bulletinBoard.views.components.TreeDropDown
+import org.astu.feature.bulletinBoard.views.components.tree.TreeDropDown
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
 import org.astu.infrastructure.theme.CurrentColorScheme
 
 @Composable
-fun SelectAudienceSection(
+fun DisplayAudienceHierarchySection(
     rootNodes: List<INode>,
     modifier: Modifier = Modifier
         .fillMaxWidth()

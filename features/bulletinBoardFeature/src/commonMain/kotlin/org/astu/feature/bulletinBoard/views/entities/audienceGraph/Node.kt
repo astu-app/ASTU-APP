@@ -10,4 +10,6 @@ import androidx.compose.runtime.Composable
 open class Node(
     open val children: List<INode>,
     override var content: @Composable () -> Unit
-) : INode
+) : INode {
+    override val parentNodes: MutableList<INode> = mutableListOf()
+}

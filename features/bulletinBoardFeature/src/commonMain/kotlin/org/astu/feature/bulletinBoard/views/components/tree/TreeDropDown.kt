@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.components
+package org.astu.feature.bulletinBoard.views.components.tree
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,8 +16,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.Node
-import org.astu.infrastructure.theme.CurrentColorScheme
 
 /**
  * Выпадающий список, позволяющий выводить древовидные структуры. Каждый из уровней дерева выделяется отступом от
@@ -108,56 +105,8 @@ fun TreeDropDown(
             // offset используется для того, чтобы первый элемент дерева был на одном уровне с заголовком дерева
             modifier = Modifier.offset(x = -levelIndent)
         ) {
-            rootNodes.forEach { rootNode -> PlaceNode(rootNode, levelIndent) }
+//            rootNodes.forEach { rootNode -> PlaceThreeNode(rootNode, levelIndent) { content -> DropDownMenuItem(content) } }
+            rootNodes.forEach { rootNode -> PlaceThreeNode(rootNode, levelIndent) }
         }
     }
-}
-
-@Composable
-private fun PlaceNode(
-    node: INode,
-    indent: Dp,
-    modifier: Modifier = Modifier.fillMaxWidth()
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(start = indent)
-    ) {
-        DropDownMenuItem(node.content)
-        if (node is Node) {
-            node.children.forEach { PlaceNode(it, indent) }
-        }
-    }
-}
-
-@Composable
-private fun DropDownMenuItem(
-    content: @Composable (() -> Unit)?,
-    modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 4.dp)
-) {
-    if (content == null)
-        return
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-        ) {
-            content()
-        }
-    }
-
-    HorizontalDivider(
-        modifier = Modifier
-            .fillMaxWidth(),
-        color = CurrentColorScheme.outline
-    )
 }
