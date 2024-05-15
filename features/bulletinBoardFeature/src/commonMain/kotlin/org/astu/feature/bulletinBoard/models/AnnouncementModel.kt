@@ -3,7 +3,7 @@ package org.astu.feature.bulletinBoard.models
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyResponses
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
@@ -34,7 +34,7 @@ class AnnouncementModel {
         return announcementRepository.create(announcement)
     }
 
-    suspend fun getAudienceHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyResponses> {
+    suspend fun getAudienceHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
         val audience = userGroupRepository.getAudience()
         if (!audience.isContentValid) {
             return ContentWithError(null, audience.error)

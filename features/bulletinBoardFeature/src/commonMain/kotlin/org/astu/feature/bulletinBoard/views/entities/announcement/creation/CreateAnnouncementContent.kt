@@ -16,8 +16,8 @@ import org.astu.feature.bulletinBoard.views.components.attachments.files.models.
 import org.astu.feature.bulletinBoard.views.dateTime.getDateString
 import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
 import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.mappers.AudiencePresentationMapper
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.mappers.AudiencePresentationMapper
 import kotlin.time.Duration
 
 class CreateAnnouncementContent(audienceHierarchy: UserGroupHierarchy) {

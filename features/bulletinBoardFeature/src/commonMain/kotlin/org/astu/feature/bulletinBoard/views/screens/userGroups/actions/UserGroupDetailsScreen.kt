@@ -6,21 +6,34 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuid4
+import org.astu.feature.bulletinBoard.viewModels.userGroups.actions.UserGroupDetailsViewModel
+import org.astu.feature.bulletinBoard.views.components.userGroups.UserGroupDetails
 import org.astu.feature.bulletinBoard.views.screens.ActionScreenScaffold
+import org.astu.infrastructure.components.ActionFailedDialog
+import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
 
-class UserGroupDetailsScreen(private val id: Uuid, private val onReturn: () -> Unit) : Screen {
+class UserGroupDetailsScreen(
+    private val id: Uuid,
+    private val name: String,
+    private val onReturn: () -> Unit
+) : Screen {
     @Composable
     override fun Content() {
+        val viewModel = rememberScreenModel(tag = uuid4().toString()){ UserGroupDetailsViewModel(id, onReturn) }
         val navigator = LocalNavigator.currentOrThrow
 
         ActionScreenScaffold(
             onReturn = onReturn,
-            topBarTitle = { Text("Группа пользователей") },
+            topBarTitle = { Text(name) },
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
@@ -33,72 +46,28 @@ class UserGroupDetailsScreen(private val id: Uuid, private val onReturn: () -> U
                 }
             }
         ) {
-                Text("Детали группы пользователей $id")
-//            val state by viewModel.state.collectAsState()
-//            when (state) {
-//                UserGroupsViewModel.State.Loading -> Loading()
-//                UserGroupsViewModel.State.LoadingDone -> DisplayUserGroupHierarchySection(viewModel.userGroups)
-//                UserGroupsViewModel.State.LoadingUserGroupsError -> showErrorDialog(viewModel)
-//            }
-//
-//            if (viewModel.showErrorDialog) {
-//                ActionFailedDialog(
-//                    label = viewModel.errorDialogLabel,
-//                    body = viewModel.errorDialogBody,
-//                    onTryAgainRequest = viewModel.onErrorDialogTryAgainRequest,
-//                    onDismissRequest = viewModel.onErrorDialogDismissRequest,
-//                    showDismissButton = true
-//                )
-//            }
-        }
+            val state by viewModel.state.collectAsState()
+            when (state) {
+                UserGroupDetailsViewModel.State.Loading -> Loading()
+                UserGroupDetailsViewModel.State.LoadingDone -> UserGroupDetails(viewModel.content)
+                UserGroupDetailsViewModel.State.LoadingError -> showErrorDialog(viewModel)
+            }
 
-//        Scaffold(
-//            topBar = {
-//                TopAppBar(
-//                    title = { Text("Группа пользователей") },
-//                    navigationIcon = {
-//                        IconButton(onClick = onReturn) {
-//                            Icon(
-//                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-//                                contentDescription = "Localized description"
-//                            )
-//                        }
-//                    },
-//                )
-//            },
-//            floatingActionButton = {
-//                FloatingActionButton(
-//                    onClick = {
-//                        val createUserGroupScreen = UserGroupDetailsScreen(id) { navigator.pop() }
-//                        navigator.push(createUserGroupScreen)
-//                    },
-//                    containerColor = CurrentColorScheme.tertiaryContainer,
-//                ) {
-//                    Icon(Icons.Outlined.Edit, null)
-//                }
-//            },
-//        ) {
-//            Surface(
-//                modifier = Modifier.padding(top = it.calculateTopPadding())
-//            ) {
-//                Text(id.toString())
-////                val state by viewModel.state.collectAsState()
-////                when (state) {
-////                    UserGroupsViewModel.State.Loading -> Loading()
-////                    UserGroupsViewModel.State.LoadingDone -> DisplayUserGroupHierarchySection(viewModel.userGroups)
-////                    UserGroupsViewModel.State.LoadingUserGroupsError -> showErrorDialog(viewModel)
-////                }
-////            }
-////
-////            if (viewModel.showErrorDialog) {
-////                ActionFailedDialog(
-////                    label = viewModel.errorDialogLabel,
-////                    body = viewModel.errorDialogBody,
-////                    onTryAgainRequest = viewModel.onErrorDialogTryAgainRequest,
-////                    onDismissRequest = viewModel.onErrorDialogDismissRequest,
-////                    showDismissButton = true
-////                )
-//            }
-//        }
+            if (viewModel.showErrorDialog) {
+                ActionFailedDialog(
+                    label = viewModel.errorDialogLabel,
+                    body = viewModel.errorDialogBody,
+                    onTryAgainRequest = viewModel.onErrorDialogTryAgainRequest,
+                    onDismissRequest = viewModel.onErrorDialogDismissRequest,
+                    showDismissButton = true
+                )
+            }
+        }
+    }
+
+
+
+    private fun showErrorDialog(viewModel: UserGroupDetailsViewModel) {
+        viewModel.showErrorDialog = true
     }
 }

@@ -12,7 +12,7 @@ import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.CreateAnnouncementErrorsAggregate
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyResponses
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
 import org.astu.feature.bulletinBoard.views.entities.announcement.creation.CreateAnnouncementContent
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToModelMappers.toModel
@@ -146,7 +146,7 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         return localDateTimeFromComponents(dateMillis, hour, minute)
     }
 
-    private fun setErrorDialogStateForCreateContentLoading(error: GetUserHierarchyResponses? = null) {
+    private fun setErrorDialogStateForCreateContentLoading(error: GetUserHierarchyErrors? = null) {
         errorDialogBody.value = constructCreateContentLoadingErrorDialogContent(error)
         onErrorDialogTryAgain.value = {
             loadCreateContent()
@@ -158,9 +158,9 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         }
     }
 
-    private fun constructCreateContentLoadingErrorDialogContent(error: GetUserHierarchyResponses?): String {
+    private fun constructCreateContentLoadingErrorDialogContent(error: GetUserHierarchyErrors?): String {
         return when (error) {
-            GetUserHierarchyResponses.GetUsergroupHierarchyForbidden -> "У вас недостаточно прав для загрузки аудитории объявления"
+            GetUserHierarchyErrors.GetUsergroupHierarchyForbidden -> "У вас недостаточно прав для загрузки аудитории объявления"
             else -> "Непредвиденная ошибка при загрузке контента для создания объявления. Повторите попытку"
         }
     }

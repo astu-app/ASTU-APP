@@ -15,7 +15,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 
 /**
  * Выпадающий список, позволяющий выводить древовидные структуры. Каждый из уровней дерева выделяется отступом от

@@ -9,7 +9,7 @@ import kotlin.jvm.JvmName
 
 object UserMappers {
     @JvmName("UserSummaryDtoToModel")
-    fun UserSummaryDto.toModel() =
+    fun UserSummaryDto.toModel(): User =
         User(uuidFrom(this.id), this.firstName, this.secondName, this.patronymic)
 
     @JvmName("UserSummaryDtoCollectionToModels")

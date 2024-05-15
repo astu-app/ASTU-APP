@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.views.components.tree.TreeDropDown
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 
 class VotedAnswerContentDetails(
     id: Uuid,

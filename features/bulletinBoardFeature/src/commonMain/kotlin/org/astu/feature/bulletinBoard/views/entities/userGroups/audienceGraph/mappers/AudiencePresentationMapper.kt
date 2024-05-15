@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.entities.audienceGraph.mappers
+package org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.mappers
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,10 +13,10 @@ import org.astu.feature.bulletinBoard.models.entities.audience.User
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
 import org.astu.feature.bulletinBoard.views.components.announcements.common.SelectableUserSummary
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.ISelectableNode
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.SelectableLeaf
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.SelectableNode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.ISelectableNode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.SelectableLeaf
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.SelectableNode
 import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
 import org.astu.infrastructure.components.CheckboxRow
 

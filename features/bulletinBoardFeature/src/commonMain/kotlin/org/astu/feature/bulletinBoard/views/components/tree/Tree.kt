@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 
 @Composable
 fun Tree(

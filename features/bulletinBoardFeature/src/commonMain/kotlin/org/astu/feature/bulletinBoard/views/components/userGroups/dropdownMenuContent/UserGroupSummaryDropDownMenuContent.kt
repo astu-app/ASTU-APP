@@ -1,15 +1,15 @@
-package org.astu.feature.bulletinBoard.views.components.announcements.summary.dropdownMenuContent
+package org.astu.feature.bulletinBoard.views.components.userGroups.dropdownMenuContent
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.StopCircle
 import org.astu.feature.bulletinBoard.views.components.common.dropdown.DropDownMenuItemContent
 
-abstract class PostedAnnouncementDropdownMenuContentBase(
+class UserGroupSummaryDropDownMenuContent(
     onInfoClick: () -> Unit,
+    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onStopSurveyClick: (() -> Unit)?,
 ) {
     val items: MutableList<DropDownMenuItemContent> = mutableListOf(
         DropDownMenuItemContent(
@@ -18,22 +18,14 @@ abstract class PostedAnnouncementDropdownMenuContentBase(
             onClick = onInfoClick
         ),
         DropDownMenuItemContent(
+            name = "Редактировать",
+            icon = Icons.Outlined.Edit,
+            onClick = onEditClick
+        ),
+        DropDownMenuItemContent(
             name = "Удалить",
             icon = Icons.Outlined.Delete,
             onClick = onDeleteClick
         ),
     )
-
-    init {
-        if (onStopSurveyClick != null) {
-            items.add(
-                1,
-                DropDownMenuItemContent(
-                    name = "Завершить опрос",
-                    icon = Icons.Outlined.StopCircle,
-                    onClick = onStopSurveyClick
-                )
-            )
-        }
-    }
 }

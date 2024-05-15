@@ -1,18 +1,19 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups
 
 import com.benasher44.uuid.uuidFrom
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupHierarchyDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupHierarchyNodeDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupSummaryWithMembersDto
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.*
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupDetails
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupSummary
 import kotlin.jvm.JvmName
 
 object UserGroupMappers {
     @JvmName("UserGroupHierarchyDtoToModel")
     fun UserGroupHierarchyDto.toModel(): UserGroupHierarchy {
-        var mappedUserGroups = this.userGroups
+        val mappedUserGroups = this.userGroups
             .toModels()
             .associateBy { it.id.toString() }
 
@@ -27,6 +28,25 @@ object UserGroupMappers {
     @JvmName("UserGroupSummaryWithMembersDtoCollectionToModels")
     fun Collection<UserGroupSummaryWithMembersDto>.toModels(): List<UserGroup> =
         this.map { it.toModel() }
+
+    @JvmName("UserGroupDetailsDtoToModel")
+    fun UserGroupDetailsDto.toModel(): UserGroupDetails =
+        UserGroupDetails(
+            id = uuidFrom(this.id),
+            name = this.name,
+            admin = this.admin.toModel(),
+            members = this.members.toModels(),
+            parents = this.parents.toModels(),
+            children = this.children.toModels(),
+        )
+
+    @JvmName("UserGroupSummaryDtoCollectionToModel")
+    fun Collection<UserGroupSummaryDto>.toModels(): List<UserGroupSummary> =
+        this.map { it.toModel() }
+
+    @JvmName("UserGroupDtoToModel")
+    fun UserGroupSummaryDto.toModel(): UserGroupSummary =
+        UserGroupSummary(id = uuidFrom(this.id), name = this.name)
 
 
 

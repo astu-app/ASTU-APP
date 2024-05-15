@@ -1,6 +1,6 @@
-package org.astu.feature.bulletinBoard.views.entities.audienceGraph.mappers
+package org.astu.feature.bulletinBoard.views.entities.userGroups
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -8,14 +8,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.DpOffset
 import com.benasher44.uuid.Uuid
-import org.astu.feature.bulletinBoard.models.entities.audience.User
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.Leaf
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.Node
+import org.astu.feature.bulletinBoard.models.entities.audience.*
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.Leaf
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.Node
 import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
+import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentation
+import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentations
 import kotlin.jvm.JvmName
 
 object UserGroupsPresentationMapper {
@@ -29,11 +32,32 @@ object UserGroupsPresentationMapper {
     }
 
     @JvmName("AudienceHierarchyToShortUserGroupHierarchy")
-    fun UserGroupHierarchy.toShortUserGroupHierarchy(onUserGroupClicked: (UserGroup) -> Unit = { }): List<INode> {
+    fun UserGroupHierarchy.toShortUserGroupHierarchy(
+        onUserGroupClick: (UserGroup) -> Unit = { },
+        onUserGroupLongPress: (UserGroup, DpOffset) -> Unit
+    ): List<INode> {
         mappedNodes.clear()
-        return this.roots.map { mapShortUserGroupHierarchyNode(it, onUserGroupClicked) }
+        return this.roots.map { mapShortUserGroupHierarchyNode(it, onUserGroupClick, onUserGroupLongPress) }
     }
 
+    @JvmName("UserGroupDetailsToPresentation")
+    fun UserGroupDetails.toPresentation(): UserGroupDetailsContent =
+        UserGroupDetailsContent(
+            this.id,
+            this.name,
+            this.admin.toPresentation(),
+            this.members.toPresentations(),
+            this.parents.toPresentations(),
+            this.children.toPresentations()
+        )
+
+    @JvmName("UserGroupSummaryCollectionToPresentations")
+    fun Collection<UserGroupSummary>.toPresentations(): List<UserGroupSummaryContent> =
+        this.map { it.toPresentation() }
+
+    @JvmName("UserGroupSummaryToPresentation")
+    fun UserGroupSummary.toPresentation(): UserGroupSummaryContent =
+        UserGroupSummaryContent(this.id, this.name)
 
 
     private fun mapDetailedUserGroupHierarchyNode(userGroup: UserGroup): Node {
@@ -47,27 +71,33 @@ object UserGroupsPresentationMapper {
         val childrenNodes = members + childUserGroups
         val userGroupNode = Node(
             children = childrenNodes,
-            content = makeStaticUserGroupText(userGroup.name)
+            content = makeStaticUserGroupText(userGroup.name, { }, { })
         )
 
-        userGroupNode.content = makeStaticUserGroupText(userGroup.name)
+        userGroupNode.content = makeStaticUserGroupText(userGroup.name, { }, { })
         childrenNodes.forEach { it.parentNodes.add(userGroupNode) }
 
         mappedNodes[userGroup.id] = userGroupNode
         return userGroupNode
     }
 
-    private fun mapShortUserGroupHierarchyNode(userGroup: UserGroup, onUserGroupClicked: (UserGroup) -> Unit): Node {
+    private fun mapShortUserGroupHierarchyNode(
+        userGroup: UserGroup,
+        onUserGroupClicked: (UserGroup) -> Unit,
+        onUserGroupLongPress: (UserGroup, DpOffset) -> Unit
+    ): Node {
         if (mappedNodes.containsKey(userGroup.id)) {
             return mappedNodes[userGroup.id] as Node
         }
 
-        val childUserGroups = userGroup.userGroups.map { mapShortUserGroupHierarchyNode(it, onUserGroupClicked) }
+        val childUserGroups = userGroup.userGroups.map { mapShortUserGroupHierarchyNode(it, onUserGroupClicked, onUserGroupLongPress) }
         val userGroupNode = Node(
             children = childUserGroups,
-            content = makeStaticUserGroupText(userGroup.name) {
-                onUserGroupClicked.invoke(userGroup)
-            }
+            content = makeStaticUserGroupText(
+                text = userGroup.name,
+                onTap = { onUserGroupClicked.invoke(userGroup) },
+                onLongPress = { offset -> onUserGroupLongPress.invoke(userGroup, offset) }
+            )
         )
 
         childUserGroups.forEach { it.parentNodes.add(userGroupNode) }
@@ -76,14 +106,27 @@ object UserGroupsPresentationMapper {
         return userGroupNode
     }
 
-    private fun makeStaticUserGroupText(text: String, onClick: () -> Unit = { }): @Composable () -> Unit = {
+    private fun makeStaticUserGroupText(
+        text: String,
+        onTap: (Offset) -> Unit,
+        onLongPress: (DpOffset) -> Unit
+    ): @Composable () -> Unit = {
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .clickable(onClick = onClick),
+                .pointerInput(true) {
+                    detectTapGestures(
+                        onTap = onTap,
+                        onLongPress = {
+                            val offset = DpOffset(it.x.toDp(), it.y.toDp()) // todo корректная позиция dropdown'а
+//                            val offset = DpOffset(it.x.dp, it.y.dp)
+                            onLongPress.invoke(offset)
+                        }
+                    )
+                },
         )
     }
 

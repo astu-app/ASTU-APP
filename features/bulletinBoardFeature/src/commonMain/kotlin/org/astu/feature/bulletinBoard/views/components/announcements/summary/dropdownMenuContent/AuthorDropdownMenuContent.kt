@@ -3,6 +3,7 @@ package org.astu.feature.bulletinBoard.views.components.announcements.summary.dr
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.HideSource
+import org.astu.feature.bulletinBoard.views.components.common.dropdown.DropDownMenuItemContent
 
 class AuthorDropdownMenuContent (
     onInfoClick: () -> Unit,
@@ -15,7 +16,7 @@ class AuthorDropdownMenuContent (
     init {
         items.add(
             index = 1,
-            element = AnnouncementDropdownMenuItemContent(
+            element = DropDownMenuItemContent(
                 name = "Редактировать",
                 icon = Icons.Outlined.Edit,
                 onClick = onEditClick,
@@ -23,7 +24,7 @@ class AuthorDropdownMenuContent (
         )
         items.add(
             index = 3,
-            element = AnnouncementDropdownMenuItemContent(
+            element = DropDownMenuItemContent(
                 name = "Скрыть",
                 icon = Icons.Outlined.HideSource,
                 onClick = onHideClick,

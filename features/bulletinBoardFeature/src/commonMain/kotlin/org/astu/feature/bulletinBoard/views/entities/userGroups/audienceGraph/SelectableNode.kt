@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.entities.audienceGraph
+package org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState

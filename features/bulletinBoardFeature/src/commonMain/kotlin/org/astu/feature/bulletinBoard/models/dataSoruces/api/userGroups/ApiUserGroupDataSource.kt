@@ -1,35 +1,64 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups
 
+import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import org.astu.feature.bulletinBoard.models.dataSoruces.AnnouncementAudienceDataSource
+import org.astu.feature.bulletinBoard.models.dataSoruces.UserGroupDataSource
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsuccessCode
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupMappers.toModel
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupDetailsDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupHierarchyDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupHierarchyNodeDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupSummaryWithMembersDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyResponses
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUsergroupDetailsErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupDetails
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
 import org.astu.infrastructure.GlobalDIContext
 
-class ApiAnnouncementAudienceDataSource : AnnouncementAudienceDataSource {
+class ApiUserGroupDataSource : UserGroupDataSource {
     private val client: HttpClient by GlobalDIContext.inject<HttpClient>()
 
 
-    override suspend fun getAudienceForCreation(): ContentWithError<UserGroupHierarchy, GetUserHierarchyResponses> {
+    override suspend fun getDetails(id: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {
+        val response = client.get("api/usergroups/get-details/$id")
+
+        if (!response.status.isSuccess())
+            return ContentWithError(null, error = readUnsuccessCode<GetUsergroupDetailsErrors>(response))
+
+        val dto = response.body<UserGroupDetailsDto>()
+        return ContentWithError(dto.toModel(), error = null)
+    }
+
+    override suspend fun getAudienceForCreation(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
         val response = client.get("api/usergroups/get-user-hierarchy")
 
         if (!response.status.isSuccess())
-            return ContentWithError(null, error = readUnsuccessCode<GetUserHierarchyResponses>(response))
+            return ContentWithError(null, error = readUnsuccessCode<GetUserHierarchyErrors>(response))
 
         val hierarchyDto = response.body<UserGroupHierarchyDto>()
         val hierarchy = mapHierarchy(hierarchyDto)
         return ContentWithError(hierarchy, error = null)
+    }
+
+    override suspend fun delete(id: Uuid): DeleteUserGroupErrors? {
+        val dto = "\"$id\""
+        val response = client.delete("api/usergroups/delete") {
+            contentType(ContentType.Application.Json)
+            setBody(dto)
+        }
+
+        if (!response.status.isSuccess())
+            return readUnsuccessCode<DeleteUserGroupErrors>(response)
+
+        return null
     }
 
 

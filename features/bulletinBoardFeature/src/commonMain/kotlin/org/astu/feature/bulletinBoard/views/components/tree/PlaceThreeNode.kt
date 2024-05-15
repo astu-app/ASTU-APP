@@ -7,8 +7,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.Node
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.Node
 import org.astu.infrastructure.theme.CurrentColorScheme
 
 @Composable
@@ -16,14 +16,12 @@ fun PlaceThreeNode(
     node: INode,
     indent: Dp,
     modifier: Modifier = Modifier.fillMaxWidth(),
-//    dropDownMenuItem: (@Composable (@Composable () -> Unit) -> Unit)? = null
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.padding(start = indent)
     ) {
-//        dropDownMenuItem?.invoke(node.content)
         TreeNodeContent(node.content)
         if (node is Node) {
             node.children.forEach { PlaceThreeNode(it, indent) }

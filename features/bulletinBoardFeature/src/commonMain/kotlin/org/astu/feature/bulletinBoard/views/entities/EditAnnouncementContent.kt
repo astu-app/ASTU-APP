@@ -19,8 +19,8 @@ import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.toPresentations
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.votedSurveyToPresentation
 import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.INode
-import org.astu.feature.bulletinBoard.views.entities.audienceGraph.mappers.AudiencePresentationMapper
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
+import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.mappers.AudiencePresentationMapper
 import kotlin.math.round
 import kotlin.math.roundToInt
 import kotlin.time.Duration

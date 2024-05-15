@@ -5,6 +5,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Publish
+import org.astu.feature.bulletinBoard.views.components.common.dropdown.DropDownMenuItemContent
 
 class DelayedPublishedAnnouncementDropdownMenuContent(
     onInfoClick: () -> Unit,
@@ -12,23 +13,23 @@ class DelayedPublishedAnnouncementDropdownMenuContent(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
-    val items: MutableList<AnnouncementDropdownMenuItemContent> = mutableListOf(
-        AnnouncementDropdownMenuItemContent(
+    val items: MutableList<DropDownMenuItemContent> = mutableListOf(
+        DropDownMenuItemContent(
             name = "Подробности",
             icon = Icons.Outlined.Info,
             onClick = onInfoClick
         ),
-        AnnouncementDropdownMenuItemContent(
+        DropDownMenuItemContent(
             name = "Опубликовать сейчас",
             icon = Icons.Outlined.Publish,
             onClick = onPublishImmediately
         ),
-        AnnouncementDropdownMenuItemContent(
+        DropDownMenuItemContent(
             name = "Редактировать",
             icon = Icons.Outlined.Edit,
             onClick = onEditClick,
         ),
-        AnnouncementDropdownMenuItemContent(
+        DropDownMenuItemContent(
             name = "Удалить",
             icon = Icons.Outlined.Delete,
             onClick = onDeleteClick
