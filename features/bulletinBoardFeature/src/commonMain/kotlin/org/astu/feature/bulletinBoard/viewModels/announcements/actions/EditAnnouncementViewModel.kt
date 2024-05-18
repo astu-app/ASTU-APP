@@ -78,7 +78,6 @@ class EditAnnouncementViewModel(
             try {
                 val editAnnouncementModel = toModel() ?: return@launch
 
-                // todo upload attachments
                 val error = model.edit(editAnnouncementModel)
                 if (error == null) {
                     mutableState.value = State.ChangesUploadingDone
@@ -104,27 +103,19 @@ class EditAnnouncementViewModel(
         else EditAnnouncement(
             id = announcementId,
             content = getUpdatedContent(contentSnapshot, originalSnapshot),
-            categories = getUpdatedCategoryIds(contentSnapshot, originalSnapshot),
             users = getUpdatedAudienceIds(contentSnapshot, originalSnapshot),
             delayedPublishingAtChanged = isDelayedPublishingChanged(contentSnapshot, originalSnapshot),
             delayedPublishingAt = getChangedDelayedPublicationMoment(contentSnapshot, originalSnapshot),
             delayedHidingAtChanged = isDelayedHidingChanged(contentSnapshot, originalSnapshot),
             delayedHidingAt = getChangedDelayedHidingMoment(contentSnapshot, originalSnapshot),
 
-            attachmentIdsToRemove = getupdatedAttachmentIds(contentSnapshot, originalSnapshot),
+            attachmentIdsToRemove = emptySet(),
             newSurvey = contentSnapshot.newSurvey.value?.toModel(),
-            newFiles = null, // todo прикрутить файлы
         )
     }
 
     private fun getUpdatedContent(content: EditAnnouncementContent, original: ContentForAnnouncementEditing): String? =
         if (original.content != content.text.value) content.text.value else null
-
-    private fun getUpdatedCategoryIds(
-        content: EditAnnouncementContent,
-        original: ContentForAnnouncementEditing
-    ): UpdateIdentifierList? =
-        null // todo прикрутить категории объвлений
 
     private fun getUpdatedAudienceIds(
         content: EditAnnouncementContent,
@@ -141,21 +132,6 @@ class EditAnnouncementViewModel(
             toAdd = updatedIds subtract originalIds,
             toRemove = originalIds subtract updatedIds,
         )
-    }
-
-    private fun getupdatedAttachmentIds(
-        content: EditAnnouncementContent,
-        original: ContentForAnnouncementEditing
-    ): Set<Uuid>? {
-        val originalIds = original.files.map { it.id } + (original.surveys?.map { it.id } ?: emptyList())
-        val updatedIds = content.selectedUserIds
-
-        val idsChanged = originalIds.intersect(updatedIds).isNotEmpty()
-        if (!idsChanged)
-            return null
-
-        val toRemove = originalIds subtract updatedIds
-        return if (toRemove.isNotEmpty()) toRemove else null
     }
 
     private fun isDelayedPublishingChanged(

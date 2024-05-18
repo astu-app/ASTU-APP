@@ -1,7 +1,6 @@
 package org.astu.feature.bulletinBoard.viewModels.humanization
 
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.*
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.responses.UploadFilesErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.VoteInSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
@@ -27,9 +26,6 @@ object ErrorCodesHumanization {
         if (this?.createSurveyError != null)
             return this.createSurveyError.humanize()
 
-        if (this?.createFilesError != null)
-            return this.createFilesError.humanize()
-
         return DEFAULT_ERROR_MESSAGE
     }
 
@@ -38,7 +34,6 @@ object ErrorCodesHumanization {
             CreateAnnouncementErrors.AudienceNullOrEmpty -> "Аудитория объявления не задана"
             CreateAnnouncementErrors.ContentNullOrEmpty -> "Текст объявления не задан"
             CreateAnnouncementErrors.AnnouncementCreationForbidden -> "У вас недостаточно прав для создания объявлений"
-            CreateAnnouncementErrors.AnnouncementCategoriesDoNotExist -> "Не удалось прикрепить одно или несколько категорий объявлений"
             CreateAnnouncementErrors.AttachmentsDoNotExist -> "Не удалось прикрепить одно или несколько вложений"
             CreateAnnouncementErrors.PieceOfAudienceDoesNotExist -> "Не удалось прикрепить одного или нескольких из указанных пользователей"
             CreateAnnouncementErrors.DelayedPublishingMomentIsInPast -> "Момент отложенной публикации объявления не может наступить в прошлом"
@@ -61,9 +56,6 @@ object ErrorCodesHumanization {
         if (this?.createSurveyError != null)
             return this.createSurveyError.humanize()
 
-        if (this?.createFilesError != null)
-            return this.createFilesError.humanize()
-
         return DEFAULT_ERROR_MESSAGE
     }
 
@@ -73,7 +65,6 @@ object ErrorCodesHumanization {
             EditAnnouncementErrors.AudienceEmpty -> "Нельзя очистить аудиторию объявления"
             EditAnnouncementErrors.AnnouncementEditingForbidden -> "У вас недостаточно прав для изменения этого объявления"
             EditAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено. Повторите попытку позднее"
-            EditAnnouncementErrors.AnnouncementCategoriesDoesNotExist -> "Категория объявлений не найдена. Повторите попытку позднее"
             EditAnnouncementErrors.AttachmentsDoNotExist -> "Вложение не найдено. Повторите попытку позднее"
             EditAnnouncementErrors.PieceOfAudienceDoesNotExist -> "Пользователь не найден. Повторите попытку позднее"
             EditAnnouncementErrors.DelayedPublishingMomentIsInPast -> "Момент отложенной публикации уже наступил в прошлом"
@@ -91,9 +82,6 @@ object ErrorCodesHumanization {
             CreateSurveyErrors.QuestionContainsAnswersSerialsDuplicates -> "Вопрос(ы) содержит варианты ответов с одинаковыми порядковыми номерами"
             else -> DEFAULT_ERROR_MESSAGE
         }
-
-    fun UploadFilesErrors?.humanize(): String =
-        DEFAULT_ERROR_MESSAGE
 
     fun GetPostedAnnouncementListErrors?.humanize(): String =
         when (this) {

@@ -2,17 +2,13 @@ package org.astu.feature.bulletinBoard.views.entities.announcement.creation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.benasher44.uuid.Uuid
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.CurrentlyAttachedFileContent
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileContentBase
 import org.astu.feature.bulletinBoard.views.dateTime.getDateString
 import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
 import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
@@ -39,7 +35,6 @@ class CreateAnnouncementContent(audienceHierarchy: UserGroupHierarchy) {
     var delayedHidingTimeMinutes: MutableState<Int> = mutableStateOf(0)
     var delayedHidingTimeString: MutableState<String>
 
-    var files: SnapshotStateMap<Int, FileContentBase> = mutableStateMapOf()
     var survey: MutableState<NewSurvey?> = mutableStateOf(null)
 
     val audienceRoots: List<INode>
@@ -66,10 +61,6 @@ class CreateAnnouncementContent(audienceHierarchy: UserGroupHierarchy) {
         delayedHidingTimeHours = delayedPublicationTimeHours
         delayedHidingTimeString =
             mutableStateOf(getTimeString(delayedHidingTimeHours.value, delayedHidingTimeMinutes.value))
-
-        files[0] = CurrentlyAttachedFileContent("Документ.docx", "20 мб") { files.remove(0) }
-        files[1] = CurrentlyAttachedFileContent("Презентация.pptx", "20 мб") { files.remove(1) }
-        files[2] = CurrentlyAttachedFileContent("Таблица.xlsx", "20 мб") { files.remove(2) }
 
         val audienceMapper = AudiencePresentationMapper(audienceHierarchy, selectedUserIds)
         audienceRoots = audienceMapper.mapAudienceHierarchy()

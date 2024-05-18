@@ -30,7 +30,6 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
 
     private val model: AnnouncementModel = AnnouncementModel()
     val content: MutableState<CreateAnnouncementContent?> = mutableStateOf(null)
-    val uploadedAttachments: MutableList<String> = mutableListOf()
 
     private val unexpectedErrorTitle: String = "Ошибка"
 
@@ -102,9 +101,7 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
             userIds = getUserIds(),
             delayedPublishingAt = getDelayedPublicationMoment(),
             delayedHidingAt = getDelayedHidingMoment(),
-            categoryIds = getCategoryIds(),
             survey = contentSnapshot.survey.value?.toModel(),
-            files = null // todo прикрутить файлы
         )
     }
 
@@ -112,11 +109,6 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         val contentSnapshot = content.value ?: return emptyList()
 
         return contentSnapshot.selectedUserIds.map { it.toString() }
-    }
-
-    private fun getCategoryIds(): List<String> {
-        // todo прикрутить категории объявлений
-        return emptyList()
     }
 
     private fun getDelayedPublicationMoment(): LocalDateTime? {

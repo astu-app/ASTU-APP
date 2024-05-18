@@ -11,7 +11,6 @@ interface ContentProvider {
 }
 
 enum AttachmentType {
-    FILE
     SURVEY
 }
 
@@ -22,34 +21,6 @@ ContentProvider <|.. AttachmentContentBase
 DefaultModifierProvider <|.. AttachmentContentBase
 AttachmentContentBase *-right- AttachmentType
 
-
-'''''''''''''''''''''''''''''''' ФАЙЛЫ
-rectangle Files {
-    abstract class FileContentBase {
-        name: String
-        size: String
-    }
-    AttachmentContentBase <|-- FileContentBase
-
-    class CurrentlyAttachedFileContent extends FileContentBase { }
-
-    enum FileDownloadStata {
-        NOT_DOWNLOADED
-        DOWNLOADING
-        DOWNLOADED
-    }
-
-    class AttachedFileContent extends FileContentBase {
-        id: Uuid
-        downloadState: FileDownloadStata
-    }
-    AttachedFileContent *-down- FileDownloadStata
-
-    class AttachedDetachableFileContent extends FileContentBase {
-        id: Uuid
-        {field} }onDetachRequest: () -> Unit)
-    }
-}
 
 '''''''''''''''''''''''''''''''' ОПРОСЫ
 rectangle Surveys {

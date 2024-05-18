@@ -18,5 +18,4 @@ data class CreateAnnouncementDto (
     val attachmentIds: List<String>,
     val delayedPublishingAt: LocalDateTime?,
     val delayedHidingAt: LocalDateTime?,
-    val categoryIds: List<String>,
 )

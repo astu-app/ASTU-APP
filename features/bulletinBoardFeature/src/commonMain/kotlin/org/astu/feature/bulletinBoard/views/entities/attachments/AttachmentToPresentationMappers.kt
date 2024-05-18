@@ -2,13 +2,9 @@ package org.astu.feature.bulletinBoard.views.entities.attachments
 
 import androidx.compose.runtime.mutableStateOf
 import org.astu.feature.bulletinBoard.common.utils.calculateVotersPercentage
-import org.astu.feature.bulletinBoard.models.entities.attachments.file.details.File
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.QuestionDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.SurveyDetails
-import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeFileSize
 import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.AttachedFileContent
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileDownloadState
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.MultipleChoiceAnswerContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.SingleChoiceAnswerContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.VotedAnswerContentSummary
@@ -21,18 +17,9 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.survey
 import kotlin.jvm.JvmName
 
 object AttachmentToPresentationMappers {
-    fun mapAttachments(files: List<File>?, surveys: List<SurveyDetails>?): List<AttachmentContentBase> {
-        return files.toPresentations() + surveys.toPresentations()
+    fun mapAttachments(surveys: List<SurveyDetails>?): List<AttachmentContentBase> {
+        return surveys.toPresentations()
     }
-
-    /* **************************************** File **************************************** */
-    @JvmName("FileToPresentation")
-    fun File.toPresentation(): AttachmentContentBase =
-        AttachedFileContent(id, name, humanizeFileSize(sizeInBytes), mutableStateOf(FileDownloadState.DOWNLOADED))
-
-    @JvmName("FileCollectionToPresentations")
-    fun Collection<File>?.toPresentations(): List<AttachmentContentBase> =
-        this?.map { it.toPresentation() } ?: emptyList()
 
     /* *************************************** Survey *************************************** */
     fun SurveyDetails.votedSurveyToPresentation(): SurveyContentBase =

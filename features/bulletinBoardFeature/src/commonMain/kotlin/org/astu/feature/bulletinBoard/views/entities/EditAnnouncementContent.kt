@@ -1,22 +1,17 @@
 package org.astu.feature.bulletinBoard.views.entities
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.benasher44.uuid.Uuid
 import kotlinx.datetime.*
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.audience.SelectableUser
 import org.astu.feature.bulletinBoard.models.entities.audience.getUserGroupHierarchyMembers
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.AttachedDetachableFileContent
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileContentBase
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.dateTime.getDateString
 import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeFromEpochMillis
 import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeString
 import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
-import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.toPresentations
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.votedSurveyToPresentation
 import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
@@ -62,7 +57,6 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
             return LocalDateTime(date.date, time)
         }
 
-    val files: SnapshotStateMap<Int, FileContentBase>
     val attachedSurvey: AttachedSurveyContent?
     var newSurvey: MutableState<NewSurvey?> = mutableStateOf(null)
 
@@ -73,13 +67,6 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
     init {
         setPublicationTimeString()
         setDelayedMoments()
-
-        files = mutableStateMapOf()
-        var fileSerial = 0
-        files.putAll(editContent.files
-            .toPresentations()
-            .associateBy ({ fileSerial++ }, { it as AttachedDetachableFileContent })
-        )
 
         attachedSurvey = editContent.surveys?.elementAtOrNull(0)?.votedSurveyToPresentation() as AttachedSurveyContent?
 

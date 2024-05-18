@@ -8,7 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.astu.feature.bulletinBoard.viewModels.announcements.actions.EditAnnouncementViewModel
-import org.astu.feature.bulletinBoard.views.components.announcements.common.*
+import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachSurveySection
+import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachedSurveySection
+import org.astu.feature.bulletinBoard.views.components.announcements.common.DelayedMomentPicker
+import org.astu.feature.bulletinBoard.views.components.announcements.common.DisplayAudienceHierarchySection
 import org.astu.feature.bulletinBoard.views.components.announcements.details.AnnouncementDetailsHeader
 import org.astu.feature.bulletinBoard.views.entities.ContentProvider
 import org.astu.feature.bulletinBoard.views.entities.DefaultModifierProvider
@@ -79,9 +82,6 @@ class AnnouncementEditor(
                     )
                 }
             }
-
-            // Файлы
-            AttachFilesSection(announcementSnapshot.files)
 
             // Опрос
             val attachedSurvey = announcementSnapshot.attachedSurvey

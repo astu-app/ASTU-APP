@@ -19,7 +19,6 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import co.touchlab.kermit.Logger
 import org.astu.feature.bulletinBoard.viewModels.announcements.BulletInBoardViewModel
 import org.astu.feature.bulletinBoard.views.components.AnnouncementFeed
 import org.astu.feature.bulletinBoard.views.components.announcements.summary.AnnouncementSummary
@@ -158,16 +157,16 @@ class BulletInBoardScreen : Screen {
                         .padding(5.dp)
                 )
 
-                HorizontalDivider(Modifier.padding(horizontal = 5.dp))
-                Text(
-                    "Категории объявлений",
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth()
-                        .clickable { Logger.d("Пункт меню \"Категории объявлений\" выбран") }
-                        .padding(5.dp)
-                )
+//                HorizontalDivider(Modifier.padding(horizontal = 5.dp)) // todo восстановить отображение пункта с категориями объявлений
+//                Text(
+//                    "Категории объявлений",
+//                    fontSize = 18.sp,
+//                    modifier = Modifier
+//                        .padding(5.dp)
+//                        .fillMaxWidth()
+//                        .clickable { Logger.d("Пункт меню \"Категории объявлений\" выбран") }
+//                        .padding(5.dp)
+//                )
             }
         }
     }

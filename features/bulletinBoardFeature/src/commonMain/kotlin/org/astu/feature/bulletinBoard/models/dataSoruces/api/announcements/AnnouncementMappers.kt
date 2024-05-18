@@ -2,7 +2,6 @@ package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements
 
 import com.benasher44.uuid.uuidFrom
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.*
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.FileMappers.toModels
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.SurveyToModelMappers.toModels
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.dtos.UpdateIdentifierListDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.mappers.UpdateIdentifierListMappers.toDto
@@ -21,7 +20,6 @@ object AnnouncementMappers {
             viewsCount = this.viewsCount,
             audienceSize = this.audienceSize,
             audienceHierarchy = this.audienceHierarchy.toModel(),
-            files = this.files.toModels(),
             surveys = this.surveys.toModels(),
             publishedAt = this.publishedAt,
             hiddenAt = this.hiddenAt,
@@ -39,14 +37,12 @@ object AnnouncementMappers {
             attachmentIds = attachmentIds,
             delayedPublishingAt = this.delayedPublishingAt,
             delayedHidingAt = this.delayedHidingAt,
-            categoryIds = this.categoryIds,
         )
 
     fun EditAnnouncement.toDto(newAttachmentIds: List<String>?): UpdateAnnouncementDto =
         UpdateAnnouncementDto(
             id = this.id.toString(),
             content = this.content,
-            categoryIds = this.categories.toDto(),
             audienceIds = this.users.toDto(),
             attachmentIds = UpdateIdentifierListDto(
                 toAdd = newAttachmentIds?.toSet() ?: emptySet(),
@@ -75,7 +71,6 @@ object AnnouncementMappers {
             text = this.content,
             viewed = this.viewsCount,
             audienceSize = this.audienceSize,
-            files = this.files.toModels(),
             surveys = this.surveys?.toModels() ?: emptyList()
         )
 
@@ -87,7 +82,6 @@ object AnnouncementMappers {
             authorName = this.authorName,
             viewsCount = this.viewsCount,
             audienceSize = this.audienceSize,
-            files = this.files.toModels(),
             surveys = this.surveys?.toModels() ?: emptyList(),
             publishedAt = this.publishedAt,
             hiddenAt = this.hiddenAt,

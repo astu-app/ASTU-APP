@@ -52,8 +52,6 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kodein)
             implementation(libs.uuid)
-//            implementation(libs.mpfilepicker)
-            implementation(libs.calf.file.picker)
             implementation("io.github.theapache64:rebugger:1.0.0-rc03")
             api(libs.calf.ui)
         }

@@ -10,7 +10,6 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.Annou
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.AnnouncementMappers.toModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.ContentForAnnouncementUpdatingDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.*
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.responses.UploadFilesErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.ApiSurveyDataSource
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsuccessCode
@@ -18,7 +17,6 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.Co
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
 import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
-import org.astu.feature.bulletinBoard.models.entities.attachments.file.creation.CreateFile
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.creation.CreateSurvey
 import org.astu.infrastructure.GlobalDIContext
 
@@ -33,15 +31,10 @@ class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
         if (newSurveyIdContent != null && !newSurveyIdContent.isContentValid) {
             return CreateAnnouncementErrorsAggregate(createSurveyError = newSurveyIdContent.error)
         }
-        val newFileIdsContent = if (announcement.files != null) uploadFiles(announcement.files) else null
-        if (newFileIdsContent != null && !newFileIdsContent.isContentValid) {
-            return CreateAnnouncementErrorsAggregate(createFilesError = newFileIdsContent.error)
-        }
 
         val newSurveyId = newSurveyIdContent?.content
-        val newFileIds = newFileIdsContent?.content
 
-        val dto = announcement.toDto(constructAttachmentIds(newSurveyId?.toString(), newFileIds))
+        val dto = announcement.toDto(constructAttachmentIds(newSurveyId?.toString()))
         val response = client.post("api/announcements/create") {
             contentType(ContentType.Application.Json)
             setBody(dto)
@@ -65,7 +58,7 @@ class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
         if (!response.status.isSuccess())
             return ContentWithError(null, readUnsuccessCode<EditAnnouncementErrors>(response))
 
-        val dto = response.body<ContentForAnnouncementUpdatingDto>();
+        val dto = response.body<ContentForAnnouncementUpdatingDto>()
         return ContentWithError(dto.toModel(), error = null,)
     }
 
@@ -74,15 +67,10 @@ class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
         if (newSurveyIdContent != null && !newSurveyIdContent.isContentValid) {
             return EditAnnouncementErrorsAggregate(createSurveyError = newSurveyIdContent.error)
         }
-        val newFileIdsContent = if (announcement.newFiles != null) uploadFiles(announcement.newFiles) else null
-        if (newFileIdsContent != null && !newFileIdsContent.isContentValid) {
-            return EditAnnouncementErrorsAggregate(createFilesError = newFileIdsContent.error)
-        }
 
         val newSurveyId = newSurveyIdContent?.content
-        val newFileIds = newFileIdsContent?.content
 
-        val dto = announcement.toDto(constructAttachmentIds(newSurveyId?.toString(), newFileIds))
+        val dto = announcement.toDto(constructAttachmentIds(newSurveyId?.toString()))
         val response = client.put("api/announcements/update") {
             contentType(ContentType.Application.Json)
             setBody(dto)
@@ -117,23 +105,8 @@ class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
         return surveyDataSource.create(survey)
     }
 
-    private fun uploadFiles(files: List<CreateFile>): ContentWithError<List<String>, UploadFilesErrors> {
-        return ContentWithError(content = null, error = null) // todo прикрутить файлы
-    }
-
-    private fun constructAttachmentIds(surveyId: String?, fileIds: List<String>?): List<String> {
-        /*
-         * всевозможные варианты:
-         * null, null
-         * null, not null
-         * not null, null
-         * not null, not null
-         */
-
-        if (surveyId == null && fileIds == null) return emptyList()
-        if (surveyId == null && fileIds != null) return fileIds
-        if (surveyId != null && fileIds == null) return listOf(surveyId)
-
-        return fileIds!!.plusElement(surveyId!!); // !! так как проверки на null присутствуют выше
-    }
+    private fun constructAttachmentIds(surveyId: String?): List<String> = if (surveyId != null)
+        listOf(surveyId)
+    else
+        emptyList()
 }

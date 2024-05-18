@@ -14,7 +14,7 @@ object AnnouncementSummaryMappers {
             text = this.text,
             viewed = this.viewed,
             audienceSize = this.audienceSize,
-            attachments = mapAttachments(this.files, this.surveys)
+            attachments = mapAttachments(this.surveys)
         )
 
     @JvmName("AnnouncementSummaryCollectionToPresentations")

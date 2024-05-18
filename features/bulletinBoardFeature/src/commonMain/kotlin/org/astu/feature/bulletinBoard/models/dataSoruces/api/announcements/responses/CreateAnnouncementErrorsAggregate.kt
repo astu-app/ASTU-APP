@@ -1,6 +1,5 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses
 
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.files.responses.UploadFilesErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
 
 /**
@@ -9,5 +8,4 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys
 data class CreateAnnouncementErrorsAggregate(
     val createAnnouncementError: CreateAnnouncementErrors? = null,
     val createSurveyError: CreateSurveyErrors? = null,
-    val createFilesError: UploadFilesErrors? = null,
 )

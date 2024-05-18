@@ -10,17 +10,13 @@ import org.astu.feature.bulletinBoard.common.utils.calculateVotersPercentage
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
-import org.astu.feature.bulletinBoard.models.entities.attachments.file.details.File
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.AnswerDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.QuestionDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.SurveyDetails
 import org.astu.feature.bulletinBoard.models.entities.audience.User
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
-import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeFileSize
 import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.AttachedFileContent
-import org.astu.feature.bulletinBoard.views.components.attachments.files.models.FileDownloadState
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.VotedAnswerContentDetails
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.QuestionContentBase
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.VotedQuestionContent
@@ -88,7 +84,7 @@ class AnnouncementDetailsViewModel (
             viewedPercent = calculateVotersPercentage(details.viewsCount, details.audienceSize),
             audienceSize = details.audienceSize,
             text = details.content,
-            attachments = attachmentsToViewModel(details.files, details.surveys),
+            attachments = attachmentsToViewModel(details.surveys),
             audience = audienceToViewModel(details.audience),
         )
     }
@@ -97,13 +93,8 @@ class AnnouncementDetailsViewModel (
         return audience.map { UserSummary(it.id, it.firstName, it.secondName, it.patronymic) }
     }
 
-    private fun attachmentsToViewModel(files: List<File>, surveys: List<SurveyDetails>): List<AttachmentContentBase> {
+    private fun attachmentsToViewModel(surveys: List<SurveyDetails>): List<AttachmentContentBase> {
         val attachments = mutableListOf<AttachmentContentBase>()
-        files.forEach {
-            // todo получение состояния загрузки файла
-            attachments.add(AttachedFileContent(it.id, it.name, humanizeFileSize(it.sizeInBytes), mutableStateOf(
-                FileDownloadState.DOWNLOADED)))
-        }
 
         val survey = surveys.firstOrNull() ?: return attachments
         attachments.add(surveyToViewModel(survey))
