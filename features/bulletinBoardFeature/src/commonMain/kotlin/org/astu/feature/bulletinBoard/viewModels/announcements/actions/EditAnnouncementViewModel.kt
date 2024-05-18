@@ -9,14 +9,13 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.EditAnnouncementErrorsAggregate
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementEditContentErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
 import org.astu.feature.bulletinBoard.models.entities.audience.SelectableUser
 import org.astu.feature.bulletinBoard.models.entities.common.UpdateIdentifierList
+import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.EditAnnouncementContent
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToModelMappers.toModel
 
@@ -202,7 +201,7 @@ class EditAnnouncementViewModel(
     }
 
     private fun setErrorDialogStateForEditContentLoading(error:  GetAnnouncementEditContentErrors? = null) {
-        errorDialogBody.value = constructEditContentLoadingErrorDialogContent(error)
+        errorDialogBody.value = error.humanize()
         onErrorDialogTryAgain.value = {
             loadEditContent()
             showErrorDialog.value = false
@@ -213,16 +212,8 @@ class EditAnnouncementViewModel(
         }
     }
 
-    private fun constructEditContentLoadingErrorDialogContent(error: GetAnnouncementEditContentErrors?): String {
-        return when (error) {
-            GetAnnouncementEditContentErrors.GetAnnouncementUpdateContentForbidden -> "У вас недостаточно прав для загрузки данных для редактирования объявления"
-            GetAnnouncementEditContentErrors.AnnouncementDoesNotExist -> "Объявление не найдено. Повторите попытку позднее"
-            else -> "Непредвиденная ошибка при загрузке данных для редактирования объявления. Повторите попытку позднее"
-        }
-    }
-
-    private fun setErrorDialogStateForAnnouncementCreating(error:  EditAnnouncementErrorsAggregate? = null) {
-        errorDialogBody.value = constructCreateErrorDialogContent(error)
+    private fun setErrorDialogStateForAnnouncementCreating(error: EditAnnouncementErrorsAggregate? = null) {
+        errorDialogBody.value = error.humanize()
         onErrorDialogTryAgain.value = {
             edit()
             showErrorDialog.value = false
@@ -231,39 +222,5 @@ class EditAnnouncementViewModel(
             mutableState.value = State.EditingAnnouncement
             showErrorDialog.value = false
         }
-    }
-
-    private fun constructCreateErrorDialogContent(error:  EditAnnouncementErrorsAggregate?): String {
-        if (error?.editAnnouncementError != null)
-            return when (error.editAnnouncementError) {
-                EditAnnouncementErrors.ContentEmpty -> "Текст объявления не должен быть пустым"
-                EditAnnouncementErrors.AudienceEmpty -> "Нельзя очистить аудиторию объявления"
-                EditAnnouncementErrors.AnnouncementEditingForbidden -> "У вас недостаточно прав для изменения этого объявления"
-                EditAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено. Повторите попытку позднее"
-                EditAnnouncementErrors.AnnouncementCategoriesDoesNotExist -> "Категория объявлений не найдена. Повторите попытку позднее"
-                EditAnnouncementErrors.AttachmentsDoNotExist -> "Вложение не найдено. Повторите попытку позднее"
-                EditAnnouncementErrors.PieceOfAudienceDoesNotExist -> "Пользователь не найден. Повторите попытку позднее"
-                EditAnnouncementErrors.DelayedPublishingMomentIsInPast -> "Момент отложенной публикации уже наступил в прошлом"
-                EditAnnouncementErrors.DelayedHidingMomentIsInPast -> "Момент отложенного сокрытия уже наступил в прошлом"
-                EditAnnouncementErrors.AutoHidingAnAlreadyHiddenAnnouncement -> "Нельзя задать момент отложенного сокрытия объявлению, которое уже было скрыто"
-                EditAnnouncementErrors.AutoPublishingPublishedAndNonHiddenAnnouncement -> "Нельзя задать момент автоматической публикации объявлению, которое уже было опубликовано"
-                EditAnnouncementErrors.CannotDetachSurvey -> "Нельзя открепить опрос"
-                else -> "Непредвиденная ошибка при изменении объявления. Повторите попытку позднее"
-            }
-
-        if (error?.createSurveyError != null)
-            return when (error.createSurveyError) {
-                CreateSurveyErrors.CreateSurveyForbidden -> "У вас недостаточно прав для создания опроса"
-                CreateSurveyErrors.SurveyContainsQuestionSerialsDuplicates -> "Опрос содержит вопросы с одинаковыми порядковыми номерами"
-                CreateSurveyErrors.QuestionContainsAnswersSerialsDuplicates -> "Вопрос(ы) содержит варианты ответов с одинаковыми порядковыми номерами"
-                else -> "Непредвиденная ошибка при создании опроса. Повторите попытку"
-            }
-
-        if (error?.createFilesError != null)
-            return when (error.createFilesError) {
-                else -> "Непредвиденная ошибка при создании файлов. Повторите попытку"
-            }
-
-        return "Непредвиденная ошибка при изменении объявления. Повторите попытку позднее"
     }
 }

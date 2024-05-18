@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.DeleteAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetDelayedHiddenAnnouncementListErrors
+import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 
 class DelayedHiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScreenModel<DelayedHiddenAnnouncementsViewModel.State>(State.Loading) {
@@ -84,10 +85,7 @@ class DelayedHiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : St
 
 
     private fun constructAnnouncementsLoadingErrorDialogContent(error: GetDelayedHiddenAnnouncementListErrors? = null) {
-        errorDialogBody = when (error) {
-            GetDelayedHiddenAnnouncementListErrors.GetDelayedHiddenAnnouncementListAccessForbidden -> "У вас недостаточно прав для просмотра списка объявлений, ожидающих отложенной публикации"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadAnnouncements()
             showErrorDialog = false
@@ -99,11 +97,7 @@ class DelayedHiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : St
     }
 
     private fun constructAnnouncementDeletingErrorDialogContent(announcementId: Uuid, error: DeleteAnnouncementErrors? = null) {
-        errorDialogBody = when (error) {
-            DeleteAnnouncementErrors.AnnouncementDeletionForbidden -> "У вас недостаточно прав для удаления объявления"
-            DeleteAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             delete(announcementId)
             showErrorDialog = false

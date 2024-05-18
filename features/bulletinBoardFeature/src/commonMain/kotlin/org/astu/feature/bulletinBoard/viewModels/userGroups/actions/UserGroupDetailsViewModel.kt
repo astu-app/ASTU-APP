@@ -10,6 +10,7 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.UserGroupModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUsergroupDetailsErrors
+import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupDetailsContent
 import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupsPresentationMapper.toPresentation
 
@@ -66,11 +67,7 @@ class UserGroupDetailsViewModel(
 
 
     private fun constructLoadingUserGroupDetailsErrorDialogContent(error: GetUsergroupDetailsErrors? = null) {
-        errorDialogBody = when (error) {
-            GetUsergroupDetailsErrors.UetUsergroupDetailsForbidden -> "У вас недостаточно прав для просмотра деталей этой группы пользователей"
-            GetUsergroupDetailsErrors.UserGroupDoesNotExist -> "Группа пользователей не найдена"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
 
         onErrorDialogTryAgainRequest = {
             loadUserGroupDetails()

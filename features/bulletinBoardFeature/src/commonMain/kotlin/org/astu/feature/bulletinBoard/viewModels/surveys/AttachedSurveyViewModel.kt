@@ -6,6 +6,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.SurveyModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.VoteInSurveyErrors
+import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.SurveyMappers.getVotes
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.SurveyMappers.toModel
@@ -72,13 +73,6 @@ class AttachedSurveyViewModel(
 
 
     private fun constructVoteErrorDialog(error:  VoteInSurveyErrors? = null) {
-        errorDialogBody = when (error) {
-            VoteInSurveyErrors.VotingForbidden -> "У вас недостаточно прав для голосования в этом опросе"
-            VoteInSurveyErrors.SurveyDoesNotExist -> "Опрос не найден. Повторите попытку позже"
-            VoteInSurveyErrors.SurveyClosed -> "Нельзя проголосовать в закрытом опросе"
-            VoteInSurveyErrors.SurveyAlreadyVoted -> "Нельзя проголосовать в опросе дважды"
-            VoteInSurveyErrors.CannotSelectMultipleAnswersInSingleChoiceQuestion -> "В вопросе с единственным выбором нельзя выбрать несколько вариантов ответов"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
     }
 }

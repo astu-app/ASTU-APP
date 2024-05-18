@@ -10,6 +10,7 @@ import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.DeleteAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetHiddenAnnouncementListErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.RestoreHiddenAnnouncementErrors
+import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 
 class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScreenModel<HiddenAnnouncementsViewModel.State>(State.Loading) {
@@ -109,10 +110,7 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
 
 
     private fun constructAnnouncementsLoadingErrorDialogContent(error: GetHiddenAnnouncementListErrors? = null) {
-        errorDialogBody = when (error) {
-            GetHiddenAnnouncementListErrors.HiddenAnnouncementsListAccessForbidden -> "У вас недостаточно прав для просмотра списка скрытых объявлений"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadAnnouncements()
             showErrorDialog = false
@@ -124,11 +122,7 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
     }
 
     private fun constructAnnouncementDeletingErrorDialogContent(announcementId: Uuid, error: DeleteAnnouncementErrors? = null) {
-        errorDialogBody = when (error) {
-            DeleteAnnouncementErrors.AnnouncementDeletionForbidden -> "У вас недостаточно прав для удаления объявления"
-            DeleteAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             delete(announcementId)
             showErrorDialog = false
@@ -139,12 +133,7 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
     }
 
     private fun constructAnnouncementRestoringErrorDialogContent(announcementId: Uuid, error: RestoreHiddenAnnouncementErrors? = null) {
-        errorDialogBody = when (error) {
-            RestoreHiddenAnnouncementErrors.RestoreForbidden -> "У вас недостаточно прав для восстановления объявления"
-            RestoreHiddenAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            RestoreHiddenAnnouncementErrors.AnnouncementNotHidden -> "Нельзя восстановить объявление, которое не было скрыто"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             restore(announcementId)
             showErrorDialog = false

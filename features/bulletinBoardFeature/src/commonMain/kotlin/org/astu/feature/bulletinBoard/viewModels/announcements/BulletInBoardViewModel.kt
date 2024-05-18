@@ -11,6 +11,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.respo
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.HidePostedAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.services.surveys.SurveyService
+import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 
 class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(State.Loading) {
@@ -136,10 +137,7 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
 
 
     private fun constructAnnouncementsLoadingErrorDialogContent(error: GetPostedAnnouncementListErrors? = null) {
-        errorDialogBody = when (error) {
-            GetPostedAnnouncementListErrors.PostedAnnouncementsListAccessForbidden -> "У вас недостаточно прав для просмотра ленты объявлений"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadAnnouncements()
             showErrorDialog = false
@@ -150,11 +148,7 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
     }
 
     private fun constructAnnouncementDeletingErrorDialogContent(announcementId: Uuid, error: DeleteAnnouncementErrors? = null) {
-        errorDialogBody = when (error) {
-            DeleteAnnouncementErrors.AnnouncementDeletionForbidden -> "У вас недостаточно прав для удаления объявления"
-            DeleteAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             delete(announcementId)
             showErrorDialog = false
@@ -165,13 +159,7 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
     }
 
     private fun constructAnnouncementHidingErrorDialogContent(announcementId: Uuid, error: HidePostedAnnouncementErrors? = null) {
-        errorDialogBody = when (error) {
-            HidePostedAnnouncementErrors.AnnouncementHidingForbidden -> "У вас недостаточно прав для сокрытия объявления"
-            HidePostedAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            HidePostedAnnouncementErrors.AnnouncementAlreadyHidden -> "Нельзя скрыть уже скрытое объявление"
-            HidePostedAnnouncementErrors.AnnouncementNotYetPublished -> "Нельзя скрыть объявление, которое еще не было опубликовано"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             hide(announcementId)
             showErrorDialog = false

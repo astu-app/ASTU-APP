@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.UserGroupModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
+import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupsPresentationMapper.toShortUserGroupHierarchy
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.screens.userGroups.actions.UserGroupDetailsScreen
@@ -109,10 +110,7 @@ class UserGroupsViewModel(private val navigator: Navigator) : StateScreenModel<U
 
 
     private fun constructUserGroupsLoadingErrorDialogContent(error: GetUserHierarchyErrors? = null) {
-        errorDialogBody = when (error) {
-            GetUserHierarchyErrors.GetUsergroupHierarchyForbidden -> "У вас недостаточно прав для просмотра списка групп пользователей"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadUserGroups()
             showErrorDialog = false
@@ -123,11 +121,7 @@ class UserGroupsViewModel(private val navigator: Navigator) : StateScreenModel<U
     }
 
     private fun constructUserGroupsDeletingErrorDialogContent(userGroupId: Uuid, error: DeleteUserGroupErrors? = null) {
-        errorDialogBody = when (error) {
-            DeleteUserGroupErrors.UsergroupDeletionForbidden -> "У вас отсутствуют права на удаление группы пользователей"
-            DeleteUserGroupErrors.UserGroupDoesNotExist -> "Группа пользователей не найдена"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             deleteUserGroup(userGroupId)
             showErrorDialog = false

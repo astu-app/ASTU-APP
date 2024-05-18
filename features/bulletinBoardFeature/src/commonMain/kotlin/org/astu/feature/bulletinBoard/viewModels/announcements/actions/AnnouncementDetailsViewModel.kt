@@ -15,6 +15,7 @@ import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.QuestionDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.SurveyDetails
 import org.astu.feature.bulletinBoard.models.entities.audience.User
+import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeFileSize
 import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
@@ -136,10 +137,6 @@ class AnnouncementDetailsViewModel (
     }
 
     private fun constructErrorDialogContent(error: GetAnnouncementDetailsErrors? = null) {
-        errorDialogBody.value = when (error) {
-            GetAnnouncementDetailsErrors.DetailsAccessForbidden -> "У вас недостаточно прав для просмотра подробностей этого объявления"
-            GetAnnouncementDetailsErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody.value = error.humanize()
     }
 }

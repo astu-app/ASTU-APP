@@ -10,6 +10,7 @@ import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.DeleteAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetDelayedPublishedAnnouncementsErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.PublishImmediatelyDelayedAnnouncementErrors
+import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 
 class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScreenModel<DelayedPublishedAnnouncementsViewModel.State>(State.Loading) {
@@ -109,10 +110,7 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
 
 
     private fun constructAnnouncementsLoadingErrorDialogContent(error: GetDelayedPublishedAnnouncementsErrors? = null) {
-        errorDialogBody = when (error) {
-            GetDelayedPublishedAnnouncementsErrors.GetDelayedPublishingAnnouncementListResponsesAccessForbidden -> "У вас недостаточно прав для просмотра списка объявлений, ожидающих отложенного сокрытия"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadAnnouncements()
             showErrorDialog = false
@@ -124,11 +122,7 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
     }
 
     private fun constructAnnouncementDeletingErrorDialogContent(announcementId: Uuid, error: DeleteAnnouncementErrors? = null) {
-        errorDialogBody = when (error) {
-            DeleteAnnouncementErrors.AnnouncementDeletionForbidden -> "У вас недостаточно прав для удаления объявления"
-            DeleteAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             delete(announcementId)
             showErrorDialog = false
@@ -139,11 +133,7 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
     }
 
     private fun constructAnnouncementPublishingErrorDialogContent(announcementId: Uuid, error: PublishImmediatelyDelayedAnnouncementErrors? = null) {
-        errorDialogBody = when (error) {
-            PublishImmediatelyDelayedAnnouncementErrors.ImmediatePublishingForbidden -> "У вас недостаточно прав для немедленной публикации объявления"
-            PublishImmediatelyDelayedAnnouncementErrors.AnnouncementDoesNotExist -> "Объявление не найдено"
-            else -> unexpectedErrorBody
-        }
+        errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             publishImmediately(announcementId)
             showErrorDialog = false
