@@ -5,6 +5,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.VoteInSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserListErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUsergroupDetailsErrors
 
 object ErrorCodesHumanization {
@@ -155,7 +156,13 @@ object ErrorCodesHumanization {
 
     fun GetUserHierarchyErrors?.humanize(): String =
         when (this) {
-            GetUserHierarchyErrors.GetUsergroupHierarchyForbidden -> "У вас недостаточно прав для просмотра списка групп пользователей"
+            GetUserHierarchyErrors.GetUsergroupHierarchyForbidden -> "У вас недостаточно прав для просмотра иерархии+ групп пользователей"
+            else -> DEFAULT_ERROR_MESSAGE
+        }
+
+    fun GetUserListErrors?.humanize(): String =
+        when (this) {
+            GetUserListErrors.GetOwnedUsergroupsForbidden -> "У вас недостаточно прав для просмотра списка групп пользователей"
             else -> DEFAULT_ERROR_MESSAGE
         }
 

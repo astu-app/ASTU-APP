@@ -5,16 +5,22 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.Co
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.ApiUserGroupDataSource
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserListErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUsergroupDetailsErrors
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupDetails
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupSummary
 
 
 class UserGroupRepository {
     private val announcementAudienceSource = ApiUserGroupDataSource()
 
-    suspend fun getAudience(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
-        return announcementAudienceSource.getAudienceForCreation()
+    suspend fun getUserGroupHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
+        return announcementAudienceSource.getUserGroupHierarchy()
+    }
+
+    suspend fun getUserGroupList(): ContentWithError<List<UserGroupSummary>, GetUserListErrors> {
+        return announcementAudienceSource.getUserGroupList()
     }
 
     suspend fun getDetails(id: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {

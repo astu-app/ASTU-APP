@@ -10,17 +10,17 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.UserGroupDataSource
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsuccessCode
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupMappers.toModel
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupDetailsDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupHierarchyDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupHierarchyNodeDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupSummaryWithMembersDto
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupMappers.toModels
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserListErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUsergroupDetailsErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupDetails
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupSummary
 import org.astu.infrastructure.GlobalDIContext
 
 class ApiUserGroupDataSource : UserGroupDataSource {
@@ -37,8 +37,8 @@ class ApiUserGroupDataSource : UserGroupDataSource {
         return ContentWithError(dto.toModel(), error = null)
     }
 
-    override suspend fun getAudienceForCreation(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
-        val response = client.get("api/usergroups/get-user-hierarchy")
+    override suspend fun getUserGroupHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
+        val response = client.get("api/usergroups/get-owned-hierarchy")
 
         if (!response.status.isSuccess())
             return ContentWithError(null, error = readUnsuccessCode<GetUserHierarchyErrors>(response))
@@ -46,6 +46,18 @@ class ApiUserGroupDataSource : UserGroupDataSource {
         val hierarchyDto = response.body<UserGroupHierarchyDto>()
         val hierarchy = mapHierarchy(hierarchyDto)
         return ContentWithError(hierarchy, error = null)
+
+    }
+
+    override suspend fun getUserGroupList(): ContentWithError<List<UserGroupSummary>, GetUserListErrors> {
+        val response = client.get("api/usergroups/get-owned-list")
+
+        if (!response.status.isSuccess())
+            return ContentWithError(null, error = readUnsuccessCode<GetUserListErrors>(response))
+
+        val dto = response.body<Array<UserGroupSummaryDto>>()
+        val list = dto.toModels()
+        return ContentWithError(list, error = null)
     }
 
     override suspend fun delete(id: Uuid): DeleteUserGroupErrors? {
@@ -89,6 +101,6 @@ class ApiUserGroupDataSource : UserGroupDataSource {
     }
 
     private fun mapUserGroup(dto: UserGroupSummaryWithMembersDto): UserGroup {
-        return UserGroup(uuidFrom(dto.summary.id), dto.summary.name, mutableListOf(), dto.members.toModels())
+        return UserGroup(uuidFrom(dto.summary.id), dto.summary.name, dto.summary.adminName, mutableListOf(), dto.members.toModels())
     }
 }

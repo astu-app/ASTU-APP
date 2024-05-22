@@ -5,4 +5,5 @@ import com.benasher44.uuid.Uuid
 data class UserGroupSummary(
     val id: Uuid,
     val name: String,
+    val adminName: String?,
 )

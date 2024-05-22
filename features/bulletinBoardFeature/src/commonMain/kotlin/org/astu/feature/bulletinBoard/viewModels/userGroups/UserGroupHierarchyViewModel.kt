@@ -18,7 +18,7 @@ import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupsPresen
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.screens.userGroups.actions.UserGroupDetailsScreen
 
-class UserGroupsViewModel(private val navigator: Navigator) : StateScreenModel<UserGroupsViewModel.State>(State.Loading) {
+class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScreenModel<UserGroupHierarchyViewModel.State>(State.Loading) {
     sealed class State {
         data object Loading : State()
         data object LoadingDone : State()
@@ -54,9 +54,9 @@ class UserGroupsViewModel(private val navigator: Navigator) : StateScreenModel<U
                 mutableState.value = State.Loading
                 userGroups.clear()
 
-                val userGroups = userGroupModel.getUserGroupList()
+                val userGroups = userGroupModel.getUserGroupHierarchy()
                 if (userGroups.isContentValid) {
-                    this@UserGroupsViewModel.userGroups.addAll(
+                    this@UserGroupHierarchyViewModel.userGroups.addAll(
                         userGroups.content!!.toShortUserGroupHierarchy(
                             onUserGroupClick =  {
                                 val userGroupDetailsScreen = UserGroupDetailsScreen(it.id, it.name) { navigator.pop() }
@@ -78,7 +78,7 @@ class UserGroupsViewModel(private val navigator: Navigator) : StateScreenModel<U
                 }
 
             } catch (e: Exception) {
-                Logger.e("UserGroupsViewModel", e)
+                Logger.e(this::class.simpleName!! , e)
                 constructUserGroupsLoadingErrorDialogContent()
                 mutableState.value = State.LoadingUserGroupsError
             }
@@ -100,7 +100,7 @@ class UserGroupsViewModel(private val navigator: Navigator) : StateScreenModel<U
                 }
 
             } catch (e: Exception) {
-                Logger.e("UserGroupsViewModel", e)
+                Logger.e(this::class.simpleName!! , e)
                 constructUserGroupsDeletingErrorDialogContent(id)
                 mutableState.value = State.LoadingUserGroupsError
             }

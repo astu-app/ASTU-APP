@@ -23,7 +23,7 @@ object UserGroupMappers {
 
     @JvmName("UserGroupSummaryWithMembersDtoToModel")
     fun UserGroupSummaryWithMembersDto.toModel(): UserGroup =
-        UserGroup(uuidFrom(this.summary.id), this.summary.name, mutableListOf(), this.members.toModels())
+        UserGroup(uuidFrom(this.summary.id), this.summary.name, this.summary.adminName, mutableListOf(), this.members.toModels())
 
     @JvmName("UserGroupSummaryWithMembersDtoCollectionToModels")
     fun Collection<UserGroupSummaryWithMembersDto>.toModels(): List<UserGroup> =
@@ -44,9 +44,13 @@ object UserGroupMappers {
     fun Collection<UserGroupSummaryDto>.toModels(): List<UserGroupSummary> =
         this.map { it.toModel() }
 
+    @JvmName("UserGroupSummaryDtoArrayToModel")
+    fun Array<UserGroupSummaryDto>.toModels(): List<UserGroupSummary> =
+        this.map { it.toModel() }
+
     @JvmName("UserGroupDtoToModel")
     fun UserGroupSummaryDto.toModel(): UserGroupSummary =
-        UserGroupSummary(id = uuidFrom(this.id), name = this.name)
+        UserGroupSummary(id = uuidFrom(this.id), name = this.name, adminName = this.adminName)
 
 
 

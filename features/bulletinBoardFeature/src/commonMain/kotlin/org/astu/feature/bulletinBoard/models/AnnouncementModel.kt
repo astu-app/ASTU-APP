@@ -35,7 +35,7 @@ class AnnouncementModel {
     }
 
     suspend fun getAudienceHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
-        val audience = userGroupRepository.getAudience()
+        val audience = userGroupRepository.getUserGroupHierarchy()
         if (!audience.isContentValid) {
             return ContentWithError(null, audience.error)
         }

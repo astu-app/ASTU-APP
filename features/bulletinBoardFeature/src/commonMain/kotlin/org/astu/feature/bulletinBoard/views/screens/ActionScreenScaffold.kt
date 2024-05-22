@@ -35,6 +35,7 @@ fun ActionScreenScaffold(
     modifier: Modifier = Modifier.fillMaxSize(),
     floatingActionButton: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
+    bottomBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Scaffold(
@@ -53,6 +54,7 @@ fun ActionScreenScaffold(
             )
         },
         floatingActionButton = floatingActionButton,
+        bottomBar = bottomBar,
         modifier = modifier
     ) {
         val scrollState = rememberScrollState()

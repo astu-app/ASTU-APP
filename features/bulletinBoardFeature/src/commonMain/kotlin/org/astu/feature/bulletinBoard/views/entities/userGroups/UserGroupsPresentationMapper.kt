@@ -1,6 +1,7 @@
 package org.astu.feature.bulletinBoard.views.entities.userGroups
 
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.models.entities.audience.*
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
@@ -57,7 +59,7 @@ object UserGroupsPresentationMapper {
 
     @JvmName("UserGroupSummaryToPresentation")
     fun UserGroupSummary.toPresentation(): UserGroupSummaryContent =
-        UserGroupSummaryContent(this.id, this.name)
+        UserGroupSummaryContent(this.id, this.name, this.adminName)
 
 
     private fun mapDetailedUserGroupHierarchyNode(userGroup: UserGroup): Node {
@@ -71,10 +73,10 @@ object UserGroupsPresentationMapper {
         val childrenNodes = members + childUserGroups
         val userGroupNode = Node(
             children = childrenNodes,
-            content = makeStaticUserGroupText(userGroup.name, { }, { })
+            content = makeStaticUserGroupText(userGroup.name, userGroup.adminName, { }, { })
         )
 
-        userGroupNode.content = makeStaticUserGroupText(userGroup.name, { }, { })
+        userGroupNode.content = makeStaticUserGroupText(userGroup.name, userGroup.adminName, { }, { })
         childrenNodes.forEach { it.parentNodes.add(userGroupNode) }
 
         mappedNodes[userGroup.id] = userGroupNode
@@ -94,7 +96,8 @@ object UserGroupsPresentationMapper {
         val userGroupNode = Node(
             children = childUserGroups,
             content = makeStaticUserGroupText(
-                text = userGroup.name,
+                groupName = userGroup.name,
+                adminName = userGroup.adminName,
                 onTap = { onUserGroupClicked.invoke(userGroup) },
                 onLongPress = { offset -> onUserGroupLongPress.invoke(userGroup, offset) }
             )
@@ -106,14 +109,14 @@ object UserGroupsPresentationMapper {
         return userGroupNode
     }
 
-    private fun makeStaticUserGroupText(
-        text: String,
+    fun makeStaticUserGroupText(
+        groupName: String,
+        adminName: String?,
         onTap: (Offset) -> Unit,
         onLongPress: (DpOffset) -> Unit
     ): @Composable () -> Unit = {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -122,12 +125,28 @@ object UserGroupsPresentationMapper {
                         onTap = onTap,
                         onLongPress = {
                             val offset = DpOffset(it.x.toDp(), it.y.toDp()) // todo корректная позиция dropdown'а
-//                            val offset = DpOffset(it.x.dp, it.y.dp)
                             onLongPress.invoke(offset)
                         }
                     )
                 },
-        )
+        ) {
+            Text(
+                text = groupName,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+            )
+            Text(
+                text = adminName ?: "Без администратора",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+            )
+        }
+
     }
 
 
