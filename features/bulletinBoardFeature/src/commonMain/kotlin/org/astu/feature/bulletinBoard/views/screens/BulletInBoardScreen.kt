@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -58,7 +58,7 @@ class BulletInBoardScreen : Screen {
                     },
                     containerColor = CurrentColorScheme.tertiaryContainer,
                 ) {
-                    Icon(Icons.Outlined.Edit, null)
+                    Icon(Icons.Outlined.Add, "Создать объявление")
                 }
             },
         ) {

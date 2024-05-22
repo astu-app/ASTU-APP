@@ -2,7 +2,7 @@ package org.astu.feature.bulletinBoard.views.screens.userGroups
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Newspaper
-import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -49,7 +49,7 @@ class UserGroupsScreen(private val onReturn: () -> Unit) : Screen {
                     },
                     containerColor = CurrentColorScheme.tertiaryContainer,
                 ) {
-                    Icon(Icons.Outlined.Edit, null)
+                    Icon(Icons.Outlined.Add, "Создать группу пользователей")
                 }
             },
 //            bottomBar = { NavigationBarScreens(selected, screens, setValue) }
