@@ -13,7 +13,7 @@ import org.astu.feature.bulletinBoard.models.entities.announcements.Announcement
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.AnswerDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.QuestionDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.SurveyDetails
-import org.astu.feature.bulletinBoard.models.entities.audience.User
+import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
 import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
@@ -22,7 +22,7 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.questi
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.VotedQuestionContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.details.AnnouncementDetailsContent
-import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
+import org.astu.feature.bulletinBoard.views.entities.users.CheckableUserSummary
 
 class AnnouncementDetailsViewModel (
     private val announcementId: Uuid
@@ -89,8 +89,16 @@ class AnnouncementDetailsViewModel (
         )
     }
 
-    private fun audienceToViewModel(audience: List<User>): List<UserSummary> {
-        return audience.map { UserSummary(it.id, it.firstName, it.secondName, it.patronymic) }
+    private fun audienceToViewModel(audience: List<CheckableUser>): List<CheckableUserSummary> {
+        return audience.map {
+            CheckableUserSummary(
+                id = it.id,
+                firstName = it.firstName,
+                secondName = it.secondName,
+                patronymic = it.patronymic,
+                isChecked = it.isChecked
+            )
+        }
     }
 
     private fun attachmentsToViewModel(surveys: List<SurveyDetails>): List<AttachmentContentBase> {

@@ -3,7 +3,8 @@ package org.astu.feature.bulletinBoard.models.entities.announcements
 import com.benasher44.uuid.Uuid
 import kotlinx.datetime.LocalDateTime
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.SurveyDetails
-import org.astu.feature.bulletinBoard.models.entities.audience.User
+import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
+
 
 class AnnouncementDetails (
     val id: Uuid,
@@ -12,7 +13,7 @@ class AnnouncementDetails (
     val viewsCount: Int,
     val audienceSize: Int,
 //    val audience: IAudienceNode,
-    val audience: List<User>,
+    val audience: List<CheckableUser>,
     val surveys: List<SurveyDetails>,
     val publishedAt: LocalDateTime?,
     val hiddenAt: LocalDateTime?,

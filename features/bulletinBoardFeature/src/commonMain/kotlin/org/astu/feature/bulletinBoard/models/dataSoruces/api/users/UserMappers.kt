@@ -1,9 +1,9 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.users
 
 import com.benasher44.uuid.uuidFrom
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.dtos.SelectableUserSummaryDto
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.dtos.CheckableUserSummaryDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.dtos.UserSummaryDto
-import org.astu.feature.bulletinBoard.models.entities.audience.SelectableUser
+import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
 import org.astu.feature.bulletinBoard.models.entities.audience.User
 import kotlin.jvm.JvmName
 
@@ -17,10 +17,10 @@ object UserMappers {
         this.map { it.toModel() }
 
     @JvmName("SelectableUserSummaryDtoToModel")
-    fun SelectableUserSummaryDto.toModel(): SelectableUser =
-        SelectableUser(uuidFrom(this.id), this.firstName, this.secondName, this.patronymic, this.isSelected)
+    fun CheckableUserSummaryDto.toModel(): CheckableUser =
+        CheckableUser(uuidFrom(this.id), this.firstName, this.secondName, this.patronymic, this.isChecked)
 
     @JvmName("SelectableUserSummaryDtoCollectionToModels")
-    fun Collection<SelectableUserSummaryDto>.toModels(): List<SelectableUser> =
+    fun Collection<CheckableUserSummaryDto>.toModels(): List<CheckableUser> =
         this.map { it.toModel() }
 }

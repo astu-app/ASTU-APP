@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 // если убрать "Icons.Outlined.",  AttachFileAdd не будет соотноситься с этим объектом
-@Suppress("UnusedReceiverParameter")
+@Suppress("UnusedReceiverParameter", "unused")
 val Icons.Outlined.AttachFileAdd: ImageVector
     get() {
         if (_attachFileAdd != null) {

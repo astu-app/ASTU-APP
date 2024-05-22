@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.benasher44.uuid.Uuid
 import kotlinx.datetime.*
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
-import org.astu.feature.bulletinBoard.models.entities.audience.SelectableUser
+import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
 import org.astu.feature.bulletinBoard.models.entities.audience.getUserGroupHierarchyMembers
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.dateTime.getDateString
@@ -74,7 +74,7 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
             .flatMap {
                 it
                     .getUserGroupHierarchyMembers()
-                    .filter { (it as SelectableUser).isSelected }
+                    .filter { (it as CheckableUser).isChecked }
                     .map { it.id }
             }.toMutableSet()
 

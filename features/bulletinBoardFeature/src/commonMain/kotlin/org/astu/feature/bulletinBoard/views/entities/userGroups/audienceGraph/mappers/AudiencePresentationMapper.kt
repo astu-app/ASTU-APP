@@ -12,7 +12,7 @@ import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.models.entities.audience.User
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
-import org.astu.feature.bulletinBoard.views.components.announcements.common.SelectableUserSummary
+import org.astu.feature.bulletinBoard.views.components.announcements.common.CheckableUserSummary
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.ISelectableNode
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.SelectableLeaf
@@ -102,8 +102,8 @@ class AudiencePresentationMapper(
         }
 
         val userSummary = UserSummary(member.id, member.firstName, member.secondName, member.patronymic)
-        val selectableUserSummary = SelectableUserSummary(userSummary = userSummary, isSelected = mutableStateOf(selectedMemberIds.contains(member.id)))
-        val selectableUser = SelectableLeaf(isSelected = selectableUserSummary.isSelected, content = { })
+        val selectableUserSummary = CheckableUserSummary(userSummary = userSummary, isChecked = mutableStateOf(selectedMemberIds.contains(member.id)))
+        val selectableUser = SelectableLeaf(isSelected = selectableUserSummary.isChecked, content = { })
 
         selectableUser.content = makeSelectableUserText(selectableUserSummary) { newState ->
             selectableUser.setSelectionState(newState)
@@ -123,7 +123,7 @@ class AudiencePresentationMapper(
     }
 
     private fun makeSelectableUserText(
-        user: SelectableUserSummary,
+        user: CheckableUserSummary,
         modifier: Modifier = Modifier,
         onCheckedStateChanged: (Boolean) -> Unit
     ): @Composable () -> Unit {
@@ -144,7 +144,7 @@ class AudiencePresentationMapper(
                         )
                     }
                 },
-                state = user.isSelected,
+                state = user.isChecked,
                 onCheckedStateChange = onCheckedStateChanged
             )
         }

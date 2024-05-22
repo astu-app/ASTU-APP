@@ -13,7 +13,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.respo
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementEditContentErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
-import org.astu.feature.bulletinBoard.models.entities.audience.SelectableUser
+import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
 import org.astu.feature.bulletinBoard.models.entities.common.UpdateIdentifierList
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.EditAnnouncementContent
@@ -59,7 +59,7 @@ class EditAnnouncementViewModel(
             try {
                 val getContent = model.getEditContent(announcementId)
                 if (getContent.isContentValid) {
-                    original = getContent.content;
+                    original = getContent.content
                     content.value = EditAnnouncementContent(getContent.content!!) // так как not-null заложен в isContentValid
                     mutableState.value = State.EditingAnnouncement
                     return@launch
@@ -121,7 +121,7 @@ class EditAnnouncementViewModel(
         content: EditAnnouncementContent,
         original: ContentForAnnouncementEditing
     ): UpdateIdentifierList? {
-        val originalIds = original.audienceHierarchy.allMembers.filter { (it as SelectableUser).isSelected }.map { it.id }
+        val originalIds = original.audienceHierarchy.allMembers.filter { (it as CheckableUser).isChecked }.map { it.id }
         val updatedIds = content.selectedUserIds
 
         val idsChanged = originalIds.intersect(updatedIds).isNotEmpty()

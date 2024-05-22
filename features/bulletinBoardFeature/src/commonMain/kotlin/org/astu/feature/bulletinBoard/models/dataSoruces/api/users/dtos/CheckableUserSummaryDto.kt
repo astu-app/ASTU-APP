@@ -7,13 +7,13 @@ import kotlinx.serialization.Serializable
  * @param firstName Имя
  * @param secondName Фамилия
  * @param patronymic Отчество
- * @param isSelected Отмечен ли пользователь
+ * @param isChecked Отмечен ли пользователь
  */
 @Serializable
-data class SelectableUserSummaryDto (
+data class CheckableUserSummaryDto (
     val id: String,
     val firstName: String,
     val secondName: String,
     val patronymic: String?,
-    val isSelected: Boolean
+    val isChecked: Boolean
 )
