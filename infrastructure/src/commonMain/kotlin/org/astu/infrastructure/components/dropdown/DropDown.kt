@@ -39,17 +39,11 @@ fun DropDown(
                 .wrapContentHeight()
                 .clickable { mutableIsExpanded = !mutableIsExpanded }
         ) {
-            title()
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(
-                        horizontal = 16.dp,
-                        vertical = 8.dp
-                    )
-                    .fillMaxWidth()
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically,) {
+                Row(modifier = Modifier.weight(1f),) {
+                    title()
+                }
+
                 LaunchedEffect(mutableIsExpanded) {
                     val targetRotation = if (mutableIsExpanded) currentRotation - 180f else currentRotation + 180f
                     rotation.animateTo(targetRotation, animationSpec = tween(300)) {
@@ -61,6 +55,7 @@ fun DropDown(
                     contentDescription = null,
                     modifier = Modifier
                         .requiredSize(width = 24.dp, height = 24.dp)
+                        .weight(0.1f)
                         .rotate(currentRotation)
                 )
             }

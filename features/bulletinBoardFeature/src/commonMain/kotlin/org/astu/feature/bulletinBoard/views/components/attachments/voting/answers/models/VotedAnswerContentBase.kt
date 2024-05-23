@@ -20,11 +20,11 @@ import org.astu.infrastructure.theme.CurrentColorScheme
 abstract class VotedAnswerContentBase(
     id: Uuid,
     text: String,
-    private val voterPercent: Int
+    protected val voterPercent: Int
 ) : AnswerContentBase(id, text),
     DefaultModifierProvider, ContentProvider {
     @Composable
-    protected fun DrawVotedContentSummary(modifier: Modifier) {
+    protected open fun DrawVotedContentSummary(modifier: Modifier) {
         Row(modifier = modifier) {
             Column(
                 verticalArrangement = Arrangement.Bottom,

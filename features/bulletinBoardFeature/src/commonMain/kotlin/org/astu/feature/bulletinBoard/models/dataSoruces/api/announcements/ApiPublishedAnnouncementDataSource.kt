@@ -1,5 +1,6 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements
 
+import co.touchlab.kermit.Logger
 import com.benasher44.uuid.Uuid
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -30,8 +31,13 @@ class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
             return ContentWithError(null, error = readUnsuccessCode<GetPostedAnnouncementListErrors>(response))
         }
 
-        val announcements = response.body<Array<AnnouncementSummaryDto>>().toModels()
-        return ContentWithError(announcements, null)
+        try {
+            val announcements = response.body<Array<AnnouncementSummaryDto>>().toModels()
+            return ContentWithError(announcements, null)
+        } catch (e: Exception) {
+            Logger.e(e.message ?: "empty message", e)
+            throw e
+        }
     }
 
     override suspend fun getDetails(id: Uuid): ContentWithError<AnnouncementDetails, GetAnnouncementDetailsErrors> {
@@ -43,8 +49,13 @@ class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
             return ContentWithError(null, error = readUnsuccessCode<GetAnnouncementDetailsErrors>(response))
         }
 
-        val dto = response.body<AnnouncementDetailsDto>()
-        return ContentWithError(dto.toModel(), error = null)
+        try {
+            val dto = response.body<AnnouncementDetailsDto>()
+            return ContentWithError(dto.toModel(), error = null)
+        } catch (e: Exception) {
+            Logger.e(e.message ?: "empty message", e)
+            throw e
+        }
     }
 
     override suspend fun hide(id: Uuid): HidePostedAnnouncementErrors? {

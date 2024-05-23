@@ -10,7 +10,7 @@ import androidx.compose.ui.text.style.TextAlign
 import org.astu.infrastructure.theme.CurrentColorScheme
 
 @Composable
-fun PublicationMoment(
+fun TimeMoment(
     moment: String,
     color: Color = CurrentColorScheme.outline,
     textAlign: TextAlign = TextAlign.End,

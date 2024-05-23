@@ -7,10 +7,10 @@ import kotlinx.datetime.*
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
 import org.astu.feature.bulletinBoard.models.entities.audience.getUserGroupHierarchyMembers
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.dateTime.getDateString
 import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeFromEpochMillis
-import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeString
 import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.votedSurveyToPresentation
 import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
@@ -24,6 +24,9 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
     val id: Uuid = editContent.id
     val author: String = editContent.authorName
     lateinit var publicationTimeString: String
+    lateinit var hidingTimeString: String
+    lateinit var initialDelayedPublicationTimeString: String
+    lateinit var initialDelayedHidingTimeString: String
     val viewed: Int = editContent.viewsCount
     val viewedPercent: Int = round(editContent.viewsCount * 1f / editContent.audienceSize).roundToInt()
     val audienceSize: Int = editContent.audienceSize
@@ -66,9 +69,12 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
 
     init {
         setPublicationTimeString()
+        setHidingTimeString()
+        setDelayedPublicationTimeString()
+        setDelayedHidingTimeString()
         setDelayedMoments()
 
-        attachedSurvey = editContent.surveys?.elementAtOrNull(0)?.votedSurveyToPresentation() as AttachedSurveyContent?
+        attachedSurvey = editContent.surveys?.elementAtOrNull(0)?.votedSurveyToPresentation(showVoters = true) as AttachedSurveyContent?
 
         selectedUserIds = editContent.audienceHierarchy.roots
             .flatMap {
@@ -83,17 +89,41 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
     }
 
     private fun setPublicationTimeString() {
-        if (editContent.publishedAt == null) {
-            publicationTimeString = "Еще не опубликовано"
+        publicationTimeString = if (editContent.publishedAt == null) {
+            "Не опубликовано"
         } else {
-            publicationTimeString = "Опубликовано ${getDateTimeString(editContent.publishedAt)}"
+            "Опубликовано ${humanizeDateTime(editContent.publishedAt)}"
+        }
+    }
+
+    private fun setHidingTimeString() {
+        hidingTimeString = if (editContent.hiddenAt == null) {
+            "Не скрыто"
+        } else {
+            "Скрыто ${humanizeDateTime(editContent.hiddenAt)}"
+        }
+    }
+
+    private fun setDelayedPublicationTimeString() {
+        initialDelayedPublicationTimeString = if (editContent.delayedPublishingAt == null) {
+            "Отложенная публикация не задана"
+        } else {
+            "Будет опубликовано ${humanizeDateTime(editContent.delayedPublishingAt)}"
+        }
+    }
+
+    private fun setDelayedHidingTimeString() {
+        initialDelayedHidingTimeString = if (editContent.delayedHidingAt == null) {
+            "Отложенное сокрытие не задано"
+        } else {
+            "Будет скрыто ${humanizeDateTime(editContent.delayedHidingAt)}"
         }
     }
 
     private fun setDelayedMoments() {
         val now = Clock.System.now()
 
-        // Момент отложенной публикации. В качестве момента отложенной публикации кстанавливаем текущий момент времени,
+        // Момент отложенной публикации. В качестве момента отложенной публикации устанавливаем текущий момент времени,
         // если отложенная публикация не была задана.
         val delayedPublishingAt = editContent.delayedPublishingAt?.toInstant(TimeZone.currentSystemDefault()) ?: now
         val delayedPublicationDateMillis = delayedPublishingAt.toEpochMilliseconds()

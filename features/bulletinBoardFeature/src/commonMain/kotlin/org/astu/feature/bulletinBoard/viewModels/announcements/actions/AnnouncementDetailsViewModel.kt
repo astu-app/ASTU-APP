@@ -23,6 +23,8 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.questi
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.details.AnnouncementDetailsContent
 import org.astu.feature.bulletinBoard.views.entities.users.CheckableUserSummary
+import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentations
+import org.astu.feature.bulletinBoard.views.entities.users.UserToViewMappers.toViews
 
 class AnnouncementDetailsViewModel (
     private val announcementId: Uuid
@@ -76,10 +78,26 @@ class AnnouncementDetailsViewModel (
     }
 
     private fun toViewModel(details: AnnouncementDetails): AnnouncementDetailsContent {
+        val publicationTimeString =
+            if (details.publishedAt != null) "Опубликовано ${humanizeDateTime(details.publishedAt)}"
+            else "Не опубликовано"
+        val hidingTimeString =
+            if (details.hiddenAt != null) "Скрыто ${humanizeDateTime(details.hiddenAt)}"
+            else "Не скрыто"
+        val delayedPublicationTimeString =
+            if (details.delayedPublishingAt != null) "Будет опубликовано ${humanizeDateTime(details.delayedPublishingAt)}"
+            else "Отложенная публикация не задана"
+        val delayedHidingTimeString =
+            if (details.delayedHidingAt != null) "Будет скрыто ${humanizeDateTime(details.delayedHidingAt)}"
+            else "Отложенное сокрытие не задано"
+
         return AnnouncementDetailsContent(
             id = details.id,
             author = details.authorName,
-            publicationTime = humanizeDateTime(details.publishedAt),
+            publicationTime = publicationTimeString,
+            hidingTime = hidingTimeString,
+            delayedPublicationTime = delayedPublicationTimeString,
+            delayedHidingTime = delayedHidingTimeString,
             viewed = details.viewsCount,
             viewedPercent = calculateVotersPercentage(details.viewsCount, details.audienceSize),
             audienceSize = details.audienceSize,
@@ -115,6 +133,8 @@ class AnnouncementDetailsViewModel (
             id = survey.id,
             questions = questionsToViewModel(survey.questions, survey.votersAmount),
             isVotedByUser = survey.isVotedByUser,
+            voters = survey.voters.toPresentations(),
+            showVoters = true,
             isOpen = survey.isOpen
         )
     }
@@ -129,9 +149,9 @@ class AnnouncementDetailsViewModel (
         }
     }
 
-    private fun answersToViewModel(answers: List<AnswerDetails>, surveyVotersAmoune: Int): List<VotedAnswerContentDetails> {
+    private fun answersToViewModel(answers: List<AnswerDetails>, surveyVotersAmount: Int): List<VotedAnswerContentDetails> {
         return answers.map {
-            VotedAnswerContentDetails(it.id, it.content, calculateVotersPercentage(it.votersAmount, surveyVotersAmoune), null)
+            VotedAnswerContentDetails(it.id, it.content, calculateVotersPercentage(it.votersAmount, surveyVotersAmount), it.voters?.toPresentations()?.toViews())
         }
     }
 

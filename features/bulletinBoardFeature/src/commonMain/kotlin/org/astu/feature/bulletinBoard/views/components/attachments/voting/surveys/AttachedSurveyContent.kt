@@ -1,8 +1,7 @@
 package org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,14 +15,19 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.VoteBu
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.PagedQuestions
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.QuestionContentBase
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.VotedQuestionContent
+import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
+import org.astu.feature.bulletinBoard.views.entities.users.UserToViewMappers.toViews
 import org.astu.infrastructure.components.ActionFailedDialog
+import org.astu.infrastructure.components.dropdown.DropDown
 
 class AttachedSurveyContent(
-    val id: Uuid,
+    id: Uuid,
     questions: List<QuestionContentBase>,
+    voters: List<UserSummary>,
+    showVoters: Boolean,
     val isVotedByUser: Boolean,
     val isOpen: Boolean,
-) : SurveyContentBase(questions) {
+) : SurveyContentBase(id, voters, showVoters, questions) {
     @Composable
     override fun Content(modifier: Modifier) {
         val viewModel = remember { AttachedSurveyViewModel(this, isVotedByUser) }
@@ -37,6 +41,19 @@ class AttachedSurveyContent(
         }
 
         Questions(viewModel, modifier)
+
+        if (showVoters) {
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp))
+            val voterViews = remember { voters.toViews() }
+            DropDown(voterViews) {
+                Text(
+                    text = "Проголосовавшие",
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight()
+                )
+            }
+        }
 
         if (viewModel.showErrorDialog) {
             ActionFailedDialog(

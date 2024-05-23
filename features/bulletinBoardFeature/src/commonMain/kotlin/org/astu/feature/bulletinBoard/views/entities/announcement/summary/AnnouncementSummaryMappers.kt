@@ -11,10 +11,13 @@ object AnnouncementSummaryMappers {
             id = this.id,
             author = this.author,
             publicationTime = this.publicationTime,
+            hidingTime = this.hidingTime,
+            delayedPublicationTime = this.delayedPublicationTime,
+            delayedHidingTime = this.delayedHidingTime,
             text = this.text,
             viewed = this.viewed,
             audienceSize = this.audienceSize,
-            attachments = mapAttachments(this.surveys)
+            attachments = mapAttachments(this.surveys, showVoters = false)
         )
 
     @JvmName("AnnouncementSummaryCollectionToPresentations")

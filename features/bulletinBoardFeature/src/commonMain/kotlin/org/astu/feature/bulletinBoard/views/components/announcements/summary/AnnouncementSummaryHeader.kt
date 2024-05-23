@@ -6,7 +6,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.astu.feature.bulletinBoard.views.components.announcements.common.AnnouncementAuthor
-import org.astu.feature.bulletinBoard.views.components.announcements.common.PublicationMoment
+import org.astu.feature.bulletinBoard.views.components.announcements.common.TimeMoment
 
 @Composable
 fun AnnouncementHeader(author: String, publicationTime: String, modifier: Modifier = Modifier.fillMaxWidth()) {
@@ -26,7 +26,7 @@ fun AnnouncementHeader(author: String, publicationTime: String, modifier: Modifi
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
             modifier = Modifier.fillMaxWidth()
         ) {
-            PublicationMoment(
+            TimeMoment(
                 moment = publicationTime,
                 modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)
             )

@@ -16,7 +16,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.astu.feature.bulletinBoard.viewModels.announcements.DelayedHiddenAnnouncementsViewModel
 import org.astu.feature.bulletinBoard.views.components.AnnouncementFeed
-import org.astu.feature.bulletinBoard.views.components.announcements.summary.AnnouncementSummary
+import org.astu.feature.bulletinBoard.views.components.announcements.summary.DelayedHiddenAnnouncementSummary
 import org.astu.feature.bulletinBoard.views.components.announcements.summary.dropdownMenuContent.DelayedHiddenAnnouncementDropdownMenuContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 import org.astu.feature.bulletinBoard.views.screens.announcements.actions.AnnouncementDetailsScreen
@@ -74,7 +74,7 @@ class DelayedHiddenAnnouncementsScreen(private val onReturn: () -> Unit) : Scree
     private fun mapAnnouncements(viewModel: DelayedHiddenAnnouncementsViewModel): List<@Composable () -> Unit> =
         viewModel.content.map {
             {
-                AnnouncementSummary(
+                DelayedHiddenAnnouncementSummary(
                     content = it,
                     announcementDropDown = { pressOffset, showDropDown ->
                         announcementDropDown(

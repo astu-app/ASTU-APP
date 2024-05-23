@@ -8,6 +8,7 @@ import kotlinx.datetime.format.byUnicodePattern
 /**
  * Функция преобразует объект типа LocalDateTime в отформатированную строку
  */
+@Deprecated("Есть более адекватный аналог")
 @OptIn(FormatStringsInDatetimeFormats::class)
 inline fun getDateTimeString(dateTime: LocalDateTime, pattern: String = "dd/MM HH:mm"): String {
     val dateTimeFormat = LocalDateTime.Format { byUnicodePattern(pattern) }

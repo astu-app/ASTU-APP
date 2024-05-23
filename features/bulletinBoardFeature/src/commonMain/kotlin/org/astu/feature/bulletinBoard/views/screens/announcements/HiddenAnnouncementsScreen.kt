@@ -16,7 +16,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.astu.feature.bulletinBoard.viewModels.announcements.HiddenAnnouncementsViewModel
 import org.astu.feature.bulletinBoard.views.components.AnnouncementFeed
-import org.astu.feature.bulletinBoard.views.components.announcements.summary.AnnouncementSummary
+import org.astu.feature.bulletinBoard.views.components.announcements.summary.HiddenAnnouncementSummary
 import org.astu.feature.bulletinBoard.views.components.announcements.summary.dropdownMenuContent.HiddenAnnouncementDropdownMenuContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 import org.astu.feature.bulletinBoard.views.screens.announcements.actions.AnnouncementDetailsScreen
@@ -76,7 +76,7 @@ class HiddenAnnouncementsScreen(private val onReturn: () -> Unit) : Screen {
     private fun mapAnnouncements(viewModel: HiddenAnnouncementsViewModel): List<@Composable () -> Unit> =
         viewModel.content.map {
             {
-                AnnouncementSummary(
+                HiddenAnnouncementSummary(
                     content = it,
                     announcementDropDown = { pressOffset, showDropDown ->
                         announcementDropDown(

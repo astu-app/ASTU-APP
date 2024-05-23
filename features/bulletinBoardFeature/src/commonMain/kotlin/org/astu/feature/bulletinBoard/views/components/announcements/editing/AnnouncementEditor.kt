@@ -50,6 +50,9 @@ class AnnouncementEditor(
                     AnnouncementDetailsHeader(
                         authorName = announcementSnapshot.author,
                         publicationMoment = announcementSnapshot.publicationTimeString,
+                        hidingMoment = announcementSnapshot.hidingTimeString,
+                        delayedPublicationMoment = announcementSnapshot.initialDelayedPublicationTimeString,
+                        delayedHidingMoment = announcementSnapshot.initialDelayedHidingTimeString,
                         viewed = announcementSnapshot.viewed,
                         viewedPercent = announcementSnapshot.viewedPercent,
                         audienceSize = announcementSnapshot.audienceSize

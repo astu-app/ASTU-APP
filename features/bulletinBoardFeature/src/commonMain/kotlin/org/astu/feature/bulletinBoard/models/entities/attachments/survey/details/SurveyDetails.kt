@@ -2,6 +2,7 @@ package org.astu.feature.bulletinBoard.models.entities.attachments.survey.detail
 
 import com.benasher44.uuid.Uuid
 import kotlinx.datetime.LocalDateTime
+import org.astu.feature.bulletinBoard.models.entities.audience.User
 
 data class SurveyDetails(
     val id: Uuid,
@@ -9,6 +10,7 @@ data class SurveyDetails(
     val isOpen: Boolean,
     val isAnonymous: Boolean,
     val resultsOpenBeforeClosing: Boolean,
+    val voters: List<User>,
     val votersAmount: Int,
     val autoClosingAt: LocalDateTime?,
     val voteFinishedAt: LocalDateTime?,

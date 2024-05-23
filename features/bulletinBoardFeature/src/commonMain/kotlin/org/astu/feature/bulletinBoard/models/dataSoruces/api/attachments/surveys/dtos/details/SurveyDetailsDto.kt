@@ -2,6 +2,7 @@ package org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.survey
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.dtos.UserSummaryDto
 
 /**
  * @param id Идентификатор опроса
@@ -9,7 +10,7 @@ import kotlinx.serialization.Serializable
  * @param isOpen Открыт ли опрос
  * @param isAnonymous Анонимен ли опрос
  * @param resultsOpenBeforeClosing Доступны ли результаты опроса до его закрытия
- * @param votersAmount Количество проголосовавших в опросе пользователей
+ * @param voters Проголосовавшие в опросе пользователи
  * @param autoClosingAt Время окончания голосования (если задано)
  * @param voteFinishedAt Фактическое время окончания голосования (если голосование завершено)
  * @param questions Вопросы опроса
@@ -21,7 +22,7 @@ data class SurveyDetailsDto (
     val isOpen: Boolean,
     val isAnonymous: Boolean,
     val resultsOpenBeforeClosing: Boolean,
-    val votersAmount: Int,
+    val voters: List<UserSummaryDto>,
     val autoClosingAt: LocalDateTime?,
     val voteFinishedAt: LocalDateTime?,
     val questions: List<QuestionDetailsDto>

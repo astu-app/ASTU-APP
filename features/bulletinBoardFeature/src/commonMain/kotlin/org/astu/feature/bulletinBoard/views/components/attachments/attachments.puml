@@ -48,7 +48,7 @@ rectangle Surveys {
 
     }
     class VotedAnswerContentDetails extends VotedAnswerContentBase {
-        votersRootNode: INode
+        voters: List<@Composable () -> Unit)>
     }
 
     ''''''''''''' Вопросы
@@ -74,6 +74,8 @@ rectangle Surveys {
     ''''''''''''' Опросы
     abstract class SurveyContentBase {
         id: Uuid
+        voters: List<UserSummary>
+        showVoters: Boolean
         questions: List<QuestionContentBase>
     }
     AttachmentContentBase <|-- SurveyContentBase

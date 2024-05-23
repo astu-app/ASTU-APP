@@ -9,13 +9,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import org.astu.feature.bulletinBoard.views.components.announcements.common.AnnouncementAuthor
-import org.astu.feature.bulletinBoard.views.components.announcements.common.PublicationMoment
+import org.astu.feature.bulletinBoard.views.components.announcements.common.TimeMoment
 import org.astu.feature.bulletinBoard.views.components.announcements.common.ViewersCount
 
 @Composable
 fun AnnouncementDetailsHeader(
     authorName: String,
     publicationMoment: String,
+    hidingMoment: String,
+    delayedPublicationMoment: String,
+    delayedHidingMoment: String,
     viewed: Int,
     viewedPercent: Int,
     audienceSize: Int,
@@ -31,8 +34,20 @@ fun AnnouncementDetailsHeader(
             AnnouncementAuthor(
                 author = authorName,
             )
-            PublicationMoment(
+            TimeMoment(
                 moment = publicationMoment,
+                textAlign = TextAlign.Start,
+            )
+            TimeMoment(
+                moment = hidingMoment,
+                textAlign = TextAlign.Start,
+            )
+            TimeMoment(
+                moment = delayedPublicationMoment,
+                textAlign = TextAlign.Start,
+            )
+            TimeMoment(
+                moment = delayedHidingMoment,
                 textAlign = TextAlign.Start,
             )
         }

@@ -21,7 +21,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.astu.feature.bulletinBoard.viewModels.announcements.BulletInBoardViewModel
 import org.astu.feature.bulletinBoard.views.components.AnnouncementFeed
-import org.astu.feature.bulletinBoard.views.components.announcements.summary.AnnouncementSummary
+import org.astu.feature.bulletinBoard.views.components.announcements.summary.PublishedAnnouncementSummary
 import org.astu.feature.bulletinBoard.views.components.announcements.summary.dropdownMenuContent.AuthorDropdownMenuContent
 import org.astu.feature.bulletinBoard.views.components.announcements.summary.dropdownMenuContent.PostedAnnouncementDropdownMenuContentBase
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
@@ -94,7 +94,7 @@ class BulletInBoardScreen : Screen {
 
 
     @Composable
-    private inline fun TopAppBarMenuActions() {
+    private fun TopAppBarMenuActions() {
         val navigator = LocalNavigator.currentOrThrow
         var expanded by remember { mutableStateOf(false) }
 
@@ -178,7 +178,7 @@ class BulletInBoardScreen : Screen {
     private fun mapAnnouncements(viewModel: BulletInBoardViewModel): List<@Composable () -> Unit> =
         viewModel.content.map {
             {
-                AnnouncementSummary(
+                PublishedAnnouncementSummary(
                     content = it,
                     announcementDropDown = { pressOffset, showDropDown ->
                         announcementDropDown(

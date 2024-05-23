@@ -14,24 +14,39 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.questi
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.VotedQuestionContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.SurveyContentBase
+import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentations
 import kotlin.jvm.JvmName
 
 object AttachmentToPresentationMappers {
-    fun mapAttachments(surveys: List<SurveyDetails>?): List<AttachmentContentBase> {
-        return surveys.toPresentations()
+    fun mapAttachments(surveys: List<SurveyDetails>?, showVoters: Boolean): List<AttachmentContentBase> {
+        return surveys.toPresentations(showVoters)
     }
 
     /* *************************************** Survey *************************************** */
-    fun SurveyDetails.votedSurveyToPresentation(): SurveyContentBase =
-        AttachedSurveyContent(this.id, mapVotedQuestions(this.questions, this.votersAmount), this.isVotedByUser, this.isOpen)
+    fun SurveyDetails.votedSurveyToPresentation(showVoters: Boolean): SurveyContentBase =
+        AttachedSurveyContent(
+            id = this.id,
+            questions = mapVotedQuestions(this.questions, this.votersAmount),
+            voters = this.voters.toPresentations(),
+            isVotedByUser = this.isVotedByUser,
+            showVoters = showVoters,
+            isOpen = this.isOpen
+        )
 
     @JvmName("SurveyDetailsToPresentation")
-    fun SurveyDetails.toPresentation(): SurveyContentBase =
-        AttachedSurveyContent(this.id, mapQuestions(this.questions, this.votersAmount, this.voteFinishedAt != null, this.isOpen), this.isVotedByUser, this.isOpen)
+    fun SurveyDetails.toPresentation(showVoters: Boolean): SurveyContentBase =
+        AttachedSurveyContent(
+            id = this.id,
+            questions = mapQuestions(this.questions, this.votersAmount, this.voteFinishedAt != null, this.isOpen),
+            voters = this.voters.toPresentations(),
+            showVoters = showVoters,
+            isVotedByUser = this.isVotedByUser,
+            isOpen = this.isOpen
+        )
 
     @JvmName("SurveyDetailsCollectionToPresentations")
-    fun Collection<SurveyDetails>?.toPresentations(): List<AttachmentContentBase> =
-        this?.map { it.toPresentation() } ?: emptyList()
+    fun Collection<SurveyDetails>?.toPresentations(showVoters: Boolean): List<AttachmentContentBase> =
+        this?.map { it.toPresentation(showVoters) } ?: emptyList()
 
     fun mapVotedQuestions(
         questions: List<QuestionDetails>,

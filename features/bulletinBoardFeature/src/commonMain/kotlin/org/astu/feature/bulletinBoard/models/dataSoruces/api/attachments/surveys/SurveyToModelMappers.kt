@@ -4,6 +4,7 @@ import com.benasher44.uuid.uuidFrom
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.dtos.details.QuestionAnswerDetailsDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.dtos.details.QuestionDetailsDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.dtos.details.SurveyDetailsDto
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.AnswerDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.QuestionDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.SurveyDetails
@@ -18,10 +19,11 @@ object SurveyToModelMappers {
             isOpen = this.isOpen,
             isAnonymous = this.isAnonymous,
             resultsOpenBeforeClosing = this.resultsOpenBeforeClosing,
-            votersAmount = this.votersAmount,
+            votersAmount = this.voters.size,
             autoClosingAt = this.autoClosingAt,
             voteFinishedAt = this.voteFinishedAt,
-            questions = this.questions.toModels(!this.isVotedByRequester)
+            voters = this.voters.toModels(),
+            questions = this.questions.toModels(this.isAnonymous, !this.isVotedByRequester)
         )
 
     @JvmName("SurveyDetailsDtoCollectionToModels")
@@ -29,24 +31,31 @@ object SurveyToModelMappers {
         this?.map { it.toModel() } ?: emptyList()
 
     @JvmName("QuestionDetailsDtoToModel")
-    fun QuestionDetailsDto.toModel(canVote: Boolean = true): QuestionDetails =
+    fun QuestionDetailsDto.toModel(isSurveyAnonymous: Boolean, canVote: Boolean): QuestionDetails =
         QuestionDetails(
             uuidFrom(this.id),
             this.serial,
             this.content,
             this.isMultipleChoiceAllowed,
-            this.answers.toModels(canVote)
+            this.answers.toModels(isSurveyAnonymous, canVote)
         )
 
     @JvmName("QuestionDetailsDtoCollectionToModels")
-    fun Collection<QuestionDetailsDto>.toModels(canVote: Boolean = true): List<QuestionDetails> =
-        this.sortedBy { it.serial }.map { it.toModel(canVote) }
+    fun Collection<QuestionDetailsDto>.toModels(isSurveyAnonymous: Boolean, canVote: Boolean): List<QuestionDetails> =
+        this.sortedBy { it.serial }.map { it.toModel(isSurveyAnonymous, canVote) }
 
     @JvmName("QuestionAnswerDetailsDtoToModel")
-    fun QuestionAnswerDetailsDto.toModel(canVote: Boolean = true): AnswerDetails =
-        AnswerDetails(uuidFrom(this.id), this.serial, this.content, this.votersAmount, canVote)
+    fun QuestionAnswerDetailsDto.toModel(isSurveyAnonymous: Boolean, canVote: Boolean): AnswerDetails =
+        AnswerDetails(
+            id = uuidFrom(this.id),
+            serial = this.serial,
+            content = this.content,
+            voters = if (!isSurveyAnonymous) this.voters.toModels() else null,
+            votersAmount = this.votersAmount,
+            canVote = canVote
+        )
 
     @JvmName("QuestionAnswerDetailsDtoCollectionToModels")
-    fun Collection<QuestionAnswerDetailsDto>.toModels(canVote: Boolean = true): List<AnswerDetails> =
-        this.sortedBy { it.serial }.map { it.toModel(canVote) }
+    fun Collection<QuestionAnswerDetailsDto>.toModels(isSurveyAnonymous: Boolean, canVote: Boolean): List<AnswerDetails> =
+        this.sortedBy { it.serial }.map { it.toModel(isSurveyAnonymous, canVote) }
 }

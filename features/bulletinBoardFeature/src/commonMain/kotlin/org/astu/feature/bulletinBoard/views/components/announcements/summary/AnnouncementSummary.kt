@@ -17,15 +17,18 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
 import org.astu.feature.bulletinBoard.views.components.attachments.Attachment
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 import org.astu.feature.bulletinBoard.views.screens.announcements.actions.AnnouncementDetailsScreen
 import org.astu.infrastructure.theme.CurrentColorScheme
 
+/**
+ * @param headerMoment Момент, отображенный в заголовке. Например, момент публикации, отложенного сокрытия и т.п. Будет отображен вместо любого из соответствующих свойств объекта [content]
+ */
 @Composable
 fun AnnouncementSummary(
     content: AnnouncementSummaryContent,
+    headerMoment: String,
     announcementDropDown: @Composable (DpOffset, MutableState<Boolean>) -> Unit,
     modifier: Modifier = Modifier
         .fillMaxWidth()
@@ -67,10 +70,7 @@ fun AnnouncementSummary(
                 }
         ) {
             Column {
-                val publicationMoment by remember {
-                    mutableStateOf(humanizeDateTime(content.publicationTime))
-                }
-                AnnouncementHeader(content.author, publicationMoment, Modifier.fillMaxWidth())
+                AnnouncementHeader(content.author, headerMoment, Modifier.fillMaxWidth())
                 Text(
                     text = content.text,
                     modifier = Modifier
