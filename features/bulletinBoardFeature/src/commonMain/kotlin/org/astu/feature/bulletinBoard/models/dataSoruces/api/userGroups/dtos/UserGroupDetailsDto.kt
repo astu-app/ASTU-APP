@@ -15,8 +15,8 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.dtos.UserSumm
 data class UserGroupDetailsDto(
     val id: String,
     val name: String,
-    val admin: UserSummaryDto,
-    val members: List<UserSummaryDto>,
+    val admin: UserSummaryDto?,
+    val members: List<UserSummaryWithMemberRightsDto>,
     val parents: List<UserGroupSummaryDto>,
     val children: List<UserGroupSummaryDto>
 )

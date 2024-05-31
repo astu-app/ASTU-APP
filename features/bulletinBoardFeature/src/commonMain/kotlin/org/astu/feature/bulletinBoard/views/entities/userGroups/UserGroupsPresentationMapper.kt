@@ -18,9 +18,10 @@ import org.astu.feature.bulletinBoard.models.entities.audience.*
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.Leaf
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.Node
+import org.astu.feature.bulletinBoard.views.entities.userGroups.details.UserGroupDetailsContent
+import org.astu.feature.bulletinBoard.views.entities.userGroups.summary.UserGroupSummaryContent
 import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
 import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentation
-import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentations
 import kotlin.jvm.JvmName
 
 object UserGroupsPresentationMapper {
@@ -45,12 +46,12 @@ object UserGroupsPresentationMapper {
     @JvmName("UserGroupDetailsToPresentation")
     fun UserGroupDetails.toPresentation(): UserGroupDetailsContent =
         UserGroupDetailsContent(
-            this.id,
-            this.name,
-            this.admin.toPresentation(),
-            this.members.toPresentations(),
-            this.parents.toPresentations(),
-            this.children.toPresentations()
+            id = this.id,
+            name = this.name,
+            admin = this.admin?.toPresentation(),
+            members = this.members.associateBy({ it.user.id }, { it.toPresentation() }),
+            parents = this.parents.toPresentations(),
+            children = this.children.toPresentations()
         )
 
     @JvmName("UserGroupSummaryCollectionToPresentations")

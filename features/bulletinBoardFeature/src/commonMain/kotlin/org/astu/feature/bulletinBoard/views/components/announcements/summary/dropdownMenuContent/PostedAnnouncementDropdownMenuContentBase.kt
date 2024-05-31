@@ -29,7 +29,7 @@ abstract class PostedAnnouncementDropdownMenuContentBase(
             items.add(
                 1,
                 DropDownMenuItemContent(
-                    name = "Завершить опрос",
+                    name = "Закрыть опрос",
                     icon = Icons.Outlined.StopCircle,
                     onClick = onStopSurveyClick
                 )

@@ -19,7 +19,7 @@ import org.astu.infrastructure.theme.CurrentColorScheme
 
 @Composable
 fun DropDown(
-    items: List<@Composable () -> Unit>,
+    items: Collection<@Composable () -> Unit>,
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .wrapContentHeight()

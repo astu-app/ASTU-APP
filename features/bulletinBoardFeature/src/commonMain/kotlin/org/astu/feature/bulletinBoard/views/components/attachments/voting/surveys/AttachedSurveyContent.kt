@@ -13,12 +13,14 @@ import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.viewModels.surveys.AttachedSurveyViewModel
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.VoteButton
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.PagedQuestions
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.ClosedResultsQuestionContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.QuestionContentBase
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.VotedQuestionContent
 import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
 import org.astu.feature.bulletinBoard.views.entities.users.UserToViewMappers.toViews
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.dropdown.DropDown
+import org.astu.infrastructure.theme.CurrentColorScheme
 
 class AttachedSurveyContent(
     id: Uuid,
@@ -27,17 +29,25 @@ class AttachedSurveyContent(
     showVoters: Boolean,
     val isVotedByUser: Boolean,
     val isOpen: Boolean,
+    val showResults: Boolean,
+    val isAnonymous: Boolean,
 ) : SurveyContentBase(id, voters, showVoters, questions) {
     @Composable
     override fun Content(modifier: Modifier) {
-        val viewModel = remember { AttachedSurveyViewModel(this, isVotedByUser) }
+        val viewModel = remember { AttachedSurveyViewModel(this, isVotedByUser, !isOpen, !showResults) }
 
         val state by viewModel.state.collectAsState()
         when(state) {
             AttachedSurveyViewModel.State.NotVoted -> setVoteButtonStateToNotVoted(viewModel)
-            AttachedSurveyViewModel.State.Voted -> setVoteButtonStateToVoted(viewModel)
+            AttachedSurveyViewModel.State.VoteUnavailable -> setVoteButtonStateToVoted(viewModel)
             AttachedSurveyViewModel.State.VotesUploadingError -> showErrorDialog(viewModel)
-            else -> { } // todo получение результатов опроса и вывод их на экран
+            AttachedSurveyViewModel.State.VotesUploading -> { } // todo получение результатов опроса и вывод их на экран
+        }
+
+        if (!showResults) {
+            Text("Результаты недоступны, пока опрос открыт", modifier = Modifier.padding(bottom = 8.dp), color = CurrentColorScheme.outline)
+        } else if (isAnonymous) {
+            Text("Опрос анонимный", modifier = Modifier.padding(bottom = 8.dp), color = CurrentColorScheme.outline)
         }
 
         Questions(viewModel, modifier)
@@ -84,7 +94,7 @@ class AttachedSurveyContent(
         Column(modifier = modifier) {
             PagedQuestions(questions)
 
-            if (questions[0] !is VotedQuestionContent) {
+            if (questions[0] !is VotedQuestionContent && questions[0] !is ClosedResultsQuestionContent) {
                 VoteButton(
                     buttonContent = { Text(viewModel.voteButtonText) }, // todo индикатор загрузке при выгружке результатов опроса
                     enabled = viewModel.canVote() && !viewModel.mutableIsVotedByUser,

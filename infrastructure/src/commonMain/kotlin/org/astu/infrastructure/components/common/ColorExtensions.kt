@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 @Composable
-inline fun Color.Companion.getButtonColors(
+fun Color.Companion.getButtonColors(
     containerColor: Color,
     contentColor: Color = contentColorFor(containerColor)
 ): ButtonColors {

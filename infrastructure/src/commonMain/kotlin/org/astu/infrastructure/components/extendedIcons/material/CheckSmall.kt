@@ -19,8 +19,7 @@ val Icons.Outlined.CheckSmall: ImageVector
             return _checkSmall!!
         }
         _checkSmall = Builder(
-            name =
-            "Outlined.CheckSmall",
+            name = "Outlined.CheckSmall",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 960.0f,

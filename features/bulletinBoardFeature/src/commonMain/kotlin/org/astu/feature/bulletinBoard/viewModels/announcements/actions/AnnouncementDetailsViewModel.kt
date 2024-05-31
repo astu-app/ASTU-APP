@@ -10,21 +10,15 @@ import org.astu.feature.bulletinBoard.common.utils.calculateVotersPercentage
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetAnnouncementDetailsErrors
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
-import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.AnswerDetails
-import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.QuestionDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.SurveyDetails
 import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
 import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
-import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.VotedAnswerContentDetails
-import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.QuestionContentBase
-import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.VotedQuestionContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.details.AnnouncementDetailsContent
+import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.toPresentation
 import org.astu.feature.bulletinBoard.views.entities.users.CheckableUserSummary
-import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentations
-import org.astu.feature.bulletinBoard.views.entities.users.UserToViewMappers.toViews
 
 class AnnouncementDetailsViewModel (
     private val announcementId: Uuid
@@ -129,30 +123,7 @@ class AnnouncementDetailsViewModel (
     }
 
     private fun surveyToViewModel(survey: SurveyDetails): AttachedSurveyContent {
-        return AttachedSurveyContent(
-            id = survey.id,
-            questions = questionsToViewModel(survey.questions, survey.votersAmount),
-            isVotedByUser = survey.isVotedByUser,
-            voters = survey.voters.toPresentations(),
-            showVoters = true,
-            isOpen = survey.isOpen
-        )
-    }
-
-    private fun questionsToViewModel(questions: List<QuestionDetails>, surveyVotersAmount: Int): List<QuestionContentBase> {
-        return questions.map {
-            VotedQuestionContent(
-                id = it.id,
-                text = it.content,
-                answers = answersToViewModel(it.answers, surveyVotersAmount)
-            )
-        }
-    }
-
-    private fun answersToViewModel(answers: List<AnswerDetails>, surveyVotersAmount: Int): List<VotedAnswerContentDetails> {
-        return answers.map {
-            VotedAnswerContentDetails(it.id, it.content, calculateVotersPercentage(it.votersAmount, surveyVotersAmount), it.voters?.toPresentations()?.toViews())
-        }
+        return survey.toPresentation(true) as AttachedSurveyContent
     }
 
     private fun constructErrorDialogContent(error: GetAnnouncementDetailsErrors? = null) {

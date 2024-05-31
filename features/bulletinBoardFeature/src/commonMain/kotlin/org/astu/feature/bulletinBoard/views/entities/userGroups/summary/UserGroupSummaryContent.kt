@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.entities.userGroups;
+package org.astu.feature.bulletinBoard.views.entities.userGroups.summary;
 
 import com.benasher44.uuid.Uuid
 

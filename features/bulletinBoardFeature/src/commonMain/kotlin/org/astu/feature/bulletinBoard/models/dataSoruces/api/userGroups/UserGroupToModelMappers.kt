@@ -2,15 +2,11 @@ package org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups
 
 import com.benasher44.uuid.uuidFrom
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.*
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupDetails
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupSummary
+import org.astu.feature.bulletinBoard.models.entities.audience.*
 import kotlin.jvm.JvmName
 
-object UserGroupMappers {
+object UserGroupToModelMappers {
     @JvmName("UserGroupHierarchyDtoToModel")
     fun UserGroupHierarchyDto.toModel(): UserGroupHierarchy {
         val mappedUserGroups = this.userGroups
@@ -29,17 +25,6 @@ object UserGroupMappers {
     fun Collection<UserGroupSummaryWithMembersDto>.toModels(): List<UserGroup> =
         this.map { it.toModel() }
 
-    @JvmName("UserGroupDetailsDtoToModel")
-    fun UserGroupDetailsDto.toModel(): UserGroupDetails =
-        UserGroupDetails(
-            id = uuidFrom(this.id),
-            name = this.name,
-            admin = this.admin.toModel(),
-            members = this.members.toModels(),
-            parents = this.parents.toModels(),
-            children = this.children.toModels(),
-        )
-
     @JvmName("UserGroupSummaryDtoCollectionToModel")
     fun Collection<UserGroupSummaryDto>.toModels(): List<UserGroupSummary> =
         this.map { it.toModel() }
@@ -51,6 +36,44 @@ object UserGroupMappers {
     @JvmName("UserGroupDtoToModel")
     fun UserGroupSummaryDto.toModel(): UserGroupSummary =
         UserGroupSummary(id = uuidFrom(this.id), name = this.name, adminName = this.adminName)
+
+    @JvmName("GetUsergroupCreateContentDtoToModel")
+    fun GetUsergroupCreateContentDto.toModel(): ContentForUserGroupCreation =
+        ContentForUserGroupCreation(users = this.users.toModels(), userGroups = this.userGroups.toModels())
+
+    @JvmName("CreateUserGroupToDto")
+    fun CreateUserGroup.toDto(): CreateUserGroupDto =
+        CreateUserGroupDto(
+            name = this.name,
+            adminId = this.adminId?.toString(),
+            members = this.members.map { it.toDto() },
+            parentIds = parentUserGroupIds.map { it.toString() },
+            childIds = childUserGroupIds.map { it.toString() }
+        )
+
+    @JvmName("MemberIdWithRightsToDto")
+    fun MemberIdWithRights.toDto(): UserIdWithMemberRightsDto =
+        UserIdWithMemberRightsDto(
+            userId = this.userId.toString(),
+            usergroupId = this.usergroupId?.toString(),
+            rights = rights.toDto(),
+
+        )
+
+    @JvmName("MemberRightsToDto")
+    fun MemberRights.toDto(): MemberRightsDto =
+        MemberRightsDto(
+            canViewAnnouncements = this.canViewAnnouncements,
+            canCreateAnnouncements = this.canCreateAnnouncements,
+            canCreateSurveys = this.canCreateSurveys,
+            canViewUserGroupDetails = this.canViewUserGroupDetails,
+            canCreateUserGroups = this.canCreateUserGroups,
+            canEditUserGroups = this.canEditUserGroups,
+            canEditMembers = this.canEditMembers,
+            canEditMemberRights = this.canEditMemberRights,
+            canEditUserGroupAdmin = this.canEditUserGroupAdmin,
+            canDeleteUserGroup = this.canDeleteUserGroup,
+        )
 
 
 

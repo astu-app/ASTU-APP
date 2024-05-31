@@ -14,13 +14,15 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.survey
 class AttachedSurveyViewModel(
     private val survey: AttachedSurveyContent,
     private val isVotedByUser: Boolean,
+    private val isClosed: Boolean,
+    private val hideResults: Boolean,
 ) : StateScreenModel<AttachedSurveyViewModel.State>(
     State.NotVoted
 ) {
     sealed class State {
         data object NotVoted: State()
         data object VotesUploading: State()
-        data object Voted: State()
+        data object VoteUnavailable: State() // пользователь уже проголосовал или опрос закрыт
         data object VotesUploadingError: State()
     }
 
@@ -31,13 +33,15 @@ class AttachedSurveyViewModel(
     var voteButtonText by mutableStateOf("")
 
     private val unexpectedErrorTitle: String = "Ошибка"
-    private val unexpectedErrorBody: String = "Непредвиденная ошибка при голсовании в опросе. Повторите попытку"
+    private val unexpectedErrorBody: String = "Непредвиденная ошибка при голосовании в опросе. Повторите попытку"
     var errorDialogLabel by mutableStateOf(unexpectedErrorTitle)
     var errorDialogBody by mutableStateOf(unexpectedErrorBody)
     var showErrorDialog by mutableStateOf(false)
 
     init {
-        mutableState.value = if (isVotedByUser) State.Voted else State.NotVoted
+        mutableState.value =
+            if (isVotedByUser || isClosed || hideResults) State.VoteUnavailable
+            else State.NotVoted
     }
 
     fun canVote(): Boolean {
@@ -57,7 +61,7 @@ class AttachedSurveyViewModel(
                 }
 
                 mutableIsVotedByUser = true
-                mutableState.value = State.Voted
+                mutableState.value = State.VoteUnavailable
 
             } catch (e: Exception) {
                 constructVoteErrorDialog()

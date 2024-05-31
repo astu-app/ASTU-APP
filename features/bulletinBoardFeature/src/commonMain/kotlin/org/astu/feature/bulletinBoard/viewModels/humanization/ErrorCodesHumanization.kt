@@ -3,10 +3,7 @@ package org.astu.feature.bulletinBoard.viewModels.humanization
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.VoteInSurveyErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserListErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUsergroupDetailsErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.*
 
 object ErrorCodesHumanization {
     private const val DEFAULT_ERROR_MESSAGE: String = "Неожиданная ошибка. Повторите попытку"
@@ -153,6 +150,23 @@ object ErrorCodesHumanization {
         }
 
     /* ******************************************** Группы пользователей ******************************************** */
+
+    fun GetUsergroupCreateContentErrors?.humanize(): String =
+        when (this) {
+            GetUsergroupCreateContentErrors.GetUsergroupCreateContentForbidden -> "У вас недостаточно прав для получения данных для создания группы пользователей"
+            else -> DEFAULT_ERROR_MESSAGE
+        }
+
+    fun CreateUserGroupErrors?.humanize(): String =
+        when (this) {
+            CreateUserGroupErrors.NameIsNullOrWhitespace -> "Название группы пользователей не может быть пустым"
+            CreateUserGroupErrors.UsergroupCreationForbidden -> "У вас недостаточно прав для создания групп пользователей"
+            CreateUserGroupErrors.UsersDoNotExist -> "В качестве одного или нескольких id пользователей прикреплен несуществующий в базе id"
+            CreateUserGroupErrors.UserGroupsDoNotExist -> "Пользователь не найден. Повторите попытку"
+            CreateUserGroupErrors.AdminCannotBeOrdinaryMember -> "Идентификатор администратора передан в массиве идентификаторов участников"
+            CreateUserGroupErrors.CyclicDependency -> "Группа пользователей не может быть создана, так как порождает цикл на графе групп пользователей"
+            else -> DEFAULT_ERROR_MESSAGE
+        }
 
     fun GetUserHierarchyErrors?.humanize(): String =
         when (this) {

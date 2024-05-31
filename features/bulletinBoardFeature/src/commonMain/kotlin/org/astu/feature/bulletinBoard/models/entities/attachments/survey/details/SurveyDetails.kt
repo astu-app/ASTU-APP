@@ -15,4 +15,7 @@ data class SurveyDetails(
     val autoClosingAt: LocalDateTime?,
     val voteFinishedAt: LocalDateTime?,
     val questions: List<QuestionDetails>,
-)
+) {
+    val showResults: Boolean
+        get() = !isOpen || (isOpen && resultsOpenBeforeClosing)
+}

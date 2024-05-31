@@ -2,17 +2,20 @@ package org.astu.feature.bulletinBoard.models
 
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserListErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUsergroupDetailsErrors
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupDetails
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupSummary
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.*
+import org.astu.feature.bulletinBoard.models.entities.audience.*
 import org.astu.feature.bulletinBoard.models.repositories.UserGroupRepository
 
 class UserGroupModel {
     private val repository: UserGroupRepository = UserGroupRepository()
+
+    suspend fun getCreateContent(): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors> {
+        return repository.getCreateContent()
+    }
+
+    suspend fun create(content: CreateUserGroup): CreateUserGroupErrors? {
+        return repository.create(content)
+    }
 
     suspend fun getUserGroupHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
         return repository.getUserGroupHierarchy()

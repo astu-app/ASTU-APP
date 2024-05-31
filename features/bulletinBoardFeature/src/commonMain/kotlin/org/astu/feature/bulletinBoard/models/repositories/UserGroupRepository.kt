@@ -3,31 +3,34 @@ package org.astu.feature.bulletinBoard.models.repositories
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.ApiUserGroupDataSource
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserListErrors
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUsergroupDetailsErrors
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupDetails
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupSummary
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.*
+import org.astu.feature.bulletinBoard.models.entities.audience.*
 
 
 class UserGroupRepository {
-    private val announcementAudienceSource = ApiUserGroupDataSource()
+    private val userGroupDataSource = ApiUserGroupDataSource()
+
+    suspend fun getCreateContent(): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors> {
+        return userGroupDataSource.getCreateContent()
+    }
+
+    suspend fun create(content: CreateUserGroup): CreateUserGroupErrors? {
+        return userGroupDataSource.create(content)
+    }
 
     suspend fun getUserGroupHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
-        return announcementAudienceSource.getUserGroupHierarchy()
+        return userGroupDataSource.getUserGroupHierarchy()
     }
 
     suspend fun getUserGroupList(): ContentWithError<List<UserGroupSummary>, GetUserListErrors> {
-        return announcementAudienceSource.getUserGroupList()
+        return userGroupDataSource.getUserGroupList()
     }
 
     suspend fun getDetails(id: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {
-        return announcementAudienceSource.getDetails(id)
+        return userGroupDataSource.getDetails(id)
     }
 
     suspend fun delete(id: Uuid): DeleteUserGroupErrors? {
-        return announcementAudienceSource.delete(id)
+        return userGroupDataSource.delete(id)
     }
 }

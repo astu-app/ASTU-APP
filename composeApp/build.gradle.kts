@@ -102,6 +102,7 @@ kotlin {
             implementation(compose.html.core)
             implementation(libs.ktor.client.js)
             implementation(libs.sqlDelight.driver.js)
+            implementation(libs.voyager.navigator)
         }
 
         iosMain.dependencies {

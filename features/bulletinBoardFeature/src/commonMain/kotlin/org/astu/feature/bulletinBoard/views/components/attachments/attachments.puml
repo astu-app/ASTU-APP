@@ -51,6 +51,9 @@ rectangle Surveys {
         voters: List<@Composable () -> Unit)>
     }
 
+    class ClosedResultsAnswerContent extends AnswerContentBase {
+    }
+
     ''''''''''''' Вопросы
     abstract class QuestionContentBase {
         id: Uuid
@@ -68,6 +71,8 @@ rectangle Surveys {
     class SingleChoiceQuestionContent extends UnvotedQuestionContentBase {
     }
     class VotedQuestionContent extends QuestionContentBase {
+    }
+    class ClosedResultsQuestionContent extends QuestionContentBase {
     }
 
 

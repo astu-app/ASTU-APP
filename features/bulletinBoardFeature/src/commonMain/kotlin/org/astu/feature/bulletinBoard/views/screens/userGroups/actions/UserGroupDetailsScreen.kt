@@ -49,7 +49,7 @@ class UserGroupDetailsScreen(
             val state by viewModel.state.collectAsState()
             when (state) {
                 UserGroupDetailsViewModel.State.Loading -> Loading()
-                UserGroupDetailsViewModel.State.LoadingDone -> UserGroupDetails(viewModel.content)
+                UserGroupDetailsViewModel.State.LoadingDone -> UserGroupDetails(viewModel)
                 UserGroupDetailsViewModel.State.LoadingError -> showErrorDialog(viewModel)
             }
 

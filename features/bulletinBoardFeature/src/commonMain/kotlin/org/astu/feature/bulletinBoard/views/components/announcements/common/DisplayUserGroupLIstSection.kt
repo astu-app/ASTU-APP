@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupSummaryContent
+import org.astu.feature.bulletinBoard.views.entities.userGroups.summary.UserGroupSummaryContent
 
 @Composable
 fun DisplayUserGroupListSection(

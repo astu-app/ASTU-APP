@@ -47,7 +47,25 @@ class BulletInBoardScreen : Screen {
             topBar = {
                 TopAppBar(
                     title = { Text("Объявления") },
-                    actions = { TopAppBarMenuActions() }
+                    actions = {
+                        // Кнопка обновить
+                        Button(
+                            onClick = { viewModel.loadAnnouncements() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = CurrentColorScheme.surface,
+                                disabledContainerColor = CurrentColorScheme.surface,
+                                contentColor = CurrentColorScheme.primary,
+                            )
+                        ) {
+                            Text(
+                                text = "Обновить",
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        }
+
+                        // Выпадающее меню
+                        TopAppBarMenuActions()
+                    }
                 )
             },
             floatingActionButton = {

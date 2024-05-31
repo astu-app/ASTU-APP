@@ -11,8 +11,9 @@ import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.UserGroupModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUsergroupDetailsErrors
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
-import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupDetailsContent
 import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupsPresentationMapper.toPresentation
+import org.astu.feature.bulletinBoard.views.entities.userGroups.details.UserGroupDetailsContent
+import org.astu.feature.bulletinBoard.views.entities.userGroups.details.UserSummaryWithUserRights
 
 class UserGroupDetailsViewModel(
     private val id: Uuid,
@@ -26,6 +27,9 @@ class UserGroupDetailsViewModel(
 
     private val userGroupModel = UserGroupModel()
     val content: MutableState<UserGroupDetailsContent?> = mutableStateOf(null)
+
+    var selectedUserForRightsShowing: MutableState<UserSummaryWithUserRights?> = mutableStateOf(null)
+    val showShowUserRightsDialog: MutableState<Boolean> = mutableStateOf(false)
 
     private val unexpectedErrorTitle: String = "Ошибка"
     private val unexpectedErrorBody: String = "Неожиданная ошибка. Повторите попытку"

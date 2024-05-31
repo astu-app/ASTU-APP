@@ -5,7 +5,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos.
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.SurveyToModelMappers.toModels
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.dtos.UpdateIdentifierListDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.mappers.UpdateIdentifierListMappers.toDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupMappers.toModel
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupToModelMappers.toModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
 import org.astu.feature.bulletinBoard.models.entities.announcements.*
 import kotlin.jvm.JvmName

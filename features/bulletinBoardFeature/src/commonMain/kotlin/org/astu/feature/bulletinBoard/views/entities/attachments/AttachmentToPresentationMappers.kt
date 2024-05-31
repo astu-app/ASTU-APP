@@ -5,13 +5,11 @@ import org.astu.feature.bulletinBoard.common.utils.calculateVotersPercentage
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.QuestionDetails
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.details.SurveyDetails
 import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.ClosedResultsAnswerContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.MultipleChoiceAnswerContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.SingleChoiceAnswerContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.VotedAnswerContentSummary
-import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.MultipleChoiceQuestionContent
-import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.QuestionContentBase
-import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.SingleChoiceQuestionContent
-import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.VotedQuestionContent
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.models.*
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.SurveyContentBase
 import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentations
@@ -30,18 +28,28 @@ object AttachmentToPresentationMappers {
             voters = this.voters.toPresentations(),
             isVotedByUser = this.isVotedByUser,
             showVoters = showVoters,
-            isOpen = this.isOpen
+            isOpen = this.isOpen,
+            showResults = this.showResults,
+            isAnonymous = this.isAnonymous,
         )
 
     @JvmName("SurveyDetailsToPresentation")
     fun SurveyDetails.toPresentation(showVoters: Boolean): SurveyContentBase =
         AttachedSurveyContent(
             id = this.id,
-            questions = mapQuestions(this.questions, this.votersAmount, this.voteFinishedAt != null, this.isOpen),
+            questions = mapQuestions(
+                questions = this.questions,
+                showResults = this.showResults,
+                surveyVotersAmount = this.votersAmount,
+                voteFinished = this.voteFinishedAt != null,
+                isOpen = this.isOpen
+            ),
             voters = this.voters.toPresentations(),
             showVoters = showVoters,
             isVotedByUser = this.isVotedByUser,
-            isOpen = this.isOpen
+            isOpen = this.isOpen,
+            showResults = this.showResults,
+            isAnonymous = this.isAnonymous,
         )
 
     @JvmName("SurveyDetailsCollectionToPresentations")
@@ -59,6 +67,7 @@ object AttachmentToPresentationMappers {
 
     fun mapQuestions(
         questions: List<QuestionDetails>,
+        showResults: Boolean,
         surveyVotersAmount: Int,
         voteFinished: Boolean,
         isOpen: Boolean
@@ -66,7 +75,9 @@ object AttachmentToPresentationMappers {
         return questions
             .sortedBy { question -> question.serial }
             .map { question ->
-                if (voteFinished || !isOpen) {
+                if (!showResults) {
+                    mapClosedResultsQuestion(question)
+                } else if (voteFinished || !isOpen) {
                     mapVotedQuestion(question, surveyVotersAmount)
                 } else if (question.isMultipleChoiceAllowed) {
                     mapMultipleChoiceQuestion(question)
@@ -87,6 +98,18 @@ object AttachmentToPresentationMappers {
                 )
             }
         return VotedQuestionContent(question.id, question.content, answers)
+    }
+
+    fun mapClosedResultsQuestion(question: QuestionDetails): ClosedResultsQuestionContent {
+        val answers = question.answers
+            .sortedBy { answer -> answer.serial }
+            .map { answer ->
+                ClosedResultsAnswerContent(
+                    answer.id,
+                    answer.content,
+                )
+            }
+        return ClosedResultsQuestionContent(question.id, question.content, answers)
     }
 
     fun mapMultipleChoiceQuestion(question: QuestionDetails): MultipleChoiceQuestionContent {
