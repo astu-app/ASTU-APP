@@ -9,8 +9,7 @@ import io.ktor.http.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.UserGroupDataSource
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsuccessCode
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupToDtoMappers.toModel
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupToModelMappers.toDto
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupToDtoMappers.toDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupToModelMappers.toModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupToModelMappers.toModels
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.*
@@ -57,6 +56,28 @@ class ApiUserGroupDataSource : UserGroupDataSource {
         return ContentWithError(dto.toModel(), error = null)
     }
 
+    override suspend fun getUpdateContent(id: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors> {
+        val response = client.get("api/usergroups/get-update-content/$id")
+        if (!response.status.isSuccess())
+            return ContentWithError(null, error = readUnsuccessCode<ContentForUserGroupEditingErrors>(response))
+
+        val dto = response.body<ContentForUserGroupEditingDto>()
+        return ContentWithError(dto.toModel(), error = null)
+    }
+
+    override suspend fun update(content: UpdateUserGroup): UpdateUsergroupErrors? {
+        val dto = content.toDto()
+        val response = client.put("api/usergroups/update") {
+            contentType(ContentType.Application.Json)
+            setBody(dto)
+        }
+
+        if (!response.status.isSuccess())
+            return readUnsuccessCode<UpdateUsergroupErrors>(response)
+
+        return null
+    }
+
     override suspend fun getUserGroupHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
         val response = client.get("api/usergroups/get-owned-hierarchy")
 
@@ -66,7 +87,6 @@ class ApiUserGroupDataSource : UserGroupDataSource {
         val hierarchyDto = response.body<UserGroupHierarchyDto>()
         val hierarchy = mapHierarchy(hierarchyDto)
         return ContentWithError(hierarchy, error = null)
-
     }
 
     override suspend fun getUserGroupList(): ContentWithError<List<UserGroupSummary>, GetUserListErrors> {
@@ -92,6 +112,8 @@ class ApiUserGroupDataSource : UserGroupDataSource {
 
         return null
     }
+
+
 
 
 

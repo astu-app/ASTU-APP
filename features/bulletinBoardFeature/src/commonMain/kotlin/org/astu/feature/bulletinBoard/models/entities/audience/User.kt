@@ -7,4 +7,7 @@ open class User(
     val firstName: String,
     val secondName: String,
     val patronymic: String?
-)
+) {
+    val fullName: String
+        get() = "$firstName $secondName $patronymic"
+}

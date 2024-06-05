@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.entities.userGroups.creation
+package org.astu.feature.bulletinBoard.views.entities.userGroups.common
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

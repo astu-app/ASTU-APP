@@ -163,7 +163,7 @@ object ErrorCodesHumanization {
             CreateUserGroupErrors.UsergroupCreationForbidden -> "У вас недостаточно прав для создания групп пользователей"
             CreateUserGroupErrors.UsersDoNotExist -> "В качестве одного или нескольких id пользователей прикреплен несуществующий в базе id"
             CreateUserGroupErrors.UserGroupsDoNotExist -> "Пользователь не найден. Повторите попытку"
-            CreateUserGroupErrors.AdminCannotBeOrdinaryMember -> "Идентификатор администратора передан в массиве идентификаторов участников"
+            CreateUserGroupErrors.AdminCannotBeOrdinaryMember -> "Администратор не может быть рядовым участником группы пользователей"
             CreateUserGroupErrors.CyclicDependency -> "Группа пользователей не может быть создана, так как порождает цикл на графе групп пользователей"
             else -> DEFAULT_ERROR_MESSAGE
         }
@@ -191,6 +191,23 @@ object ErrorCodesHumanization {
         when (this) {
             GetUsergroupDetailsErrors.UetUsergroupDetailsForbidden -> "У вас недостаточно прав для просмотра деталей этой группы пользователей"
             GetUsergroupDetailsErrors.UserGroupDoesNotExist -> "Группа пользователей не найдена"
+            else -> DEFAULT_ERROR_MESSAGE
+        }
+
+    fun ContentForUserGroupEditingErrors?.humanize(): String =
+        when (this) {
+            ContentForUserGroupEditingErrors.GetUsergroupUpdateContentForbidden -> "У вас недостаточно прав для получения данных для обновления группы пользователей"
+            ContentForUserGroupEditingErrors.UserGroupDoesNotExist -> "Группа пользователей не найдена"
+            else -> DEFAULT_ERROR_MESSAGE
+        }
+
+    fun  UpdateUsergroupErrors?.humanize(): String =
+        when (this) {
+            UpdateUsergroupErrors.NameIsNullOrWhitespace -> "Имя не может быть пустым"
+            UpdateUsergroupErrors.UpdateUsergroupForbidden -> "У вас недостаточно прав редактирования группы пользователей"
+            UpdateUsergroupErrors.UsersDoNotExist -> "Пользователь не найден"
+//            UpdateUsergroupErrors.UserGroupsDoNotExist -> "Группа пользователей не найдена" // remove
+            UpdateUsergroupErrors.AdminCannotBeOrdinaryMember -> "Администратор не может быть рядовым участником группы пользователей"
             else -> DEFAULT_ERROR_MESSAGE
         }
 }

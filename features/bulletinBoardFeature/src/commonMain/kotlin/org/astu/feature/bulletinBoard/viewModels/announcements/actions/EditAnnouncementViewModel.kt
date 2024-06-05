@@ -16,7 +16,7 @@ import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnounce
 import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
 import org.astu.feature.bulletinBoard.models.entities.common.UpdateIdentifierList
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
-import org.astu.feature.bulletinBoard.views.entities.EditAnnouncementContent
+import org.astu.feature.bulletinBoard.views.entities.announcement.editing.EditAnnouncementContent
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToModelMappers.toModel
 
 class EditAnnouncementViewModel(
@@ -84,12 +84,12 @@ class EditAnnouncementViewModel(
                     return@launch
                 }
 
-                mutableState.value = State.ChangesUploadingError
                 setErrorDialogStateForAnnouncementCreating(error)
+                mutableState.value = State.ChangesUploadingError
 
             } catch (exception: Exception) {
-                mutableState.value = State.ChangesUploadingError
                 setErrorDialogStateForAnnouncementCreating()
+                mutableState.value = State.ChangesUploadingError
                 Logger.e(exception.message ?: "empty message", exception, "EditAnnouncement")
             }
         }
@@ -165,7 +165,6 @@ class EditAnnouncementViewModel(
         if (contentDelayedHidingEnabled == false && originalDelayedHidingEnabled == false) return false
         if (contentDelayedHidingEnabled != originalDelayedHidingEnabled) return true
 
-        // contentDelayedHidingEnabled == true && originalDelayedHidingEnabled == true
         return content.delayedHidingAt == original.delayedHidingAt
     }
 

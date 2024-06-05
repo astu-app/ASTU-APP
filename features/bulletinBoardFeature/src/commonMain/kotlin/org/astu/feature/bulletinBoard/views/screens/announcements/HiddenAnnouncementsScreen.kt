@@ -3,6 +3,7 @@ package org.astu.feature.bulletinBoard.views.screens.announcements
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ import org.astu.feature.bulletinBoard.views.screens.announcements.actions.Announ
 import org.astu.feature.bulletinBoard.views.screens.announcements.actions.EditAnnouncementScreen
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
+import org.astu.infrastructure.theme.CurrentColorScheme
 
 class HiddenAnnouncementsScreen(private val onReturn: () -> Unit) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +39,16 @@ class HiddenAnnouncementsScreen(private val onReturn: () -> Unit) : Screen {
                     navigationIcon = {
                         IconButton(onClick = onReturn) {
                             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, null)
+                        }
+                    },
+                    actions = {
+                        // Кнопка обновить
+                        IconButton(onClick = { viewModel.loadAnnouncements() },) {
+                            Icon(
+                                imageVector = Icons.Outlined.Refresh,
+                                contentDescription = "Обновить список скрытых объявлений",
+                                tint = CurrentColorScheme.primary
+                            )
                         }
                     }
                 )

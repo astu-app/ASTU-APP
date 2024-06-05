@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,7 @@ class EditAnnouncementScreen(
 ) : Screen {
     @Composable
     override fun Content() {
+        var onReturnCalled = remember { false }
         val viewModel = rememberScreenModel { EditAnnouncementViewModel(announcementId, onReturn) }
         val editor = AnnouncementEditor(viewModel)
 
@@ -67,7 +69,10 @@ class EditAnnouncementScreen(
                 EditAnnouncementViewModel.State.EditingAnnouncement -> editor.Content(editor.getDefaultModifier())
                 EditAnnouncementViewModel.State.EditContentLoadingError -> showErrorDialog(viewModel)
                 EditAnnouncementViewModel.State.ChangesUploading -> Loading()
-                EditAnnouncementViewModel.State.ChangesUploadingDone -> onReturn()
+                EditAnnouncementViewModel.State.ChangesUploadingDone -> if (!onReturnCalled) {
+                    onReturnCalled = true
+                    onReturn()
+                }
                 EditAnnouncementViewModel.State.ChangesUploadingError -> showErrorDialog(viewModel)
             }
 

@@ -1,42 +1,36 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups
 
-import com.benasher44.uuid.uuidFrom
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupToModelMappers.toModels
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.MemberRightsDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserGroupDetailsDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.UserSummaryWithMemberRightsDto
-import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModel
-import org.astu.feature.bulletinBoard.models.entities.audience.MemberRights
-import org.astu.feature.bulletinBoard.models.entities.audience.MemberWithRights
-import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupDetails
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.*
+import org.astu.feature.bulletinBoard.models.entities.audience.*
 import kotlin.jvm.JvmName
 
 object UserGroupToDtoMappers {
-    @JvmName("UserGroupDetailsDtoToModel")
-    fun UserGroupDetailsDto.toModel(): UserGroupDetails =
-        UserGroupDetails(
-            id = uuidFrom(this.id),
+    @JvmName("CreateUserGroupToDto")
+    fun CreateUserGroup.toDto(): CreateUserGroupDto =
+        CreateUserGroupDto(
             name = this.name,
-            admin = this.admin?.toModel(),
-            members = this.members.toModels(),
-            parents = this.parents.toModels(),
-            children = this.children.toModels(),
+            adminId = this.adminId?.toString(),
+            members = this.members.toDtos(),
+            parentIds = parentUserGroupIds.map { it.toString() },
+            childIds = childUserGroupIds.map { it.toString() }
         )
 
-    @JvmName("UserSummaryWithMemberRightsDtoCollectionToModels")
-    fun Collection<UserSummaryWithMemberRightsDto>.toModels(): List<MemberWithRights> =
-        this.map { it.toModel() }
+    @JvmName("MemberIdWithRightsCollectionToDtos")
+    fun Collection<MemberIdWithRights>.toDtos(): List<UserIdWithMemberRightsDto> =
+        this.map { it.toDto() }
 
-    @JvmName("UserSummaryWithMemberRightsDtoToModel")
-    fun UserSummaryWithMemberRightsDto.toModel(): MemberWithRights =
-        MemberWithRights(
-            user = this.user.toModel(),
-            rights = this.rights.toModel()
-        )
+    @JvmName("MemberIdWithRightsToDto")
+    fun MemberIdWithRights.toDto(): UserIdWithMemberRightsDto =
+        UserIdWithMemberRightsDto(
+            userId = this.userId.toString(),
+            usergroupId = this.usergroupId?.toString(),
+            rights = rights.toDto(),
 
-    @JvmName("MemberRightsDtoToModel")
-    fun MemberRightsDto.toModel(): MemberRights =
-        MemberRights(
+            )
+
+    @JvmName("MemberRightsToDto")
+    fun MemberRights.toDto(): MemberRightsDto =
+        MemberRightsDto(
             canViewAnnouncements = this.canViewAnnouncements,
             canCreateAnnouncements = this.canCreateAnnouncements,
             canCreateSurveys = this.canCreateSurveys,
@@ -47,5 +41,24 @@ object UserGroupToDtoMappers {
             canEditMemberRights = this.canEditMemberRights,
             canEditUserGroupAdmin = this.canEditUserGroupAdmin,
             canDeleteUserGroup = this.canDeleteUserGroup,
+        )
+
+    @JvmName("UpdateUserGroupToDto")
+    fun UpdateUserGroup.toDto(): UpdateUserGroupDto =
+        UpdateUserGroupDto(
+            id = this.id.toString(),
+            name = this.name,
+            adminChanged = this.adminChanged,
+            adminId = this.adminId?.toString(),
+            members = this.members.toDto(),
+//            childGroups = this.childGroups.toDto(), // remove
+//            parentGroups = this.parentGroups.toDto(),
+        )
+
+    @JvmName("UpdateMemberListToDto")
+    fun UpdateMemberList.toDto(): UpdateMemberListDto =
+        UpdateMemberListDto(
+            idsToRemove = this.idsToRemove.map { it.toString() },
+            newMembers = this.newMembers.toDtos(),
         )
 }

@@ -1,7 +1,7 @@
 package org.astu.feature.bulletinBoard.models.services.announcements
 
 import kotlinx.datetime.Clock
-import org.astu.feature.bulletinBoard.views.entities.EditAnnouncementContent
+import org.astu.feature.bulletinBoard.views.entities.announcement.editing.EditAnnouncementContent
 
 class AnnouncementEditValidator(private val announcement: EditAnnouncementContent) {
     fun canEdit(): Boolean {

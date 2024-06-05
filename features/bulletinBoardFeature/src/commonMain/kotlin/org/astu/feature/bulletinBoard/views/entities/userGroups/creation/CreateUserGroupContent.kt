@@ -25,13 +25,13 @@ import org.astu.feature.bulletinBoard.views.components.UserViewMappers.toSelecta
 import org.astu.feature.bulletinBoard.views.components.UserViewMappers.toStaticView
 import org.astu.feature.bulletinBoard.views.components.userGroups.UserGroupViewMappers.toSelectableView
 import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupsPresentationMapper.toPresentations
+import org.astu.feature.bulletinBoard.views.entities.userGroups.common.AddUserGroupMember
 import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
 import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentations
 
 class CreateUserGroupContent(content: ContentForUserGroupCreation?) {
     val name: MutableState<String> = mutableStateOf("")
 
-//    val adminId: MutableState<Uuid> = mutableStateOf(uuidFrom("00000000-0000-0000-0000-000000000000"))
     var admin: MutableState<UserSummary?> = mutableStateOf(null)
 
     val addedMembers: MutableMap<Uuid, AddUserGroupMember> = mutableMapOf()
@@ -64,7 +64,7 @@ class CreateUserGroupContent(content: ContentForUserGroupCreation?) {
             ?.toPresentations()
             ?.map {
                 val isChecked = mutableStateOf(false)
-                val selectableView = it.toSelectableView(isChecked/*, Modifier.weight(1f)*/) { newState ->
+                val selectableView = it.toSelectableView(isChecked) { newState ->
                     isChecked.value = newState
                     if (newState) {
                         addedMembers[it.id] = AddUserGroupMember(it.id)

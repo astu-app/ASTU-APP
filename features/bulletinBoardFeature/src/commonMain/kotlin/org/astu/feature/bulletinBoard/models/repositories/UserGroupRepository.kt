@@ -22,12 +22,20 @@ class UserGroupRepository {
         return userGroupDataSource.getUserGroupHierarchy()
     }
 
-    suspend fun getUserGroupList(): ContentWithError<List<UserGroupSummary>, GetUserListErrors> {
-        return userGroupDataSource.getUserGroupList()
-    }
+//    suspend fun getUserGroupList(): ContentWithError<List<UserGroupSummary>, GetUserListErrors> { // remove
+//        return userGroupDataSource.getUserGroupList()
+//    }
 
     suspend fun getDetails(id: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {
         return userGroupDataSource.getDetails(id)
+    }
+
+    suspend fun getUpdateContent(id: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors> {
+        return userGroupDataSource.getUpdateContent(id)
+    }
+
+    suspend fun update(content: UpdateUserGroup): UpdateUsergroupErrors? {
+        return userGroupDataSource.update(content)
     }
 
     suspend fun delete(id: Uuid): DeleteUserGroupErrors? {

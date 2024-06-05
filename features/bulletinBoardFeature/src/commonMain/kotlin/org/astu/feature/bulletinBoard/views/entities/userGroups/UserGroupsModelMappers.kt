@@ -3,7 +3,7 @@ package org.astu.feature.bulletinBoard.views.entities.userGroups
 import org.astu.feature.bulletinBoard.models.entities.audience.CreateUserGroup
 import org.astu.feature.bulletinBoard.models.entities.audience.MemberIdWithRights
 import org.astu.feature.bulletinBoard.models.entities.audience.MemberRights
-import org.astu.feature.bulletinBoard.views.entities.userGroups.creation.AddUserGroupMember
+import org.astu.feature.bulletinBoard.views.entities.userGroups.common.AddUserGroupMember
 import org.astu.feature.bulletinBoard.views.entities.userGroups.creation.CreateUserGroupContent
 import kotlin.jvm.JvmName
 

@@ -9,4 +9,10 @@ class ContentWithError<TContent, TError>(val content: TContent?, val error: TErr
         where TError : Enum<TError> {
     // Менять очень аккуратно, так как на этом свойстве завязано множество логики
     val isContentValid: Boolean = content != null && error == null
+
+
+    init {
+        if (content != null && error != null || content == null && error == null)
+            throw IllegalArgumentException("Контент и ошибка должны иметь значения (null, not-null) или (null, not-null)")
+    }
 }

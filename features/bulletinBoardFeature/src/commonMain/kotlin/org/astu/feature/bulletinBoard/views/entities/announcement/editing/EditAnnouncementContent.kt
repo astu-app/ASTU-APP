@@ -1,4 +1,4 @@
-package org.astu.feature.bulletinBoard.views.entities
+package org.astu.feature.bulletinBoard.views.entities.announcement.editing
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

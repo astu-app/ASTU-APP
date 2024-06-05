@@ -2,6 +2,7 @@ package org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups
 
 import com.benasher44.uuid.uuidFrom
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.*
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
 import org.astu.feature.bulletinBoard.models.entities.audience.*
 import kotlin.jvm.JvmName
@@ -41,28 +42,31 @@ object UserGroupToModelMappers {
     fun GetUsergroupCreateContentDto.toModel(): ContentForUserGroupCreation =
         ContentForUserGroupCreation(users = this.users.toModels(), userGroups = this.userGroups.toModels())
 
-    @JvmName("CreateUserGroupToDto")
-    fun CreateUserGroup.toDto(): CreateUserGroupDto =
-        CreateUserGroupDto(
+    @JvmName("UserGroupDetailsDtoToModel")
+    fun UserGroupDetailsDto.toModel(): UserGroupDetails =
+        UserGroupDetails(
+            id = uuidFrom(this.id),
             name = this.name,
-            adminId = this.adminId?.toString(),
-            members = this.members.map { it.toDto() },
-            parentIds = parentUserGroupIds.map { it.toString() },
-            childIds = childUserGroupIds.map { it.toString() }
+            admin = this.admin?.toModel(),
+            members = this.members.toModels(),
+            parents = this.parents.toModels(),
+            children = this.children.toModels(),
         )
 
-    @JvmName("MemberIdWithRightsToDto")
-    fun MemberIdWithRights.toDto(): UserIdWithMemberRightsDto =
-        UserIdWithMemberRightsDto(
-            userId = this.userId.toString(),
-            usergroupId = this.usergroupId?.toString(),
-            rights = rights.toDto(),
+    @JvmName("UserSummaryWithMemberRightsDtoCollectionToModels")
+    fun Collection<UserSummaryWithMemberRightsDto>.toModels(): List<MemberWithRights> =
+        this.map { it.toModel() }
 
+    @JvmName("UserSummaryWithMemberRightsDtoToModel")
+    fun UserSummaryWithMemberRightsDto.toModel(): MemberWithRights =
+        MemberWithRights(
+            user = this.user.toModel(),
+            rights = this.rights.toModel()
         )
 
-    @JvmName("MemberRightsToDto")
-    fun MemberRights.toDto(): MemberRightsDto =
-        MemberRightsDto(
+    @JvmName("MemberRightsDtoToModel")
+    fun MemberRightsDto.toModel(): MemberRights =
+        MemberRights(
             canViewAnnouncements = this.canViewAnnouncements,
             canCreateAnnouncements = this.canCreateAnnouncements,
             canCreateSurveys = this.canCreateSurveys,
@@ -73,6 +77,19 @@ object UserGroupToModelMappers {
             canEditMemberRights = this.canEditMemberRights,
             canEditUserGroupAdmin = this.canEditUserGroupAdmin,
             canDeleteUserGroup = this.canDeleteUserGroup,
+        )
+
+    @JvmName("ContentForUserGroupEditingDtoToModel")
+    fun ContentForUserGroupEditingDto.toModel(): ContentForUserGroupEditing =
+        ContentForUserGroupEditing(
+            id = uuidFrom(this.id),
+            name = this.name,
+            admin = this.admin?.toModel(),
+            members = this.members.toModels(),
+            potentialMembers = this.users.toModels(),
+//            parents = this.parents.toModels(), // remove
+//            children = this.children.toModels(),
+//            potentialRelatives = this.usergroups.toModels(),
         )
 
 

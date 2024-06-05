@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -21,11 +20,11 @@ import org.astu.feature.bulletinBoard.views.screens.userGroups.actions.UserGroup
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 
-class UserGroupHierarchyScreen : Screen {
+class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewModel) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = rememberScreenModel { UserGroupHierarchyViewModel(navigator) }
+//        val viewModel = rememberScreenModel { UserGroupHierarchyViewModel(navigator) }
         viewModel.currentDensity = LocalDensity.current.density
 
         val state by viewModel.state.collectAsState()
@@ -45,7 +44,7 @@ class UserGroupHierarchyScreen : Screen {
                         navigator.push(userGroupDetailsScreen)
                     },
                     edit = {
-                        val editUserGroupScreen = EditUserGroupScreen(viewModel.selectedUserGroupId) { navigator.pop()}
+                        val editUserGroupScreen = EditUserGroupScreen(viewModel.selectedUserGroupId) { navigator.pop() }
                         navigator.push(editUserGroupScreen)
                     },
                     delete = {
