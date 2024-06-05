@@ -7,11 +7,11 @@ import kotlinx.datetime.*
 import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAnnouncementEditing
 import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
 import org.astu.feature.bulletinBoard.models.entities.audience.getUserGroupHierarchyMembers
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDate
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeTime
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
-import org.astu.feature.bulletinBoard.views.dateTime.getDateString
 import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeFromEpochMillis
-import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.votedSurveyToPresentation
 import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
@@ -128,13 +128,13 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
         val delayedPublishingAt = editContent.delayedPublishingAt?.toInstant(TimeZone.currentSystemDefault()) ?: now
         val delayedPublicationDateMillis = delayedPublishingAt.toEpochMilliseconds()
         this.delayedPublicationDateMillis = mutableStateOf(delayedPublicationDateMillis)
-        delayedPublicationDateString = mutableStateOf(getDateString(this.delayedPublicationDateMillis.value))
+        delayedPublicationDateString = mutableStateOf(humanizeDate(this.delayedPublicationDateMillis.value))
 
         // День, следующий за днем отложенной публикации.
         val nextDayAfterDelayedPublication = delayedPublishingAt + Duration.parse("1d")
         val nextDayAfterDelayedPublicationMillis = nextDayAfterDelayedPublication.toEpochMilliseconds()
         delayedHidingDateMillis = mutableStateOf(nextDayAfterDelayedPublicationMillis)
-        delayedHidingDateString = mutableStateOf(getDateString(delayedHidingDateMillis.value))
+        delayedHidingDateString = mutableStateOf(humanizeDate(delayedHidingDateMillis.value))
 
         // Если момент отложенной публикации или момент отложенного сокрытия не задан, то в час этих моментов
         // устанавливаем час, следующий за текущим моментом времени
@@ -144,11 +144,11 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
         delayedPublicationTimeHours = mutableStateOf(editContent.delayedPublishingAt?.hour ?: hourLaterValue)
         delayedPublicationTimeMinutes = mutableStateOf(editContent.delayedPublishingAt?.minute ?: 0)
         delayedPublicationTimeString =
-            mutableStateOf(getTimeString(delayedPublicationTimeHours.value, delayedPublicationTimeMinutes.value))
+            mutableStateOf(humanizeTime(delayedPublicationTimeHours.value, delayedPublicationTimeMinutes.value))
 
         delayedHidingTimeHours = mutableStateOf(editContent.delayedHidingAt?.hour ?: hourLaterValue)
         delayedHidingTimeMinutes = mutableStateOf(editContent.delayedHidingAt?.minute ?: 0)
         delayedHidingTimeString =
-            mutableStateOf(getTimeString(delayedHidingTimeHours.value, delayedHidingTimeMinutes.value))
+            mutableStateOf(humanizeTime(delayedHidingTimeHours.value, delayedHidingTimeMinutes.value))
     }
 }

@@ -6,7 +6,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 /**
- * Получение даты из миллсекунд, прошедших с начала эпохи
+ * Получение даты из миллисекунд, прошедших с начала эпохи
  */
 fun getDateTimeFromEpochMillis(millis: Long): LocalDateTime {
     val instant = Instant.fromEpochMilliseconds(millis)

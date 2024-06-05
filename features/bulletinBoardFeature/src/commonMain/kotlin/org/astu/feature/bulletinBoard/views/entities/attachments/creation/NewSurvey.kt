@@ -24,9 +24,9 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.astu.feature.bulletinBoard.common.utils.localDateTimeFromComponents
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDate
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeTime
 import org.astu.feature.bulletinBoard.views.components.announcements.common.DelayedMomentPicker
-import org.astu.feature.bulletinBoard.views.dateTime.getDateString
-import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
 import org.astu.feature.bulletinBoard.views.entities.ContentProvider
 import org.astu.feature.bulletinBoard.views.entities.DefaultModifierProvider
 import org.astu.infrastructure.components.Paginator
@@ -83,11 +83,11 @@ class NewSurvey(private val onSurveyDeleteRequest: () -> Unit) : ContentProvider
         val tomorrow = now + Duration.parse("1d")
         val tomorrowMillis = tomorrow.toEpochMilliseconds()
         autoClosingDateMillis = mutableStateOf(tomorrowMillis)
-        autoClosingDateString = mutableStateOf(getDateString(autoClosingDateMillis.value))
+        autoClosingDateString = mutableStateOf(humanizeDate(autoClosingDateMillis.value))
 
         autoClosingTimeHours = mutableStateOf(tomorrow.toLocalDateTime(TimeZone.currentSystemDefault()).hour)
         autoClosingTimeString =
-            mutableStateOf(getTimeString(autoClosingTimeHours.value, autoClosingTimeMinutes.value))
+            mutableStateOf(humanizeTime(autoClosingTimeHours.value, autoClosingTimeMinutes.value))
     }
 
 

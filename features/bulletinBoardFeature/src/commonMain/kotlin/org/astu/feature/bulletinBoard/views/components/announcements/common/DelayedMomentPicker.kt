@@ -16,8 +16,8 @@ import com.mohamedrejeb.calf.ui.datepicker.AdaptiveDatePicker
 import com.mohamedrejeb.calf.ui.datepicker.rememberAdaptiveDatePickerState
 import com.mohamedrejeb.calf.ui.timepicker.AdaptiveTimePicker
 import com.mohamedrejeb.calf.ui.timepicker.rememberAdaptiveTimePickerState
-import org.astu.feature.bulletinBoard.views.dateTime.getDateString
-import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDate
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeTime
 import org.astu.infrastructure.components.ActionDialog
 import org.astu.infrastructure.components.SwitchRow
 
@@ -70,7 +70,7 @@ fun DelayedMomentPicker(
         if (datePickerDialogOpen.value) {
             LaunchedEffect(datePickerState.selectedDateMillis) {
                 dateMillis.value = datePickerState.selectedDateMillis ?: 0
-                dateString.value = getDateString(dateMillis.value)
+                dateString.value = humanizeDate(dateMillis.value)
             }
 
             ActionDialog(
@@ -78,7 +78,7 @@ fun DelayedMomentPicker(
                 onDismissRequest = { datePickerDialogOpen.value = false },
                 onConfirmRequest = {
                     dateMillis.value = datePickerState.selectedDateMillis ?: 0
-                    dateString.value = getDateString(dateMillis.value)
+                    dateString.value = humanizeDate(dateMillis.value)
                     datePickerDialogOpen.value = false
                 }
             ) {
@@ -91,7 +91,7 @@ fun DelayedMomentPicker(
             LaunchedEffect(timePickerState.hour, timePickerState.minute) {
                 timeHours.value = timePickerState.hour
                 timeMinutes.value = timePickerState.minute
-                timeString.value = getTimeString(timeHours.value, timeMinutes.value)
+                timeString.value = humanizeTime(timeHours.value, timeMinutes.value)
             }
 
             ActionDialog(
@@ -100,7 +100,7 @@ fun DelayedMomentPicker(
                 onConfirmRequest = {
                     timeHours.value = timePickerState.hour
                     timeMinutes.value = timePickerState.minute
-                    timeString.value = getTimeString(timeHours.value, timeMinutes.value)
+                    timeString.value = humanizeTime(timeHours.value, timeMinutes.value)
                     timePickerDialogOpen.value = false
                 }
             ) {

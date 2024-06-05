@@ -7,6 +7,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.t
 import org.astu.feature.bulletinBoard.models.entities.audience.*
 import kotlin.jvm.JvmName
 
+@Suppress("unused")
 object UserGroupToModelMappers {
     @JvmName("UserGroupHierarchyDtoToModel")
     fun UserGroupHierarchyDto.toModel(): UserGroupHierarchy {

@@ -9,8 +9,8 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
-import org.astu.feature.bulletinBoard.views.dateTime.getDateString
-import org.astu.feature.bulletinBoard.views.dateTime.getTimeString
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDate
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeTime
 import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.mappers.AudiencePresentationMapper
@@ -45,22 +45,22 @@ class CreateAnnouncementContent(audienceHierarchy: UserGroupHierarchy) {
         val now = Clock.System.now()
         val nowMillis = now.toEpochMilliseconds()
         delayedPublicationDateMillis = mutableStateOf(nowMillis)
-        delayedPublicationDateString = mutableStateOf(getDateString(delayedPublicationDateMillis.value))
+        delayedPublicationDateString = mutableStateOf(humanizeDate(delayedPublicationDateMillis.value))
 
         val tomorrow = now + Duration.parse("1d")
         val tomorrowMillis = tomorrow.toEpochMilliseconds()
         delayedHidingDateMillis = mutableStateOf(tomorrowMillis)
-        delayedHidingDateString = mutableStateOf(getDateString(delayedHidingDateMillis.value))
+        delayedHidingDateString = mutableStateOf(humanizeDate(delayedHidingDateMillis.value))
 
         val hourLater = now + Duration.parse("1h")
 
         delayedPublicationTimeHours = mutableStateOf(hourLater.toLocalDateTime(TimeZone.currentSystemDefault()).hour)
         delayedPublicationTimeString =
-            mutableStateOf(getTimeString(delayedPublicationTimeHours.value, delayedPublicationTimeMinutes.value))
+            mutableStateOf(humanizeTime(delayedPublicationTimeHours.value, delayedPublicationTimeMinutes.value))
 
         delayedHidingTimeHours = delayedPublicationTimeHours
         delayedHidingTimeString =
-            mutableStateOf(getTimeString(delayedHidingTimeHours.value, delayedHidingTimeMinutes.value))
+            mutableStateOf(humanizeTime(delayedHidingTimeHours.value, delayedHidingTimeMinutes.value))
 
         val audienceMapper = AudiencePresentationMapper(audienceHierarchy, selectedUserIds)
         audienceRoots = audienceMapper.mapAudienceHierarchy()

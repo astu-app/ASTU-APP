@@ -4,6 +4,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.*
 import org.astu.feature.bulletinBoard.models.entities.audience.*
 import kotlin.jvm.JvmName
 
+@Suppress("unused")
 object UserGroupToDtoMappers {
     @JvmName("CreateUserGroupToDto")
     fun CreateUserGroup.toDto(): CreateUserGroupDto =
