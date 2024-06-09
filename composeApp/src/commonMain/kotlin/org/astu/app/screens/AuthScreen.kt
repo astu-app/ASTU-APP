@@ -14,13 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import org.astu.app.view_models.AuthViewModel
 
-class AuthScreen(private val onAuth: () -> Unit)  : Screen {
+class AuthScreen(private val onAuth: () -> Unit) : Screen {
+    private lateinit var viewModel: AuthViewModel
+
     @Composable
     override fun Content() {
+        viewModel = rememberScreenModel { AuthViewModel() }
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             if (maxWidth < 700.dp)
                 mobileView()
@@ -47,8 +53,9 @@ class AuthScreen(private val onAuth: () -> Unit)  : Screen {
 
     @Composable
     private fun authPanel(modifier: Modifier) {
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
+        var email by remember { viewModel.email }
+        var password by remember { viewModel.password }
+        val error by remember { viewModel.error }
         var passwordVisibility by remember { mutableStateOf(false) }
 
         Column(
@@ -91,11 +98,13 @@ class AuthScreen(private val onAuth: () -> Unit)  : Screen {
                 }
             )
             Button(
-                onClick = onAuth,
+                onClick = { viewModel.login(onAuth) },
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) {
                 Text("Login")
             }
+            if(error != null)
+                Text(error!!,modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
         }
     }
 

@@ -18,7 +18,7 @@ class ScheduleViewModel : StateScreenModel<ScheduleViewModel.State>(State.Init) 
         data object SearchedTable : State()
         data object Search : State()
         data object FirstLaunch : State()
-        data class Error(val message: String) : State()
+//        data class Error(val message: String) : State()
     }
 
     private val repository: ScheduleRepository = ScheduleRepository()
@@ -26,6 +26,8 @@ class ScheduleViewModel : StateScreenModel<ScheduleViewModel.State>(State.Init) 
     init {
         mutableState.value = State.FirstLaunch
     }
+
+    val error: MutableState<String?> = mutableStateOf(null)
 
     val pinnedTerm: MutableState<Term?> = mutableStateOf(null)
     val searchedTerm: MutableState<Term?> = mutableStateOf(null)
@@ -80,9 +82,16 @@ class ScheduleViewModel : StateScreenModel<ScheduleViewModel.State>(State.Init) 
 
     fun search(searchResult: SearchResult) {
         mutableState.value = State.Loading
+        error.value = null
         screenModelScope.launch {
-            searchedTerm.value = repository.getTerm(searchResult)
-            mutableState.value = State.SearchedTable
+            runCatching {
+                searchedTerm.value = repository.getTerm(searchResult)
+                mutableState.value = State.SearchedTable
+            }.onFailure {
+                mutableState.value = State.Search
+                error.value = "Не удалось получить данные по запросу"
+                searchResults.value = listOf()
+            }
         }
     }
 
@@ -103,8 +112,8 @@ class ScheduleViewModel : StateScreenModel<ScheduleViewModel.State>(State.Init) 
 
     fun pinTerm() {
         pinnedTerm.value = searchedTerm.value
-        searchedTerm.value = null
         mutableState.value = State.PinTable
+//        searchedTerm.value = null
     }
 
     fun goPrev() {

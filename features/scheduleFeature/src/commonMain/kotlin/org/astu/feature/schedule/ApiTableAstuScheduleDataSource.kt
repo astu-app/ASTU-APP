@@ -5,7 +5,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import org.astu.feature.schedule.entities.*
 import kotlinx.serialization.*
-import org.astu.infrastructure.GlobalDIContext
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 
 class ApiTableAstuScheduleDataSource : ScheduleDataSource {
     private val client by GlobalDIContext.inject<HttpClient>()
@@ -38,7 +38,7 @@ class ApiTableAstuScheduleDataSource : ScheduleDataSource {
     }
 
     override suspend fun getTerm(searchResult: SearchResult): Term {
-        val response = client.get("http://apitable.astu.org/search/get") {
+        val response = client.get("https://apitable.astu.org/search/get") {
             parameter("q", searchResult.name)
             parameter("t", searchResult.type.toStringType())
         }
@@ -46,7 +46,7 @@ class ApiTableAstuScheduleDataSource : ScheduleDataSource {
     }
 
     override suspend fun getTerm(teacher: Teacher): Term {
-        val response = client.get("http://apitable.astu.org/search/get") {
+        val response = client.get("https://apitable.astu.org/search/get") {
             parameter("q", teacher.name)
             parameter("t", "teacher")
         }
@@ -54,7 +54,7 @@ class ApiTableAstuScheduleDataSource : ScheduleDataSource {
     }
 
     override suspend fun getTerm(groupOfStudents: GroupOfStudents): Term {
-        val response = client.get("http://apitable.astu.org/search/get") {
+        val response = client.get("https://apitable.astu.org/search/get") {
             parameter("q", groupOfStudents.name)
             parameter("t", "group")
         }
@@ -62,7 +62,7 @@ class ApiTableAstuScheduleDataSource : ScheduleDataSource {
     }
 
     override suspend fun getTerm(auditory: Auditory): Term {
-        val response = client.get("http://apitable.astu.org/search/get") {
+        val response = client.get("https://apitable.astu.org/search/get") {
             parameter("q", auditory.name)
             parameter("t", "audience")
         }

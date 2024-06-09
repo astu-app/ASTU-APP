@@ -1,4 +1,4 @@
-package org.astu.infrastructure
+package org.astu.infrastructure.DependencyInjection
 
 /**
  * Модуль для инициализации DI

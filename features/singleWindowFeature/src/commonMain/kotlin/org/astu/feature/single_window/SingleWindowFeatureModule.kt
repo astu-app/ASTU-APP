@@ -1,10 +1,17 @@
 package org.astu.feature.single_window
 
-import org.astu.infrastructure.DependencyInjector
-import org.astu.infrastructure.FeatureModule
+import org.astu.infrastructure.GatewayServiceConfig
+import org.astu.feature.single_window.impl.SingleWindowRepositoryImpl
+import org.astu.infrastructure.DependencyInjection.DependencyInjector
+import org.astu.infrastructure.DependencyInjection.FeatureModule
+import org.astu.infrastructure.DependencyInjection.KodeinDependencyInjector
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.singleton
 
- object SingleWindowFeatureModule: FeatureModule {
-    override fun init(): DependencyInjector {
-        TODO("Not yet implemented")
-    }
+object SingleWindowFeatureModule: FeatureModule {
+    override fun init(): DependencyInjector = KodeinDependencyInjector(DI {
+        bind<SingleWindowRepository>() with singleton { SingleWindowRepositoryImpl() }
+        bind<GatewayServiceConfig>() with singleton { GatewayServiceConfig("http://ttraum.ru/") }
+    })
 }

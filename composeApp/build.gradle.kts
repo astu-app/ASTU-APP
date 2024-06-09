@@ -21,7 +21,8 @@ kotlin {
     jvm()
 
     js {
-        browser()
+        browser{
+        }
         binaries.executable()
     }
 
@@ -46,6 +47,7 @@ kotlin {
             implementation(projects.features.scheduleFeature)
             implementation(projects.features.singleWindowFeature)
             implementation(projects.features.chatFeature)
+            implementation(projects.features.authFeature)
             implementation(projects.infrastructure)
 
             implementation(compose.runtime)
@@ -92,6 +94,7 @@ kotlin {
             implementation(compose.html.core)
             implementation(libs.ktor.client.js)
             implementation(libs.sqlDelight.driver.js)
+            implementation(libs.kodein.js)
         }
 
         iosMain.dependencies {

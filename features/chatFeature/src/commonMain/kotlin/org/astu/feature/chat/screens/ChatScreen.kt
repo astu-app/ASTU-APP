@@ -3,6 +3,7 @@ package org.astu.feature.chat.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -10,25 +11,41 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.core.screen.Screen
+import org.astu.feature.chat.entities.Chat
+import org.astu.feature.chat.entities.Message
+import org.astu.feature.chat.view_models.ChatViewModel
 import org.astu.infrastructure.theme.CurrentColorScheme
 
-class ChatScreen(private val channel: Channel, private val onReturn: () -> Unit) : Screen {
+class ChatScreen(private val chat: Chat, private val onReturn: () -> Unit) : Screen {
+    private lateinit var viewModel: ChatViewModel
+
+    @Composable
+    override fun Content() {
+        viewModel = remember { ChatViewModel(chat) }
+        val dialogState by viewModel.dialogState.collectAsState()
+        when (dialogState) {
+            ChatViewModel.DialogState.AddUser -> AddUserDialog()
+            ChatViewModel.DialogState.None -> {}
+        }
+        ShowScene()
+    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    override fun Content() {
+    fun ShowScene() {
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -36,7 +53,7 @@ class ChatScreen(private val channel: Channel, private val onReturn: () -> Unit)
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
-                    title = { Text(channel.name) },
+                    title = { Text(chat.name) },
                     navigationIcon = {
                         IconButton(onClick = onReturn) {
                             Icon(
@@ -45,19 +62,24 @@ class ChatScreen(private val channel: Channel, private val onReturn: () -> Unit)
                             )
                         }
                     },
+                    actions = {
+                        MenuButton()
+                    }
                 )
             }
         ) {
             Column(Modifier.fillMaxSize()) {
                 MessageList(Modifier.weight(1f))
+                HorizontalDivider()
                 MessageInput()
             }
         }
-
     }
 
     @Composable
     fun MessageList(modifier: Modifier) {
+        val listState = rememberLazyListState()
+        val chat = remember { viewModel.chat }
         Box(
             modifier = modifier,
             contentAlignment = Alignment.Center
@@ -65,22 +87,28 @@ class ChatScreen(private val channel: Channel, private val onReturn: () -> Unit)
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                reverseLayout = true, // 5
+                reverseLayout = true,
+                state = listState
             ) {
-                items(channel.messages) { message ->
-                    MessageCard(message) // 6
+                items(chat.value.messages, key = { it.id }) { message ->
+                    MessageCard(message)
                 }
+            }
+            val firstVisibleIndex = listState.firstVisibleItemIndex
+            val visibleItemsCount = listState.layoutInfo.visibleItemsInfo.size
+            if (firstVisibleIndex + visibleItemsCount > 0) {
+
             }
         }
     }
 
     @Composable
-    fun MessageCard(messageItem: Message) { // 1
+    fun MessageCard(messageItem: Message) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 4.dp),
-            horizontalAlignment = when { // 2
+            horizontalAlignment = when {
                 messageItem.isMine -> Alignment.End
                 else -> Alignment.Start
             },
@@ -105,8 +133,7 @@ class ChatScreen(private val channel: Channel, private val onReturn: () -> Unit)
                 )
             }
             Text(
-                // 4
-                text = messageItem.who,
+                text = messageItem.member.name,
                 fontSize = 12.sp,
             )
         }
@@ -123,17 +150,18 @@ class ChatScreen(private val channel: Channel, private val onReturn: () -> Unit)
 
     @Composable
     fun MessageInput() {
-        val inputValue = remember { mutableStateOf("") }
+        val inputValue = remember { viewModel.text }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                modifier = Modifier.height(56.dp),
-                onClick = { },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AttachFile,
-                    contentDescription = null
-                )
-            }
+//            IconButton(
+//                modifier = Modifier.height(56.dp),
+//                onClick = { },
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Default.AttachFile,
+//                    contentDescription = null
+//                )
+//            }
+//            TODO(В следующий раз добавить эту фичу)
             TextField(
                 modifier = Modifier.weight(1f),
                 value = inputValue.value,
@@ -150,13 +178,71 @@ class ChatScreen(private val channel: Channel, private val onReturn: () -> Unit)
             )
             IconButton(
                 modifier = Modifier.height(56.dp),
-                onClick = { },
+                onClick = viewModel::sendMessage,
                 enabled = inputValue.value.isNotBlank(),
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Send,
                     contentDescription = null
                 )
+            }
+        }
+    }
+
+    @Composable
+    fun MenuButton() {
+        var expanded by remember { mutableStateOf(false) }
+        Box {
+            IconButton({ expanded = true }) {
+                Icon(Icons.Default.Menu, contentDescription = null)
+            }
+            DropdownMenu(expanded, onDismissRequest = { expanded = false }) {
+                DropdownMenuItem(
+                    text = { Text("Добавить пользователя") },
+                    onClick = viewModel::openAddMemberDialog
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun AddUserDialog() {
+        Dialog(
+            onDismissRequest = viewModel::dialogDismiss,
+            DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = true)
+        ) {
+            Card(Modifier.fillMaxSize().padding(vertical = 40.dp, horizontal = 30.dp)) {
+                var name by remember { mutableStateOf("") }
+                val userInfoList by viewModel.currentUserInfoList.collectAsState()
+                Column(
+                    Modifier.fillMaxWidth().padding(vertical = 40.dp, horizontal = 30.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TextField(name,
+                        onValueChange = {
+                            viewModel.getUsers(it)
+                            name = it
+                        },
+                        placeholder = { Text("ФИО пользователя") })
+                    LazyColumn(Modifier.padding(vertical = 20.dp)) {
+                        items(userInfoList) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    "${it.secondName} ${it.firstName} ${it.patronymic ?: ""}",
+                                    textAlign = TextAlign.Center
+                                )
+                                Button({ viewModel.addMember(it.id) }) {
+                                    Text("Добавить")
+                                }
+                            }
+                            HorizontalDivider()
+                        }
+                    }
+                }
             }
         }
     }

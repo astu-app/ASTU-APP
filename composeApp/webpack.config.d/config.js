@@ -6,7 +6,7 @@ config.optimization.minimizer = [
     new TerserPlugin({
         terserOptions: {
             mangle: true,    // Note: By default, mangle is set to true.
-            compress: false, // Disable the transformations that reduce the code size.
+            compress: true, // Disable the transformations that reduce the code size.
             output: {
                 beautify: false,
             },

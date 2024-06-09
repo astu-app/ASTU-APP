@@ -13,6 +13,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowLeft
+import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.DoorFront
 import androidx.compose.material3.*
@@ -35,7 +38,7 @@ import org.astu.feature.schedule.entities.ClassType
 import org.astu.feature.schedule.entities.SearchType
 import org.astu.feature.schedule.entities.Term
 import org.astu.feature.schedule.view_models.ScheduleViewModel
-import org.astu.infrastructure.components.searchbar.*
+import org.astu.infrastructure.components.searchbar.SearchBar
 
 class ScheduleScreen : Screen {
     private lateinit var viewModel: ScheduleViewModel
@@ -66,7 +69,6 @@ class ScheduleScreen : Screen {
             ScheduleViewModel.State.Loading -> Loading()
             ScheduleViewModel.State.PinTable -> MainScheduleTableTopBar()
             ScheduleViewModel.State.Search -> SearchScreen()
-            is ScheduleViewModel.State.Error -> TODO()
             ScheduleViewModel.State.FirstLaunch -> SearchScreen()
             ScheduleViewModel.State.SearchedTable -> SearchedScheduleTableTopBar()
         }
@@ -83,6 +85,7 @@ class ScheduleScreen : Screen {
     fun SearchScreen() {
         val searchValue by remember { viewModel.searchValue }
         val searchResults by remember { viewModel.searchResults }
+        val error by remember { viewModel.error }
 
         Column {
             SearchBar(
@@ -92,9 +95,17 @@ class ScheduleScreen : Screen {
                 CircleShape
             )
             if (searchResults.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Начните свой поиск")
+                if(error == null) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("Начните свой поиск")
+                    }
+                }else{
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(error!!)
+                    }
                 }
+
+
             } else {
                 LazyColumn {
                     items(searchResults) {
@@ -163,7 +174,7 @@ class ScheduleScreen : Screen {
                 },
                 navigationIcon = {
                     IconButton(viewModel::goBackState) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 })
         }) {
@@ -183,7 +194,7 @@ class ScheduleScreen : Screen {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(viewModel::goPrev) {
-                    Icon(Icons.Default.ArrowLeft, contentDescription = null)
+                    Icon(Icons.AutoMirrored.Filled.ArrowLeft, contentDescription = null)
                 }
                 IconButton(viewModel::setupToday) {
                     Icon(Icons.Default.CalendarMonth, contentDescription = null)
@@ -193,10 +204,11 @@ class ScheduleScreen : Screen {
                     Text(if (showWeek) "Неделя" else "Месяц")
                 }
                 IconButton(viewModel::goNext) {
-                    Icon(Icons.Default.ArrowRight, contentDescription = null)
+                    Icon(Icons.AutoMirrored.Filled.ArrowRight, contentDescription = null)
                 }
             }
             DateTable(visibleDate, selectedDate, showWeek) { selectedDate = it }
+            HorizontalDivider()
             Box(Modifier.fillMaxSize()) {
                 term.classes.filter { viewModel.isCurrentClass(it) }
                     .sortedBy { it.interval.number }.run {

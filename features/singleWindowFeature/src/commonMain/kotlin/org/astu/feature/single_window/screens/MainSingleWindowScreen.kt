@@ -2,33 +2,37 @@ package org.astu.feature.single_window.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-
-data class Item(val name: String, val description: String, val props: List<Prop> = listOf())
-
-data class Prop(val name: String, val description: String, val type: String, val value: MutableState<String?> = mutableStateOf(null))
+import org.astu.feature.single_window.view_models.MainRequestViewModel
 
 class MainSingleWindowScreen : Screen {
+    private lateinit var viewModel: MainRequestViewModel
 
-    private val listOfServiceScreen =
-        ListOfServicesSingleWindowScreen(onAddScreen = ::addScreen, onAddFromListScreen = { serviceScreen ->
-            serviceScreens.clear()
-            serviceScreens.add(serviceScreen)
-        })
+    private lateinit var listOfServiceScreen: ListOfServicesSingleWindowScreen
     private val serviceScreens = mutableStateListOf<ServiceScreen>()
 
     @Composable
-    override fun Content() = BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        if (maxWidth < 700.dp)
-            mobileView()
-        else
-            desktopView()
+    override fun Content() {
+        viewModel = remember { MainRequestViewModel() }
+        listOfServiceScreen =
+            ListOfServicesSingleWindowScreen(
+                vm = viewModel
+            )
+
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            if (maxWidth < 700.dp)
+                mobileView()
+            else
+                desktopView()
+        }
     }
 
     @Composable
@@ -36,7 +40,7 @@ class MainSingleWindowScreen : Screen {
         Column(Modifier.weight(3f).fillMaxHeight()) {
             listOfServiceScreen.Content()
         }
-        Divider(Modifier.weight(0.01f).fillMaxHeight(), 4.dp)
+        HorizontalDivider(Modifier.weight(0.01f).fillMaxHeight(), 4.dp)
         Column(Modifier.weight(6f)) {
             if (serviceScreens.any()) {
                 serviceScreens.last().Content()

@@ -9,13 +9,14 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import org.astu.feature.schedule.ApiTableAstuScheduleDataSource
 import org.astu.feature.schedule.ScheduleDataSource
-import org.astu.infrastructure.DependencyInjector
-import org.astu.infrastructure.FeatureModule
-import org.astu.infrastructure.KodeinDependencyInjector
+import org.astu.infrastructure.DependencyInjection.DependencyInjector
+import org.astu.infrastructure.DependencyInjection.FeatureModule
+import org.astu.infrastructure.DependencyInjection.KodeinDependencyInjector
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.provider
 import org.kodein.di.singleton
+import java.util.concurrent.TimeUnit
 
 actual object AppModule : FeatureModule {
     actual override fun init(): DependencyInjector = KodeinDependencyInjector(
@@ -25,12 +26,19 @@ actual object AppModule : FeatureModule {
                 HttpClient(OkHttp) {
                     engine {
                         config {
+                            hostnameVerifier { _, _ -> true }
                             sslSocketFactory(SslSettings.sslContext()!!.socketFactory, SslSettings.trustManager())
                             followRedirects(true)
+                            callTimeout(3, TimeUnit.MINUTES)
+                            writeTimeout(3, TimeUnit.MINUTES)
+                            readTimeout(3, TimeUnit.MINUTES)
                         }
                     }
                     install(ContentNegotiation) {
-                        json()
+                        json(Json {
+                            ignoreUnknownKeys = true
+                            isLenient = true
+                        })
                     }
                     install(WebSockets) {
                         contentConverter = KotlinxWebsocketSerializationConverter(Json)
