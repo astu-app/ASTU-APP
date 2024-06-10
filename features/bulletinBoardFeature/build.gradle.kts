@@ -2,14 +2,14 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.kotlinx.serialization) apply(true)
 }
 
 kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "11"
+                jvmTarget = "17"
             }
         }
     }
@@ -33,26 +33,24 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.infrastructure)
+
             implementation(compose.runtime)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)
-//            implementation(libs.composeImageLoader)
             implementation(libs.kermit)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.core)
             implementation(libs.ktor.client.json)
             implementation(libs.ktor.client.websockets)
             implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.composeIcons.tablerIcons)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kodein)
             implementation(libs.uuid)
-            implementation("io.github.theapache64:rebugger:1.0.0-rc03")
+
             api(libs.calf.ui)
         }
 
@@ -75,7 +73,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.astu.singleWindowFeature"
+    namespace = "org.astu.bulletinBoardFeature"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
@@ -83,10 +81,7 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-}
-dependencies {
-    implementation(libs.androidx.material3.android)
 }

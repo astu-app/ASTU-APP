@@ -18,7 +18,7 @@ import org.astu.feature.bulletinBoard.models.entities.announcements.ContentForAn
 import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnouncement
 import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.creation.CreateSurvey
-import org.astu.infrastructure.GlobalDIContext
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 
 class ApiGeneralAnnouncementDataSource : GeneralAnnouncementDataSource {
     private val client: HttpClient by GlobalDIContext.inject<HttpClient>()

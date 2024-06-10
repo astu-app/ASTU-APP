@@ -14,7 +14,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.respo
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsuccessCode
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementSummary
-import org.astu.infrastructure.GlobalDIContext
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 
 class ApiDelayedAnnouncementsDataSource : DelayedAnnouncementsDataSource {
     private val client: HttpClient by GlobalDIContext.inject<HttpClient>()

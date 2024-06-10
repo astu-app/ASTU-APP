@@ -16,7 +16,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.dtos.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.*
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
 import org.astu.feature.bulletinBoard.models.entities.audience.*
-import org.astu.infrastructure.GlobalDIContext
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 
 class ApiUserGroupDataSource : UserGroupDataSource {
     private val client: HttpClient by GlobalDIContext.inject<HttpClient>()

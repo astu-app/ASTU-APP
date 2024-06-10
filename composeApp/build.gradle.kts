@@ -47,7 +47,7 @@ kotlin {
             implementation(projects.features.singleWindowFeature)
             implementation(projects.features.chatFeature)
             implementation(projects.features.authFeature)
-            implementation(projects.features.bulletInBoardFeature)
+            implementation(projects.features.bulletinBoardFeature)
             implementation(projects.infrastructure)
 
             implementation(compose.runtime)
@@ -67,6 +67,9 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kodein)
+            implementation(libs.uuid)
+
+            api(libs.calf.ui)
         }
 
         commonTest.dependencies {
@@ -102,7 +105,6 @@ kotlin {
             implementation(libs.ktor.client.darwin)
             implementation(libs.sqlDelight.driver.native)
         }
-
     }
 }
 

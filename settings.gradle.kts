@@ -4,8 +4,8 @@ include(":composeApp", ":infrastructure")
 include(":features:scheduleFeature")
 include(":features:singleWindowFeature")
 include(":features:chatFeature")
+include(":features:bulletinBoardFeature")
 include(":features:authFeature")
-include(":features:bulletInBoardFeature")
 
 pluginManagement {
     repositories {

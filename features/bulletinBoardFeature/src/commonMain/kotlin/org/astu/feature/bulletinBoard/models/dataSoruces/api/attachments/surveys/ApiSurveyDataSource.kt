@@ -16,7 +16,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsucces
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.creation.CreateSurvey
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.voting.VoteInSurvey
-import org.astu.infrastructure.GlobalDIContext
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 
 class ApiSurveyDataSource : SurveyDataSource {
     private val client by GlobalDIContext.inject<HttpClient>()
