@@ -21,8 +21,7 @@ kotlin {
     jvm()
 
     js {
-        browser{
-        }
+        browser()
         binaries.executable()
     }
 
@@ -48,6 +47,7 @@ kotlin {
             implementation(projects.features.singleWindowFeature)
             implementation(projects.features.chatFeature)
             implementation(projects.features.authFeature)
+            implementation(projects.features.bulletInBoardFeature)
             implementation(projects.infrastructure)
 
             implementation(compose.runtime)
@@ -95,6 +95,7 @@ kotlin {
             implementation(libs.ktor.client.js)
             implementation(libs.sqlDelight.driver.js)
             implementation(libs.kodein.js)
+            implementation(libs.voyager.navigator)
         }
 
         iosMain.dependencies {
@@ -110,7 +111,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
 
         applicationId = "org.astu.app.androidApp"

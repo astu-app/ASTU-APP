@@ -1,0 +1,94 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+left to right direction
+
+interface DefaultModifierProvider {
+    getDefaultModifier(): Modifier
+}
+interface ContentProvider {
+    @Composable Content(modifier: Modifier)
+}
+
+enum AttachmentType {
+    SURVEY
+}
+
+abstract class AttachmentContentBase {
+    type: AttachmentType
+}
+ContentProvider <|.. AttachmentContentBase
+DefaultModifierProvider <|.. AttachmentContentBase
+AttachmentContentBase *-right- AttachmentType
+
+
+'''''''''''''''''''''''''''''''' ОПРОСЫ
+rectangle Surveys {
+    ''''''''''''' Варианты ответов
+    abstract class AnswerContentBase{
+            id: Uuid
+        text: String
+    }
+    ContentProvider <|.. AnswerContentBase
+    DefaultModifierProvider <|.. AnswerContentBase
+    abstract class UnvotedAnswerContentBase extends AnswerContentBase {
+        canVote: MutableState<Boolean>
+        isSelected(): Boolean
+    }
+    class MultipleChoiceAnswerContent extends UnvotedAnswerContentBase {
+        selected: MutableState<Boolean>
+    }
+    class SingleChoiceAnswerContent extends UnvotedAnswerContentBase {
+    }
+
+    abstract class VotedAnswerContentBase extends AnswerContentBase {
+        voterPercent: Int
+    }
+    class VotedAnswerContentSummary extends VotedAnswerContentBase {
+
+    }
+    class VotedAnswerContentDetails extends VotedAnswerContentBase {
+        voters: List<@Composable () -> Unit)>
+    }
+
+    class ClosedResultsAnswerContent extends AnswerContentBase {
+    }
+
+    ''''''''''''' Вопросы
+    abstract class QuestionContentBase {
+        id: Uuid
+        text: String
+        answers: List<AnswerContentBase>
+    }
+    ContentProvider <|.. QuestionContentBase
+    DefaultModifierProvider <|.. QuestionContentBase
+    AnswerContentBase *-right- QuestionContentBase
+
+    abstract class UnvotedQuestionContentBase extends QuestionContentBase {
+    }
+    class MultipleChoiceQuestionContent extends UnvotedQuestionContentBase {
+    }
+    class SingleChoiceQuestionContent extends UnvotedQuestionContentBase {
+    }
+    class VotedQuestionContent extends QuestionContentBase {
+    }
+    class ClosedResultsQuestionContent extends QuestionContentBase {
+    }
+
+
+    ''''''''''''' Опросы
+    abstract class SurveyContentBase {
+        id: Uuid
+        voters: List<UserSummary>
+        showVoters: Boolean
+        questions: List<QuestionContentBase>
+    }
+    AttachmentContentBase <|-- SurveyContentBase
+    QuestionContentBase *-- SurveyContentBase
+
+    class AttachedSurveyContent extends SurveyContentBase {
+        isOpen: Boolean
+    }
+}
+
+@enduml

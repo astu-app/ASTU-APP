@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface INode {
+    {field} content: @Composable () -> Unit
+    {field} parentNodes: MutableList<INode>
+}
+
+class Node {
+    {field} nodes: List<INode>
+    {field} content: @Composable () -> Unit
+}
+INode <|-- Node
+
+class Leaf {
+    {field} val content: @Composable () -> Unit
+}
+INode <|-- Leaf
+
+
+
+interface ISelectableNode {
+    {field} isSelected: MutableState<Boolean>
+    {method} setSelectionState(state: Boolean): Unit
+    {method} receiveNotificationChildSelectionChanges(): Unit
+}
+INode <|-- ISelectableNode
+
+class SelectableNode {
+    {field} nodes: List<ISelectableNode>
+    {field} isSelected: MutableState<Boolean>
+}
+Node <|-- SelectableNode
+
+ISelectableNode <|-- SelectableNode
+class SelectableLeaf {
+    {field} isSelected: MutableState<Boolean>
+}
+Leaf <|-- SelectableLeaf
+ISelectableNode <|-- SelectableLeaf
+
+@enduml

@@ -22,4 +22,3 @@ internal fun init() {
     GlobalDIContext.addModule(ChatFeatureModule.init())
     GlobalDIContext.addModule(SingleWindowFeatureModule.init())
 }
-
