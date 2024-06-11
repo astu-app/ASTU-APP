@@ -65,13 +65,16 @@ class EditAnnouncementScreen(
         ) {
             val state by viewModel.state.collectAsState()
             when(state) {
-                EditAnnouncementViewModel.State.EditContentLoading -> Loading()
-                EditAnnouncementViewModel.State.EditingAnnouncement -> editor.Content(editor.getDefaultModifier())
+                EditAnnouncementViewModel.State.EditContentLoading -> { hideErrorDialog(viewModel); Loading() }
+                EditAnnouncementViewModel.State.EditingAnnouncement -> { hideErrorDialog(viewModel); editor.Content(editor.getDefaultModifier()) }
                 EditAnnouncementViewModel.State.EditContentLoadingError -> showErrorDialog(viewModel)
-                EditAnnouncementViewModel.State.ChangesUploading -> Loading()
-                EditAnnouncementViewModel.State.ChangesUploadingDone -> if (!onReturnCalled) {
-                    onReturnCalled = true
-                    onReturn()
+                EditAnnouncementViewModel.State.ChangesUploading -> { hideErrorDialog(viewModel); Loading() }
+                EditAnnouncementViewModel.State.ChangesUploadingDone -> {
+                    hideErrorDialog(viewModel)
+                    if (!onReturnCalled) {
+                        onReturnCalled = true
+                        onReturn()
+                    }
                 }
                 EditAnnouncementViewModel.State.ChangesUploadingError -> showErrorDialog(viewModel)
             }
@@ -91,5 +94,9 @@ class EditAnnouncementScreen(
 
     private fun showErrorDialog(viewModel: EditAnnouncementViewModel) {
         viewModel.showErrorDialog.value = true
+    }
+
+    private fun hideErrorDialog(viewModel: EditAnnouncementViewModel) {
+        viewModel.showErrorDialog.value = false
     }
 }

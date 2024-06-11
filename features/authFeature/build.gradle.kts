@@ -46,6 +46,8 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kodein)
+
+            implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
         }
 
         commonTest.dependencies {

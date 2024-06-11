@@ -1,5 +1,6 @@
 package org.astu.app.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -17,7 +18,12 @@ class AccountScreen(private val onLogout: () -> Unit) : Screen {
     @Composable
     override fun Content() {
         viewModel = remember { AccountViewModel(onLogout) }
-        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement  = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             Button(viewModel::logout) {
                 Text("Разлогиниться")
             }

@@ -179,11 +179,10 @@ class EditAnnouncementViewModel(
         errorDialogBody.value = error.humanize()
         onErrorDialogTryAgain.value = {
             loadEditContent()
-            showErrorDialog.value = false
         }
         onErrorDialogDismiss.value = {
+            mutableState.value = State.EditContentLoadingError
             onReturn()
-            showErrorDialog.value = false
         }
     }
 
@@ -191,11 +190,9 @@ class EditAnnouncementViewModel(
         errorDialogBody.value = error.humanize()
         onErrorDialogTryAgain.value = {
             edit()
-            showErrorDialog.value = false
         }
         onErrorDialogDismiss.value = {
             mutableState.value = State.EditingAnnouncement
-            showErrorDialog.value = false
         }
     }
 }

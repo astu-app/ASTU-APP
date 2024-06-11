@@ -1,5 +1,3 @@
-package org.astu.feature.bulletinBoard.viewModels.announcements
-
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import cafe.adriel.voyager.core.model.StateScreenModel
@@ -47,10 +45,9 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
     fun loadAnnouncements() {
         screenModelScope.launch {
             try {
-                content.clear()
-
                 val announcements = announcementModel.getAnnouncementList()
                 if (announcements.isContentValid) {
+                    content.clear()
                     content.addAll(announcements.content!!)
                     mutableState.value = State.LoadingDone
                     return@launch
@@ -102,6 +99,7 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
 
                 } else {
                     mutableState.value = State.LoadingDone
+                    loadAnnouncements()
                     return@launch
                 }
 
@@ -124,6 +122,7 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
 
                 } else {
                     mutableState.value = State.LoadingDone
+                    loadAnnouncements()
                     return@launch
                 }
 
@@ -140,10 +139,10 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadAnnouncements()
-            showErrorDialog = false
+            mutableState.value = State.Loading
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.LoadingDone
         }
     }
 
@@ -151,10 +150,10 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             delete(announcementId)
-            showErrorDialog = false
+            mutableState.value = State.Loading
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.LoadingDone
         }
     }
 
@@ -162,10 +161,10 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             hide(announcementId)
-            showErrorDialog = false
+            mutableState.value = State.Loading
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.LoadingDone
         }
     }
 }

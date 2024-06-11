@@ -44,10 +44,10 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
             try {
                 mutableState.value = State.Loading
 
-                content.clear()
 
                 val announcements = model.getHiddenAnnouncementList()
                 if (announcements.isContentValid) {
+                    content.clear()
                     content.addAll(announcements.content!!)
                     mutableState.value = State.LoadingDone
                     return@launch
@@ -75,6 +75,7 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
 
                 } else {
                     mutableState.value = State.LoadingDone
+                    loadAnnouncements()
                     return@launch
                 }
 
@@ -97,6 +98,7 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
 
                 } else {
                     mutableState.value = State.LoadingDone
+                    loadAnnouncements()
                     return@launch
                 }
 
@@ -113,10 +115,9 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadAnnouncements()
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.Loading
             onReturn.invoke()
         }
     }
@@ -125,10 +126,9 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             delete(announcementId)
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.LoadingDone
         }
     }
 
@@ -136,10 +136,9 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             restore(announcementId)
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.LoadingDone
         }
     }
 }

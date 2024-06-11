@@ -8,7 +8,6 @@ import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import org.astu.app.security.SslSettings
 import org.astu.feature.schedule.ApiTableAstuScheduleDataSource
 import org.astu.feature.schedule.ScheduleDataSource
 import org.astu.infrastructure.DependencyInjection.DependencyInjector

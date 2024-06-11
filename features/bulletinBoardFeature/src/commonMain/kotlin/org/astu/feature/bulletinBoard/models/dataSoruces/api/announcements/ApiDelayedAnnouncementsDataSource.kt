@@ -1,7 +1,6 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements
 
 import com.benasher44.uuid.Uuid
-import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -15,12 +14,14 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsucces
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementSummary
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.SecurityHttpClient
 
-class ApiDelayedAnnouncementsDataSource : DelayedAnnouncementsDataSource {
-    private val client: HttpClient by GlobalDIContext.inject<HttpClient>()
+class ApiDelayedAnnouncementsDataSource(private val baseUrl: String) : DelayedAnnouncementsDataSource {
+    private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
+    private val client = securityHttpClient.instance
 
     override suspend fun getDelayedPublishingList(): ContentWithError<List<AnnouncementSummary>, GetDelayedPublishedAnnouncementsErrors> {
-        val response = client.get("api/announcements/delayed-publishing/get-list")
+        val response = client.get("${baseUrl}/api/bulletin-board-service/announcements/delayed-publishing/get-list")
 
         if (!response.status.isSuccess()) {
             return ContentWithError(null, error = readUnsuccessCode<GetDelayedPublishedAnnouncementsErrors>(response))
@@ -32,7 +33,7 @@ class ApiDelayedAnnouncementsDataSource : DelayedAnnouncementsDataSource {
 
     override suspend fun publishImmediately(id: Uuid): PublishImmediatelyDelayedAnnouncementErrors? {
         val dto = "\"$id\""
-        val response = client.post("api/announcements/delayed-publishing/publish-immediately") {
+        val response = client.post("${baseUrl}/api/bulletin-board-service/announcements/delayed-publishing/publish-immediately") {
             contentType(ContentType.Application.Json)
             setBody(dto)
         }
@@ -45,7 +46,7 @@ class ApiDelayedAnnouncementsDataSource : DelayedAnnouncementsDataSource {
     }
 
     override suspend fun getDelayedHiddenList(): ContentWithError<List<AnnouncementSummary>, GetDelayedHiddenAnnouncementListErrors> {
-        val response = client.get("api/announcements/delayed-hidden/get-list")
+        val response = client.get("${baseUrl}/api/bulletin-board-service/announcements/delayed-hidden/get-list")
 
         if (!response.status.isSuccess()) {
             return ContentWithError(null, error = readUnsuccessCode<GetDelayedHiddenAnnouncementListErrors>(response))

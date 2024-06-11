@@ -3,10 +3,8 @@ package org.astu.app
 import SslSettings
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
-import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
-import io.ktor.http.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -20,7 +18,6 @@ import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.provider
 import org.kodein.di.singleton
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 actual object AppModule : FeatureModule {
@@ -42,8 +39,6 @@ actual object AppModule : FeatureModule {
                     }
                     install(ContentNegotiation) {
                         json(Json {
-                            prettyPrint = true
-                            isLenient = true
                             ignoreUnknownKeys = true
                             encodeDefaults = true
                             explicitNulls = true

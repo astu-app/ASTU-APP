@@ -1,7 +1,6 @@
 package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements
 
 import com.benasher44.uuid.Uuid
-import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -14,13 +13,15 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.readUnsucces
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementSummary
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.SecurityHttpClient
 
-class ApiHiddenAnnouncementDataSource : HiddenAnnouncementDataSource {
-    private val client: HttpClient by GlobalDIContext.inject<HttpClient>()
+class ApiHiddenAnnouncementDataSource(private val baseUrl: String) : HiddenAnnouncementDataSource {
+    private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
+    private val client = securityHttpClient.instance
 
 
     override suspend fun getList(): ContentWithError<List<AnnouncementSummary>, GetHiddenAnnouncementListErrors> {
-        val response = client.get("api/announcements/hidden/get-list")
+        val response = client.get("${baseUrl}/api/bulletin-board-service/announcements/hidden/get-list")
 
         if (!response.status.isSuccess()) {
             return ContentWithError(null, error = readUnsuccessCode<GetHiddenAnnouncementListErrors>(response))
@@ -32,7 +33,7 @@ class ApiHiddenAnnouncementDataSource : HiddenAnnouncementDataSource {
 
     override suspend fun restore(id: Uuid): RestoreHiddenAnnouncementErrors? {
         val dto = "\"$id\""
-        val response = client.post("api/announcements/hidden/restore") {
+        val response = client.post("${baseUrl}/api/bulletin-board-service/announcements/hidden/restore") {
             contentType(ContentType.Application.Json)
             setBody(dto)
         }

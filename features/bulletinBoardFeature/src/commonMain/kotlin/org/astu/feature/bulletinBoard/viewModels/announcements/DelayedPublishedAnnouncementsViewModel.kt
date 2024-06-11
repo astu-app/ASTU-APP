@@ -44,10 +44,9 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
             try {
                 mutableState.value = State.Loading
 
-                content.clear()
-
                 val announcements = model.getDelayedPublishedAnnouncementList()
                 if (announcements.isContentValid) {
+                    content.clear()
                     content.addAll(announcements.content!!)
                     mutableState.value = State.LoadingDone
                     return@launch
@@ -75,6 +74,7 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
 
                 } else {
                     mutableState.value = State.LoadingDone
+                    loadAnnouncements()
                     return@launch
                 }
 
@@ -97,6 +97,7 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
 
                 } else {
                     mutableState.value = State.LoadingDone
+                    loadAnnouncements()
                     return@launch
                 }
 
@@ -113,10 +114,9 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadAnnouncements()
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.Loading
             onReturn.invoke()
         }
     }
@@ -125,10 +125,9 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             delete(announcementId)
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.Loading
         }
     }
 
@@ -136,10 +135,9 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             publishImmediately(announcementId)
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.Loading
         }
     }
 }

@@ -13,12 +13,15 @@ import org.astu.feature.bulletinBoard.models.entities.announcements.CreateAnnoun
 import org.astu.feature.bulletinBoard.models.entities.announcements.EditAnnouncement
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryMappers.toPresentations
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.GatewayServiceConfig
 
 class AnnouncementRepository {
-    private val publishedAnnouncementsSource = ApiPublishedAnnouncementDataSource()
-    private val delayedAnnouncementsSource = ApiDelayedAnnouncementsDataSource()
-    private val hiddenAnnouncementsSource = ApiHiddenAnnouncementDataSource()
-    private val generalAnnouncementsSource = ApiGeneralAnnouncementDataSource()
+    private val config by GlobalDIContext.inject<GatewayServiceConfig>()
+    private val publishedAnnouncementsSource = ApiPublishedAnnouncementDataSource(config.url)
+    private val delayedAnnouncementsSource = ApiDelayedAnnouncementsDataSource(config.url)
+    private val hiddenAnnouncementsSource = ApiHiddenAnnouncementDataSource(config.url)
+    private val generalAnnouncementsSource = ApiGeneralAnnouncementDataSource(config.url)
 
     suspend fun loadList(): ContentWithError<List<AnnouncementSummaryContent>, GetPostedAnnouncementListErrors> {
         val content = publishedAnnouncementsSource.getList()

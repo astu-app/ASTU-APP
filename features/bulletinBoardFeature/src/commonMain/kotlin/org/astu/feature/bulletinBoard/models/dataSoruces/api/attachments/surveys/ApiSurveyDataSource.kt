@@ -2,7 +2,6 @@ package org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.survey
 
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
-import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -17,28 +16,30 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.Co
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.creation.CreateSurvey
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.voting.VoteInSurvey
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.SecurityHttpClient
 
-class ApiSurveyDataSource : SurveyDataSource {
-    private val client by GlobalDIContext.inject<HttpClient>()
+class ApiSurveyDataSource(private val baseUrl: String) : SurveyDataSource {
+    private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
+    private val client = securityHttpClient.instance
 
     override suspend fun create(survey: CreateSurvey): ContentWithError<Uuid, CreateSurveyErrors> {
         val dto = survey.toDto()
-        val response = client.post("api/surveys/create") {
+        val response = client.post("${baseUrl}/api/bulletin-board-service/surveys/create") {
             contentType(ContentType.Application.Json)
             setBody(dto)
         }
 
         if (!response.status.isSuccess())
-            return ContentWithError(content = null, readUnsuccessCode<CreateSurveyErrors>(response));
+            return ContentWithError(content = null, readUnsuccessCode<CreateSurveyErrors>(response))
 
         val id = response.body<String>()
-        val idTrimmed = id.trim('"');
+        val idTrimmed = id.trim('"')
         return ContentWithError(uuidFrom(idTrimmed), error = null)
     }
 
     override suspend fun vote(votes: VoteInSurvey): VoteInSurveyErrors? {
         val dto = votes.toDto()
-        val response = client.post("api/surveys/vote") {
+        val response = client.post("${baseUrl}/api/bulletin-board-service/surveys/vote") {
             contentType(ContentType.Application.Json)
             setBody(dto)
         }
@@ -46,12 +47,12 @@ class ApiSurveyDataSource : SurveyDataSource {
         if (!response.status.isSuccess())
             return readUnsuccessCode<VoteInSurveyErrors>(response)
 
-        return null;
+        return null
     }
 
     override suspend fun close(id: Uuid): CloseSurveyErrors? {
         val dto = "\"$id\""
-        val response = client.post("api/surveys/close-survey") {
+        val response = client.post("${baseUrl}/api/bulletin-board-service/surveys/close-survey") {
             contentType(ContentType.Application.Json)
             setBody(dto)
         }
@@ -59,7 +60,7 @@ class ApiSurveyDataSource : SurveyDataSource {
         if (!response.status.isSuccess())
             return readUnsuccessCode<CloseSurveyErrors>(response)
 
-        return null;
+        return null
     }
 
     override suspend fun downloadResults(id: Uuid): DownloadSurveyResultsErrors? {

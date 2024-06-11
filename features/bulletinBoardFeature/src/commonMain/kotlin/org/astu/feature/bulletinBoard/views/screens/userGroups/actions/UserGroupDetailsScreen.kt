@@ -48,8 +48,8 @@ class UserGroupDetailsScreen(
         ) {
             val state by viewModel.state.collectAsState()
             when (state) {
-                UserGroupDetailsViewModel.State.Loading -> Loading()
-                UserGroupDetailsViewModel.State.LoadingDone -> UserGroupDetails(viewModel)
+                UserGroupDetailsViewModel.State.Loading -> { hideErrorDialog(viewModel); Loading() }
+                UserGroupDetailsViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); UserGroupDetails(viewModel) }
                 UserGroupDetailsViewModel.State.LoadingError -> showErrorDialog(viewModel)
             }
 
@@ -69,5 +69,9 @@ class UserGroupDetailsScreen(
 
     private fun showErrorDialog(viewModel: UserGroupDetailsViewModel) {
         viewModel.showErrorDialog = true
+    }
+
+    private fun hideErrorDialog(viewModel: UserGroupDetailsViewModel) {
+        viewModel.showErrorDialog = false
     }
 }

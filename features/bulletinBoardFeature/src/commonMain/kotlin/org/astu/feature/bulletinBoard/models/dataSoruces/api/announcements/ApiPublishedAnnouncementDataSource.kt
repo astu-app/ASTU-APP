@@ -2,7 +2,6 @@ package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements
 
 import co.touchlab.kermit.Logger
 import com.benasher44.uuid.Uuid
-import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -19,13 +18,15 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.Co
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementDetails
 import org.astu.feature.bulletinBoard.models.entities.announcements.AnnouncementSummary
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.SecurityHttpClient
 
-class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
-    private val client: HttpClient by GlobalDIContext.inject<HttpClient>()
+class ApiPublishedAnnouncementDataSource(private val baseUrl: String) : PublishedAnnouncementDataSource {
+    private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
+    private val client = securityHttpClient.instance
 
 
     override suspend fun getList(): ContentWithError<List<AnnouncementSummary>, GetPostedAnnouncementListErrors> {
-        val response = client.get("api/announcements/published/get-list")
+        val response = client.get("${baseUrl}/api/bulletin-board-service/announcements/published/get-list")
 
         if (!response.status.isSuccess()) {
             return ContentWithError(null, error = readUnsuccessCode<GetPostedAnnouncementListErrors>(response))
@@ -41,7 +42,7 @@ class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
     }
 
     override suspend fun getDetails(id: Uuid): ContentWithError<AnnouncementDetails, GetAnnouncementDetailsErrors> {
-        val response = client.get("api/announcements/get-details/$id") {
+        val response = client.get("${baseUrl}/api/bulletin-board-service/announcements/get-details/$id") {
             contentType(ContentType.Application.Json)
         }
 
@@ -59,7 +60,7 @@ class ApiPublishedAnnouncementDataSource : PublishedAnnouncementDataSource {
     }
 
     override suspend fun hide(id: Uuid): HidePostedAnnouncementErrors? {
-        val response = client.post("api/announcements/published/hide") {
+        val response = client.post("${baseUrl}/api/bulletin-board-service/announcements/published/hide") {
             contentType(ContentType.Application.Json)
             setBody("\"$id\"")
         }

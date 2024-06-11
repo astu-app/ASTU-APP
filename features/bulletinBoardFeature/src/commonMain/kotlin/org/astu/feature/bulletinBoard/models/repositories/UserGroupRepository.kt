@@ -5,10 +5,13 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.Co
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.ApiUserGroupDataSource
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.*
 import org.astu.feature.bulletinBoard.models.entities.audience.*
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.GatewayServiceConfig
 
 
 class UserGroupRepository {
-    private val userGroupDataSource = ApiUserGroupDataSource()
+    private val config by GlobalDIContext.inject<GatewayServiceConfig>()
+    private val userGroupDataSource = ApiUserGroupDataSource(config.url)
 
     suspend fun getCreateContent(): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors> {
         return userGroupDataSource.getCreateContent()

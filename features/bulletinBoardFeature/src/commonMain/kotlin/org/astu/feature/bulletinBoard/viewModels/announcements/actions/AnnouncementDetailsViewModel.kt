@@ -40,18 +40,18 @@ class AnnouncementDetailsViewModel (
     val showErrorDialog: MutableState<Boolean> = mutableStateOf(false)
 
     init {
-        mutableState.value = State.Loading
         loadDetails()
     }
 
     fun loadDetails() {
         screenModelScope.launch {
-            mutableState.value = State.Loading
             try {
+                mutableState.value = State.Loading
+
                 val details = model.getDetails(announcementId)
                 if (!details.isContentValid) {
                     constructErrorDialogContent(details.error)
-                    showErrorDialog.value = true
+                    mutableState.value = State.Error
                     return@launch
                 }
 
@@ -65,7 +65,7 @@ class AnnouncementDetailsViewModel (
                 mutableState.value = State.LoadingDone
 
             } catch (e: Exception) {
-                showErrorDialog.value = true
+                mutableState.value = State.Error
                 constructErrorDialogContent()
             }
         }

@@ -59,10 +59,10 @@ class DelayedHiddenAnnouncementsScreen(private val onReturn: () -> Unit) : Scree
             ) {
                 val state by viewModel.state.collectAsState()
                 when (state) {
-                    DelayedHiddenAnnouncementsViewModel.State.Loading -> Loading()
-                    DelayedHiddenAnnouncementsViewModel.State.LoadingDone -> AnnouncementFeed(mapAnnouncements(viewModel))
+                    DelayedHiddenAnnouncementsViewModel.State.Loading -> { hideErrorDialog(viewModel); Loading() }
+                    DelayedHiddenAnnouncementsViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); AnnouncementFeed(mapAnnouncements(viewModel)) }
                     DelayedHiddenAnnouncementsViewModel.State.LoadingAnnouncementsError -> showErrorDialog(viewModel)
-                    DelayedHiddenAnnouncementsViewModel.State.DeletingAnnouncement -> { }
+                    DelayedHiddenAnnouncementsViewModel.State.DeletingAnnouncement -> hideErrorDialog(viewModel)
                     DelayedHiddenAnnouncementsViewModel.State.DeletingAnnouncementError -> showErrorDialog(viewModel)
                 }
             }
@@ -81,6 +81,10 @@ class DelayedHiddenAnnouncementsScreen(private val onReturn: () -> Unit) : Scree
 
     private fun showErrorDialog(viewModel: DelayedHiddenAnnouncementsViewModel) {
         viewModel.showErrorDialog = true
+    }
+
+    private fun hideErrorDialog(viewModel: DelayedHiddenAnnouncementsViewModel) {
+        viewModel.showErrorDialog = false
     }
 
     private fun mapAnnouncements(viewModel: DelayedHiddenAnnouncementsViewModel): List<@Composable () -> Unit> =

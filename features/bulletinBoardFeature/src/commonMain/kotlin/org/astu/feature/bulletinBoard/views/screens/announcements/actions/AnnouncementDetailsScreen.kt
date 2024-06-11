@@ -46,8 +46,8 @@ class AnnouncementDetailsScreen(
         ) {
             val state by viewModel.state.collectAsState()
             when(state) {
-                AnnouncementDetailsViewModel.State.Loading -> Loading()
-                AnnouncementDetailsViewModel.State.LoadingDone -> AnnouncementDetails(viewModel.content.value)
+                AnnouncementDetailsViewModel.State.Loading -> { hideErrorDialog(viewModel); Loading() }
+                AnnouncementDetailsViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); AnnouncementDetails(viewModel.content.value) }
                 AnnouncementDetailsViewModel.State.Error -> showErrorDialog(viewModel)
             }
 
@@ -67,5 +67,9 @@ class AnnouncementDetailsScreen(
 
     private fun showErrorDialog(viewModel: AnnouncementDetailsViewModel) {
         viewModel.showErrorDialog.value = true
+    }
+
+    private fun hideErrorDialog(viewModel: AnnouncementDetailsViewModel) {
+        viewModel.showErrorDialog.value = false
     }
 }

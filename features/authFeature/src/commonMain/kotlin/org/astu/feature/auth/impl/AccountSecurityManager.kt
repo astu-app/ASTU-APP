@@ -1,27 +1,62 @@
 package org.astu.feature.auth.impl
 
-import org.astu.infrastructure.gateway.models.Tokens
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.contains
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.astu.feature.auth.IAccountSecurityManager
+import org.astu.feature.auth.jwtDecoding.decodeJwtPayload
+import org.astu.infrastructure.gateway.models.Tokens
 
 /**
  * Реализация хранилища/провайдера информации о средстве авторизации пользователя
  */
 class AccountSecurityManager : IAccountSecurityManager {
-    private val _data: MutableStateFlow<Tokens?> = MutableStateFlow(null)
+    private val accessTokenId = "org.astu.app.security.access_token"
+    private val refreshTokenId = "org.astu.app.security.refresh_token"
+
+    private val settings: Settings = Settings()
+
+    private val _data: MutableStateFlow<Tokens?> = MutableStateFlow(initData())
     override val data = _data.asStateFlow()
 
+
+
+    override val currentUserId: String?
+        get() {
+            val accessToken = _data.value?.accessToken ?: return null
+            return decodeJwtPayload(accessToken)?.id
+        }
+
+
+
+    private fun initData(): Tokens? {
+        val accessToken = settings.getString(accessTokenId, "")
+        val refreshToken = settings.getString(refreshTokenId, "")
+
+        return if (accessToken.isBlank() || refreshToken.isBlank())
+            null
+        else
+            Tokens(accessToken, refreshToken)
+    }
+
+
+
     override fun store(token: Tokens) {
+        settings.putString(accessTokenId, token.accessToken)
+        settings.putString(refreshTokenId, token.refreshToken)
+
         _data.update { token }
     }
 
-    override fun hasAccess(): Boolean {
-        return data.value != null
-    }
+    override fun hasAccess(): Boolean =
+        settings.contains(accessTokenId) && settings.contains(refreshTokenId)
 
     override fun logout() {
+        settings.remove(accessTokenId)
+        settings.remove(refreshTokenId)
+
         _data.update { null }
     }
 }

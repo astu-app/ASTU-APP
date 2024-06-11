@@ -29,10 +29,10 @@ class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewMode
 
         val state by viewModel.state.collectAsState()
         when (state) {
-            UserGroupHierarchyViewModel.State.Loading -> Loading()
-            UserGroupHierarchyViewModel.State.LoadingDone -> DisplayUserGroupHierarchySection(viewModel.userGroups)
+            UserGroupHierarchyViewModel.State.Loading -> { hideErrorDialog(viewModel); Loading() }
+            UserGroupHierarchyViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); DisplayUserGroupHierarchySection(viewModel.userGroups) }
             UserGroupHierarchyViewModel.State.LoadingUserGroupsError -> showErrorDialog(viewModel)
-            UserGroupHierarchyViewModel.State.Deleting -> { }
+            UserGroupHierarchyViewModel.State.Deleting -> hideErrorDialog(viewModel)
             UserGroupHierarchyViewModel.State.DeletingError -> showErrorDialog(viewModel)
         }
 
@@ -99,6 +99,10 @@ class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewMode
 
     private fun showErrorDialog(viewModel: UserGroupHierarchyViewModel) {
         viewModel.showErrorDialog = true
+    }
+
+    private fun hideErrorDialog(viewModel: UserGroupHierarchyViewModel) {
+        viewModel.showErrorDialog = false
     }
 
     private fun createDropdownMenuContent(

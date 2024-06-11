@@ -44,10 +44,10 @@ class CreateUserGroupScreen(private val onReturn: () -> Unit) : Screen {
         ) {
             val state by viewModel.state.collectAsState()
             when (state) {
-                CreateUserGroupViewModel.State.CreateContentLoading -> Loading()
-                CreateUserGroupViewModel.State.CreateContentLoadingDone -> creator.Content(creator.getDefaultModifier())
+                CreateUserGroupViewModel.State.CreateContentLoading -> { hideErrorDialog(viewModel); Loading() }
+                CreateUserGroupViewModel.State.CreateContentLoadingDone -> { hideErrorDialog(viewModel); creator.Content(creator.getDefaultModifier()) }
                 CreateUserGroupViewModel.State.CreateContentLoadingError -> showErrorDialog(viewModel)
-                CreateUserGroupViewModel.State.NewUserGroupUploading -> Loading()
+                CreateUserGroupViewModel.State.NewUserGroupUploading -> { hideErrorDialog(viewModel); Loading() }
                 CreateUserGroupViewModel.State.NewUserGroupUploadingDone -> onReturn()
                 CreateUserGroupViewModel.State.NewUserGroupUploadingError -> showErrorDialog(viewModel)
             }
@@ -65,5 +65,9 @@ class CreateUserGroupScreen(private val onReturn: () -> Unit) : Screen {
 
     private fun showErrorDialog(viewModel: CreateUserGroupViewModel) {
         viewModel.showErrorDialog = true
+    }
+
+    private fun hideErrorDialog(viewModel: CreateUserGroupViewModel) {
+        viewModel.showErrorDialog = false
     }
 }

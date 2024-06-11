@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -71,7 +71,7 @@ class AuthScreen(private val onAuth: () -> Unit) : Screen {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email", fontSize = 12.sp) },
+                label = { Text("Логин", fontSize = 12.sp) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             )
@@ -79,7 +79,7 @@ class AuthScreen(private val onAuth: () -> Unit) : Screen {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text(text = "Password", fontSize = 12.sp) },
+                label = { Text(text = "Пароль", fontSize = 12.sp) },
                 singleLine = true,
                 visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -89,7 +89,7 @@ class AuthScreen(private val onAuth: () -> Unit) : Screen {
                 trailingIcon = {
                     IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                         val imageVector =
-                            if (passwordVisibility) Icons.Default.Close else Icons.Default.Edit
+                            if (passwordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility
                         Icon(
                             imageVector,
                             contentDescription = if (passwordVisibility) "Hide password" else "Show password"
@@ -101,7 +101,7 @@ class AuthScreen(private val onAuth: () -> Unit) : Screen {
                 onClick = { viewModel.login(onAuth) },
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) {
-                Text("Login")
+                Text("Войти")
             }
             if(error != null)
                 Text(error!!,modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
@@ -111,7 +111,7 @@ class AuthScreen(private val onAuth: () -> Unit) : Screen {
     @Composable
     private fun authDetail(modifier: Modifier) {
         Column(modifier) {
-            Text("Здесь был текст")
+//            Text("Здесь был текст")
             Image(Icons.Default.Call, null, modifier = Modifier.fillMaxSize())
         }
     }

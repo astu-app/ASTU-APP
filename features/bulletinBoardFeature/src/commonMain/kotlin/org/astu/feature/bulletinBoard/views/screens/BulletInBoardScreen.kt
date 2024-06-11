@@ -1,5 +1,6 @@
 package org.astu.feature.bulletinBoard.views.screens
 
+import BulletInBoardViewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,6 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.astu.feature.bulletinBoard.viewModels.announcements.BulletInBoardViewModel
 import org.astu.feature.bulletinBoard.views.components.AnnouncementFeed
 import org.astu.feature.bulletinBoard.views.components.announcements.summary.PublishedAnnouncementSummary
 import org.astu.feature.bulletinBoard.views.components.announcements.summary.dropdownMenuContent.AuthorDropdownMenuContent
@@ -85,15 +85,16 @@ class BulletInBoardScreen : Screen {
             ) {
                 val state by viewModel.state.collectAsState()
                 when (state) {
-                    BulletInBoardViewModel.State.Loading -> Loading()
-                    BulletInBoardViewModel.State.LoadingDone -> AnnouncementFeed(mapAnnouncements(viewModel))
+                    BulletInBoardViewModel.State.Loading -> { hideErrorDialog(viewModel); Loading() }
+                    BulletInBoardViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); AnnouncementFeed(mapAnnouncements(viewModel)) }
                     BulletInBoardViewModel.State.LoadingAnnouncementsError -> showErrorDialog(viewModel)
-                    BulletInBoardViewModel.State.StoppingSurvey -> { }
+                    BulletInBoardViewModel.State.StoppingSurvey -> hideErrorDialog(viewModel)
                     BulletInBoardViewModel.State.StoppingSurveyError -> showErrorDialog(viewModel)
-                    BulletInBoardViewModel.State.HidingAnnouncement -> { }
+                    BulletInBoardViewModel.State.HidingAnnouncement -> hideErrorDialog(viewModel)
                     BulletInBoardViewModel.State.HidingAnnouncementError -> showErrorDialog(viewModel)
-                    BulletInBoardViewModel.State.DeletingAnnouncement -> { }
+                    BulletInBoardViewModel.State.DeletingAnnouncement -> hideErrorDialog(viewModel)
                     BulletInBoardViewModel.State.DeletingAnnouncementError -> showErrorDialog(viewModel)
+                    else -> hideErrorDialog(viewModel)
                 }
             }
 
@@ -191,6 +192,10 @@ class BulletInBoardScreen : Screen {
 
     private fun showErrorDialog(viewModel: BulletInBoardViewModel) {
         viewModel.showErrorDialog = true
+    }
+
+    private fun hideErrorDialog(viewModel: BulletInBoardViewModel) {
+        viewModel.showErrorDialog = false
     }
 
     private fun mapAnnouncements(viewModel: BulletInBoardViewModel): List<@Composable () -> Unit> =

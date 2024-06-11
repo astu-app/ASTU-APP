@@ -9,9 +9,12 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.responses.ContentWithError
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.creation.CreateSurvey
 import org.astu.feature.bulletinBoard.models.entities.attachments.survey.voting.VoteInSurvey
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.GatewayServiceConfig
 
 class SurveyService {
-    private val source: SurveyDataSource = ApiSurveyDataSource()
+    private val config by GlobalDIContext.inject<GatewayServiceConfig>()
+    private val source: SurveyDataSource = ApiSurveyDataSource(config.url)
 
     suspend fun create(survey: CreateSurvey): ContentWithError<Uuid, CreateSurveyErrors> =
         source.create(survey)

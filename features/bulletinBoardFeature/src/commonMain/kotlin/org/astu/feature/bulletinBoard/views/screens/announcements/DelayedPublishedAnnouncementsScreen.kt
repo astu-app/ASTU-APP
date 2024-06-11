@@ -59,12 +59,12 @@ class DelayedPublishedAnnouncementsScreen(private val onReturn: () -> Unit) : Sc
             ) {
                 val state by viewModel.state.collectAsState()
                 when (state) {
-                    DelayedPublishedAnnouncementsViewModel.State.Loading -> Loading()
-                    DelayedPublishedAnnouncementsViewModel.State.LoadingDone -> AnnouncementFeed(mapAnnouncements(viewModel))
+                    DelayedPublishedAnnouncementsViewModel.State.Loading -> { hideErrorDialog(viewModel); Loading() }
+                    DelayedPublishedAnnouncementsViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); AnnouncementFeed(mapAnnouncements(viewModel)) }
                     DelayedPublishedAnnouncementsViewModel.State.LoadingAnnouncementsError -> showErrorDialog(viewModel)
-                    DelayedPublishedAnnouncementsViewModel.State.PublishingAnnouncement -> { }
+                    DelayedPublishedAnnouncementsViewModel.State.PublishingAnnouncement -> hideErrorDialog(viewModel)
                     DelayedPublishedAnnouncementsViewModel.State.PublishingAnnouncementError -> showErrorDialog(viewModel)
-                    DelayedPublishedAnnouncementsViewModel.State.DeletingAnnouncement -> { }
+                    DelayedPublishedAnnouncementsViewModel.State.DeletingAnnouncement -> hideErrorDialog(viewModel)
                     DelayedPublishedAnnouncementsViewModel.State.DeletingAnnouncementError -> showErrorDialog(viewModel)
                 }
             }
@@ -83,6 +83,10 @@ class DelayedPublishedAnnouncementsScreen(private val onReturn: () -> Unit) : Sc
 
     private fun showErrorDialog(viewModel: DelayedPublishedAnnouncementsViewModel) {
         viewModel.showErrorDialog = true
+    }
+
+    private fun hideErrorDialog(viewModel: DelayedPublishedAnnouncementsViewModel) {
+        viewModel.showErrorDialog = false
     }
 
     private fun mapAnnouncements(viewModel: DelayedPublishedAnnouncementsViewModel): List<@Composable () -> Unit> =

@@ -102,7 +102,6 @@ class CreateUserGroupViewModel : StateScreenModel<CreateUserGroupViewModel.State
 
         onErrorDialogTryAgainRequest = {
             loadCreateUserGroupContent()
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
             showErrorDialog = false

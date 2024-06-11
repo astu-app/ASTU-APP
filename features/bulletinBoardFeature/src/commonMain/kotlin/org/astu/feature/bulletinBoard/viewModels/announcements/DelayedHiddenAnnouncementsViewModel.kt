@@ -1,6 +1,9 @@
 package org.astu.feature.bulletinBoard.viewModels.announcements
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
@@ -41,10 +44,9 @@ class DelayedHiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : St
             try {
                 mutableState.value = State.Loading
 
-                content.clear()
-
                 val announcements = model.getDelayedHiddenAnnouncementList()
                 if (announcements.isContentValid) {
+                    content.clear()
                     content.addAll(announcements.content!!)
                     mutableState.value = State.LoadingDone
                     return@launch
@@ -72,6 +74,7 @@ class DelayedHiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : St
 
                 } else {
                     mutableState.value = State.LoadingDone
+                    loadAnnouncements()
                     return@launch
                 }
 
@@ -88,10 +91,9 @@ class DelayedHiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : St
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadAnnouncements()
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.Loading
             onReturn.invoke()
         }
     }
@@ -100,10 +102,9 @@ class DelayedHiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : St
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             delete(announcementId)
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.LoadingDone
         }
     }
 }

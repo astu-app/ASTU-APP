@@ -53,13 +53,16 @@ class EditUserGroupScreen(
         ) {
             val state by viewModel.state.collectAsState()
             when (state) {
-                EditUserGroupViewModel.State.EditContentLoading -> Loading()
-                EditUserGroupViewModel.State.EditingUserGroup -> editor.Content(editor.getDefaultModifier())
+                EditUserGroupViewModel.State.EditContentLoading -> { hideErrorDialog(viewModel); Loading() }
+                EditUserGroupViewModel.State.EditingUserGroup -> { hideErrorDialog(viewModel); editor.Content(editor.getDefaultModifier()) }
                 EditUserGroupViewModel.State.EditContentLoadingError -> showErrorDialog(viewModel)
-                EditUserGroupViewModel.State.ChangesUploading -> Loading()
-                EditUserGroupViewModel.State.ChangesUploadingDone -> if (!onReturnCalled) {
-                    onReturnCalled  = true
-                    onReturn()
+                EditUserGroupViewModel.State.ChangesUploading -> { hideErrorDialog(viewModel); Loading() }
+                EditUserGroupViewModel.State.ChangesUploadingDone -> {
+                    hideErrorDialog(viewModel)
+                    if (!onReturnCalled) {
+                        onReturnCalled = true
+                        onReturn()
+                    }
                 }
                 EditUserGroupViewModel.State.ChangesUploadingError -> showErrorDialog(viewModel)
             }
@@ -80,5 +83,9 @@ class EditUserGroupScreen(
 
     private fun showErrorDialog(viewModel: EditUserGroupViewModel) {
         viewModel.showErrorDialog.value = true
+    }
+
+    private fun hideErrorDialog(viewModel: EditUserGroupViewModel) {
+        viewModel.showErrorDialog.value = false
     }
 }

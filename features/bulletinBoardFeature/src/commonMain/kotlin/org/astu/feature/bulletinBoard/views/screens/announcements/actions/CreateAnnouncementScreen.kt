@@ -61,11 +61,11 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
         ) {
             val state by viewModel.state.collectAsState()
             when (state) {
-                CreateAnnouncementViewModel.State.CreateContentLoading -> Loading()
-                CreateAnnouncementViewModel.State.CreatingAnnouncement -> creator.Content(creator.getDefaultModifier())
+                CreateAnnouncementViewModel.State.CreateContentLoading -> { hideErrorDialog(viewModel); Loading() }
+                CreateAnnouncementViewModel.State.CreatingAnnouncement -> { hideErrorDialog(viewModel); creator.Content(creator.getDefaultModifier()) }
                 CreateAnnouncementViewModel.State.CreateContentLoadError -> showErrorDialog(viewModel)
-                CreateAnnouncementViewModel.State.NewAnnouncementUploading -> Loading()
-                CreateAnnouncementViewModel.State.NewAnnouncementUploadingDone -> onReturn()
+                CreateAnnouncementViewModel.State.NewAnnouncementUploading -> { hideErrorDialog(viewModel); Loading() }
+                CreateAnnouncementViewModel.State.NewAnnouncementUploadingDone -> { hideErrorDialog(viewModel); onReturn() }
                 CreateAnnouncementViewModel.State.NewAnnouncementUploadError -> showErrorDialog(viewModel)
             }
 
@@ -84,5 +84,9 @@ class CreateAnnouncementScreen(private val onReturn: () -> Unit) : Screen {
 
     private fun showErrorDialog(viewModel: CreateAnnouncementViewModel) {
         viewModel.showErrorDialog.value = true
+    }
+
+    private fun hideErrorDialog(viewModel: CreateAnnouncementViewModel) {
+        viewModel.showErrorDialog.value = false
     }
 }

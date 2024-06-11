@@ -141,11 +141,10 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         errorDialogBody.value = error.humanize()
         onErrorDialogTryAgain.value = {
             loadCreateContent()
-            showErrorDialog.value = false
         }
         onErrorDialogDismiss.value = {
+            mutableState.value = State.CreatingAnnouncement
             onReturn()
-            showErrorDialog.value = false
         }
     }
 
@@ -153,11 +152,10 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
         errorDialogBody.value = error.humanize()
         onErrorDialogTryAgain.value = {
             create()
-            showErrorDialog.value = false
+            mutableState.value = State.NewAnnouncementUploading
         }
         onErrorDialogDismiss.value = {
             mutableState.value = State.CreatingAnnouncement
-            showErrorDialog.value = false
         }
     }
 }
