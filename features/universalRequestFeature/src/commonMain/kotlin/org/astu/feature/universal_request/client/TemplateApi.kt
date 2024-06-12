@@ -4,8 +4,10 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.util.*
 import org.astu.feature.universal_request.client.models.TemplateDTO
 import org.astu.feature.universal_request.client.models.TemplateFieldDTO
 import org.astu.feature.universal_request.client.models.TemplateInfo
@@ -53,11 +55,12 @@ class TemplateApi(private val baseUrl: String): JavaSerializable {
 
     suspend fun fillTemplate(templateId: String, fields: List<TemplateFieldDTO>): ByteArray {
         val response = client.post("${baseUrl}api/uni-request-service/templates/${templateId}") {
+            contentType(ContentType.Application.Json)
             setBody(fields)
         }
 
         return when (response.status) {
-            HttpStatusCode.OK -> response.body<ByteArray>()
+            HttpStatusCode.OK -> response.bodyAsChannel().toByteArray()
             else -> throw RuntimeException()
         }
     }

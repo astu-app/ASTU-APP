@@ -82,6 +82,7 @@ class FillTemplateScreen(var templateDTO: TemplateDTO, private val onReturn: () 
             selectionMode = FilePickerSelectionMode.Single,
             onResult = { files ->
                 files.forEach {
+//                    vm.outputPath.value = it.getName(context) ?: ""
                     println(it.getName(context))
                 }
             }
@@ -92,25 +93,28 @@ class FillTemplateScreen(var templateDTO: TemplateDTO, private val onReturn: () 
             Column {
                 Text(vm.name)
                 Text(vm.description)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    Text(vm.outputPath.value)
-                    Button({
-                        pickerLauncher.launch()
-                    }){
-                        Text("Выбрать файл")
-                    }
-                }
+                val path = remember{vm.outputPath}
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Text(path.value, modifier.weight(2.0F))
+//                    Button(modifier = modifier.weight(1.0f), onClick = {
+//                        pickerLauncher.launch()
+//                    }) {
+//                        Text("Выбрать файл")
+//                    }
+//                }
                 LazyColumn {
                     items(fields.value) {
                         TemplateListItem(it)
                     }
                 }
-
+                vm.error.value?.let {
+                    Text(it, color = MaterialTheme.colorScheme.error)
+                }
                 Button({
-                    vm.fillTemplate()
-                }){
+                    vm.fillTemplate(vm.outputPath.value)
+                }) {
                     Text("Оформить")
                 }
             }

@@ -6,9 +6,11 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
 import org.astu.feature.universal_request.UniversalTemplateRepository
 import org.astu.feature.universal_request.client.models.TemplateDTO
+import org.astu.feature.universal_request.screens.AddTemplateScreen
 import org.astu.feature.universal_request.screens.FillTemplateScreen
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.StateScreenModel
 
 class TemplateListViewModel : StateScreenModel<TemplateListViewModel.State>(State.Init), JavaSerializable {
@@ -18,10 +20,11 @@ class TemplateListViewModel : StateScreenModel<TemplateListViewModel.State>(Stat
         data class Error(val message: String) : State()
         data object ShowList : State()
         data object ShowTemplate : State()
+        data object ShowAddScreen : State()
     }
 
     val templates = mutableStateOf(listOf<TemplateDTO>())
-    var screen: MutableState<FillTemplateScreen?> = mutableStateOf(null)
+    var screen: MutableState<SerializableScreen?> = mutableStateOf(null)
     init {
         val repository by GlobalDIContext.inject<UniversalTemplateRepository>()
 
@@ -39,5 +42,13 @@ class TemplateListViewModel : StateScreenModel<TemplateListViewModel.State>(Stat
             mutableState.value = State.ShowList
         }
         mutableState.value = State.ShowTemplate
+    }
+
+    fun openAddScreen() {
+        screen.value = AddTemplateScreen {
+            screen.value = null
+            mutableState.value = State.ShowList
+        }
+        mutableState.value = State.ShowAddScreen
     }
 }

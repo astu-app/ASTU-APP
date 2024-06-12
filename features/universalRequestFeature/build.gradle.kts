@@ -57,9 +57,7 @@ kotlin {
             implementation(libs.kodein)
             implementation(libs.calf.ui)
             implementation(libs.calf.file.picker)
-//            implementation(libs.filekit.core)
-//            implementation(libs.filekit.compose)
-
+            implementation(libs.filekit.core)
         }
 
         commonTest.dependencies {

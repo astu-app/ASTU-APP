@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import io.github.vinceglb.filekit.core.FileKit
 import org.astu.app.notifications.NotificationService
 
 class AndroidApp : Application() {
@@ -26,6 +27,7 @@ class AppActivity : ComponentActivity() {
         globalAppContext = this
 
         super.onCreate(savedInstanceState)
+        FileKit.init(this)
         setContent {
             App()
         }

@@ -69,6 +69,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kodein)
             implementation(libs.uuid)
+            implementation(libs.filekit.core)
 
             api(libs.calf.ui)
         }

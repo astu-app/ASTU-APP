@@ -8,7 +8,6 @@ androidx-appcompat = "1.6.1"
 androidx-activityCompose = "1.9.0"
 compose-uitooling = "1.6.6"
 uuid = "0.8.3"
-#voyager = "1.0.0"
 voyager = "1.1.0-alpha03"
 composeImageLoader = "1.7.8"
 buildConfig = "4.1.1"
@@ -22,9 +21,11 @@ kotlinx-datetime = "0.6.0-RC.2"
 kodein = "7.21.0"
 sqlDelight = "2.0.1"
 material3Android = "1.2.1"
+fileKit = "0.4.2"
 
 [libraries]
 
+filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "fileKit" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 calf-file-picker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calfFilePicker" }
