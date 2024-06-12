@@ -3,8 +3,9 @@ package org.astu.feature.schedule.repositories
 import org.astu.feature.schedule.ApiTableAstuScheduleDataSource
 import org.astu.feature.schedule.ScheduleDataSource
 import org.astu.feature.schedule.entities.*
+import org.astu.infrastructure.JavaSerializable
 
-class ScheduleRepository {
+class ScheduleRepository: JavaSerializable {
     private val scheduleDataSource: ScheduleDataSource = ApiTableAstuScheduleDataSource()
 
     suspend fun find(value: String): List<SearchResult> {

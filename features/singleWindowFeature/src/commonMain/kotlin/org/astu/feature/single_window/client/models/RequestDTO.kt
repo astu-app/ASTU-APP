@@ -13,6 +13,7 @@ package org.astu.feature.single_window.client.models
 
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
+import org.astu.infrastructure.JavaSerializable
 
 /**
  * 
@@ -38,7 +39,7 @@ data class RequestDTO (
     val message: String? = null,
     val createdAt: Instant,
     val fields: List<RequirementFieldDTO>
-) {
+): JavaSerializable {
     /**
     * 
     * Values: FACETOFACE,EMAIL

@@ -5,9 +5,10 @@ import org.astu.infrastructure.IAccountRepository
 import org.astu.feature.auth.client.apis.DefaultApi
 import org.astu.feature.auth.client.models.UserInfoDTO
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.UserInfo
 
-class AstuAccountRepository : IAccountRepository {
+class AstuAccountRepository : IAccountRepository, JavaSerializable {
     private val config by GlobalDIContext.inject<AuthServiceConfig>()
 
     private var userInfoCache: MutableMap<String, UserInfo> = mutableMapOf()

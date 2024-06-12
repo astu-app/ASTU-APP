@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import org.astu.feature.single_window.entities.Template
 import org.astu.feature.single_window.view_models.MainRequestViewModel
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.components.card.Description
 import org.astu.infrastructure.components.card.Title
 import org.astu.infrastructure.components.carousel.Carousel
@@ -28,7 +30,7 @@ import org.astu.infrastructure.components.searchbar.*
 
 class ListOfServicesSingleWindowScreen(
     val vm: MainRequestViewModel
-) : Screen {
+) : SerializableScreen {
 //    private val list: MutableList<Item> = mutableListOf()
 //    private val categories: MutableList<Category> = mutableListOf()
 

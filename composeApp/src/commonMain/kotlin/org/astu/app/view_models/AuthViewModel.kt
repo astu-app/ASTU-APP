@@ -6,15 +6,16 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
 import org.astu.feature.auth.AuthRepository
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.JavaSerializable
 
-class AuthViewModel : ScreenModel {
-    private val authRepository by GlobalDIContext.inject<AuthRepository>()
-
+class AuthViewModel : ScreenModel, JavaSerializable {
     val email = mutableStateOf("")
     val password = mutableStateOf("")
     val error = mutableStateOf<String?>(null)
 
     fun login(onSuccess: () -> Unit) = screenModelScope.launch {
+        val authRepository by GlobalDIContext.inject<AuthRepository>()
+
         runCatching {
             authRepository.authJWT(email.value, password.value)
         }.onSuccess {

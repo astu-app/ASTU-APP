@@ -12,8 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import org.astu.feature.single_window.view_models.MainRequestViewModel
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 
-class MainSingleWindowScreen : Screen {
+class MainSingleWindowScreen : SerializableScreen {
     private lateinit var viewModel: MainRequestViewModel
 
     private lateinit var listOfServiceScreen: ListOfServicesSingleWindowScreen

@@ -12,6 +12,7 @@
 package org.astu.feature.single_window.client.models
 
 import kotlinx.serialization.Serializable
+import org.astu.infrastructure.JavaSerializable
 
 /**
  * 
@@ -27,7 +28,7 @@ data class AddRequestDTO (
     val type: Type,
     val email: String? = null,
     val fields: List<AddRequirementFieldDTO>
-) {
+): JavaSerializable {
     /**
     * 
     * Values: FACETOFACE,EMAIL

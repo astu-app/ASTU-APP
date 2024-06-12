@@ -1,6 +1,7 @@
 package org.astu.feature.single_window.entities
 
 import kotlinx.serialization.Serializable
+import org.astu.infrastructure.JavaSerializable
 
 @Serializable
 class Template(
@@ -9,4 +10,4 @@ class Template(
     val description: String,
     val category: String,
     val requirements: List<Requirement> = listOf(),
-)
+): JavaSerializable

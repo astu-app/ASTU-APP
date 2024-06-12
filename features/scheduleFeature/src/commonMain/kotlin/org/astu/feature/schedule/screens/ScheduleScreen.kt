@@ -19,7 +19,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.DoorFront
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,9 +41,11 @@ import org.astu.feature.schedule.entities.ClassType
 import org.astu.feature.schedule.entities.SearchType
 import org.astu.feature.schedule.entities.Term
 import org.astu.feature.schedule.view_models.ScheduleViewModel
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.components.searchbar.SearchBar
 
-class ScheduleScreen : Screen {
+class ScheduleScreen : SerializableScreen {
     private lateinit var viewModel: ScheduleViewModel
     private fun convertMonthToString(month: Month): String {
         return when (month) {
@@ -63,7 +68,7 @@ class ScheduleScreen : Screen {
     @Composable
     override fun Content() {
         viewModel = rememberScreenModel { ScheduleViewModel() }
-        val state by viewModel.state.collectAsState()
+        val state by remember{ viewModel.state }
         when (state) {
             ScheduleViewModel.State.Init -> TODO()
             ScheduleViewModel.State.Loading -> Loading()

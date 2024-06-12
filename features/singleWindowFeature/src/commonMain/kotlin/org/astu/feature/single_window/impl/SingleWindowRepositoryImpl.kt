@@ -18,8 +18,9 @@ import org.astu.feature.single_window.entities.RequirementType
 import org.astu.feature.single_window.entities.Template
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.GatewayServiceConfig
+import org.astu.infrastructure.JavaSerializable
 
-class SingleWindowRepositoryImpl : SingleWindowRepository {
+class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
     private val config by GlobalDIContext.inject<GatewayServiceConfig>()
 
     private val api = RequestApi(config.url)

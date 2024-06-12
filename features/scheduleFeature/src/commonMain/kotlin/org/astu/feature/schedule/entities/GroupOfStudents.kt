@@ -1,3 +1,5 @@
 package org.astu.feature.schedule.entities
 
-class GroupOfStudents(val id: String, val name: String)
+import org.astu.infrastructure.JavaSerializable
+
+class GroupOfStudents(val id: String, val name: String): JavaSerializable

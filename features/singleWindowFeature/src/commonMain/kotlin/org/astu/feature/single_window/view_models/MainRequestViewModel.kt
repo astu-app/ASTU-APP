@@ -11,10 +11,11 @@ import kotlinx.coroutines.launch
 import org.astu.feature.single_window.SingleWindowRepository
 import org.astu.feature.single_window.entities.Template
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.JavaSerializable
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-class MainRequestViewModel : ScreenModel {
+class MainRequestViewModel : ScreenModel, JavaSerializable {
     private val repository by GlobalDIContext.inject<SingleWindowRepository>()
 
     private val _templates = MutableStateFlow(mutableListOf<Template>())

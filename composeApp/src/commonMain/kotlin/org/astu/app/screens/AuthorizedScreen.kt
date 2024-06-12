@@ -24,10 +24,12 @@ import org.astu.feature.bulletinBoard.views.screens.BulletInBoardScreen
 import org.astu.feature.chat.screens.ChannelListScreen
 import org.astu.feature.schedule.screens.ScheduleScreen
 import org.astu.feature.single_window.screens.MainSingleWindowScreen
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.UnitOfNavigationBar
 import org.astu.infrastructure.components.NavigationBarScreens
 
-class AuthorizedScreen : Screen {
+class AuthorizedScreen : SerializableScreen {
     private lateinit var viewModel: AuthorizedViewModel
 
     @Composable

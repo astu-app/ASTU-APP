@@ -14,12 +14,13 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import org.astu.feature.single_window.entities.Request
 import org.astu.feature.single_window.view_models.MainRequestViewModel
 import org.astu.feature.single_window.view_models.RequestViewModel
+import org.astu.infrastructure.JavaSerializable
 
 class PrimitiveServiceScreen(
     private val inputRequest: Request,
     onAddScreen: (ServiceScreen) -> Unit
 ) :
-    ServiceScreen(onAddScreen) {
+    ServiceScreen(onAddScreen), JavaSerializable {
     private lateinit var viewModel: RequestViewModel
 
     @Composable

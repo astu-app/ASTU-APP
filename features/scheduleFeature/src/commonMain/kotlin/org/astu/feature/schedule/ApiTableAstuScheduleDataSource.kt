@@ -6,8 +6,9 @@ import io.ktor.client.request.*
 import org.astu.feature.schedule.entities.*
 import kotlinx.serialization.*
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.JavaSerializable
 
-class ApiTableAstuScheduleDataSource : ScheduleDataSource {
+class ApiTableAstuScheduleDataSource : ScheduleDataSource, JavaSerializable {
     private val client by GlobalDIContext.inject<HttpClient>()
 
     override suspend fun find(value: String): List<SearchResult> {

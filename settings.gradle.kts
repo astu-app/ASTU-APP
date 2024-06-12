@@ -6,6 +6,7 @@ include(":features:singleWindowFeature")
 include(":features:chatFeature")
 include(":features:bulletinBoardFeature")
 include(":features:authFeature")
+include(":features:universalRequestFeature")
 
 pluginManagement {
     repositories {

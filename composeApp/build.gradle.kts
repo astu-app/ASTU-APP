@@ -48,6 +48,7 @@ kotlin {
             implementation(projects.features.chatFeature)
             implementation(projects.features.authFeature)
             implementation(projects.features.bulletinBoardFeature)
+            implementation(projects.features.universalRequestFeature)
             implementation(projects.infrastructure)
 
             implementation(compose.runtime)

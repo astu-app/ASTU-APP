@@ -1,3 +1,5 @@
 package org.astu.feature.auth
 
-data class AuthServiceConfig(val url: String)
+import org.astu.infrastructure.JavaSerializable
+
+data class AuthServiceConfig(val url: String): JavaSerializable

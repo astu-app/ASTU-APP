@@ -1,11 +1,12 @@
 package org.astu.feature.chat.view_models
 
 import androidx.compose.runtime.mutableStateOf
-import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.astu.feature.chat.ChatRepository
@@ -15,7 +16,7 @@ import org.astu.feature.chat.entities.MemberRole
 import org.astu.feature.chat.entities.Message
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.IAccountRepository
-import org.astu.infrastructure.UserInfo
+import org.astu.infrastructure.StateScreenModel
 import org.astu.infrastructure.gateway.models.SummaryAccountDTO
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration

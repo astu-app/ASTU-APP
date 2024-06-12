@@ -12,6 +12,7 @@
 package org.astu.feature.single_window.client.models
 
 import kotlinx.serialization.Serializable
+import org.astu.infrastructure.JavaSerializable
 
 
 /**
@@ -28,4 +29,4 @@ data class RequirementDto (
     val name: String,
     val description: String,
     val requirementType: String
-)
+): JavaSerializable

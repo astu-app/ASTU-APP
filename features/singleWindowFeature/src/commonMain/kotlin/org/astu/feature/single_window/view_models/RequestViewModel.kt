@@ -6,8 +6,9 @@ import kotlinx.coroutines.flow.update
 import org.astu.feature.single_window.client.models.AddRequestDTO
 import org.astu.feature.single_window.entities.Request
 import org.astu.feature.single_window.entities.RequirementField
+import org.astu.infrastructure.JavaSerializable
 
-class RequestViewModel(request: Request) : ScreenModel {
+class RequestViewModel(request: Request) : ScreenModel, JavaSerializable {
     val type = MutableStateFlow(request.type)
     val template = MutableStateFlow(request.template)
     val email = MutableStateFlow(request.email)

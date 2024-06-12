@@ -1,6 +1,7 @@
 package org.astu.feature.single_window.entities
 
 import kotlinx.datetime.Instant
+import org.astu.infrastructure.JavaSerializable
 
 class CreatedRequest(
     val id: String,
@@ -8,4 +9,4 @@ class CreatedRequest(
     val description: String,
     val fields: List<CreatedRequirementField<Any>>,
     val date: Instant
-)
+): JavaSerializable

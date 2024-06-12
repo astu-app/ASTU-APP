@@ -27,9 +27,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import org.astu.feature.chat.entities.Chat
 import org.astu.feature.chat.entities.Message
 import org.astu.feature.chat.view_models.ChatViewModel
+import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.theme.CurrentColorScheme
 
-class ChatScreen(private val chat: Chat, private val onReturn: () -> Unit) : Screen {
+class ChatScreen(private val chat: Chat, private val onReturn: () -> Unit) : SerializableScreen {
     private lateinit var viewModel: ChatViewModel
 
     @Composable

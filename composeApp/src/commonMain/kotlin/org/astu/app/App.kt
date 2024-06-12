@@ -11,6 +11,7 @@ import org.astu.feature.auth.AuthFeatureModule
 import org.astu.feature.bulletinBoard.BulletinBoardFeatureModule
 import org.astu.feature.chat.ChatFeatureModule
 import org.astu.feature.single_window.SingleWindowFeatureModule
+import org.astu.feature.universal_request.UniversalRequestFeatureModule
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 
 @Composable
@@ -30,6 +31,7 @@ internal fun init() {
     GlobalDIContext.addModule(ChatFeatureModule.init())
     GlobalDIContext.addModule(SingleWindowFeatureModule.init())
     GlobalDIContext.addModule(BulletinBoardFeatureModule.init())
+    GlobalDIContext.addModule(UniversalRequestFeatureModule.init())
 
     GlobalScope.launch { NotificationManager.connect() }
 }

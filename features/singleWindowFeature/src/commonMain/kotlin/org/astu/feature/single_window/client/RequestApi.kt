@@ -27,9 +27,10 @@ import org.astu.feature.single_window.client.models.RequestDTO
 import org.astu.feature.single_window.client.models.RequirementTypeDTO
 import org.astu.feature.single_window.client.models.TemplateDTO
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.SecurityHttpClient
 
-class RequestApi(private val baseUrl: String = "/") {
+class RequestApi(private val baseUrl: String = "/"): JavaSerializable {
     private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
     private val client = securityHttpClient.instance
 

@@ -2,15 +2,15 @@ package org.astu.feature.schedule.view_models
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import org.astu.feature.schedule.entities.*
 import org.astu.feature.schedule.repositories.ScheduleRepository
-import org.astu.feature.schedule.entities.Class
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.StateScreenModel
 
-class ScheduleViewModel : StateScreenModel<ScheduleViewModel.State>(State.Init) {
+class ScheduleViewModel : StateScreenModel<ScheduleViewModel.State>(State.Init), JavaSerializable {
     sealed class State {
         data object Init : State()
         data object Loading : State()

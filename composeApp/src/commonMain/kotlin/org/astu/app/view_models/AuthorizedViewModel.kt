@@ -6,8 +6,9 @@ import kotlinx.coroutines.launch
 import org.astu.app.notifications.NotificationManager
 import org.astu.feature.auth.IAccountSecurityManager
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext.inject
+import org.astu.infrastructure.JavaSerializable
 
-class AuthorizedViewModel : ScreenModel {
+class AuthorizedViewModel : ScreenModel, JavaSerializable {
     init {
         screenModelScope.launch {
             NotificationManager.loadExistingNotifications()

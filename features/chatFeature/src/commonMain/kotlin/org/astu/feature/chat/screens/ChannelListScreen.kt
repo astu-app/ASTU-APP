@@ -30,8 +30,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import io.ktor.http.*
 import org.astu.feature.chat.entities.Chat
 import org.astu.feature.chat.view_models.ChatListViewModel
+import org.astu.infrastructure.SerializableScreen
 
-class ChannelListScreen : Screen {
+class ChannelListScreen : SerializableScreen {
 //    private val channels = listOf(
 //        Channel("Название чата", listOf(Message("Азим", "Привет", true), Message("Бот", "Тест"))),
 //        Channel("Другое название чата", listOf(Message("Бот", "Тест"))),
@@ -43,7 +44,7 @@ class ChannelListScreen : Screen {
     @Composable
     override fun Content() {
         viewModel = rememberScreenModel { ChatListViewModel() }
-        val dialogState by viewModel.dialogState.collectAsState()
+        val dialogState by remember { viewModel.dialogState }
 
         when (dialogState) {
             ChatListViewModel.DialogState.Create -> CreateChatDialog()
@@ -54,7 +55,7 @@ class ChannelListScreen : Screen {
 
     @Composable
     fun ShowScene() {
-        val state by viewModel.state.collectAsState()
+        val state by remember { viewModel.state }
         val chatScreen by remember { viewModel.chatScreen }
         when (state) {
             is ChatListViewModel.State.Error -> TopBarOfChat {

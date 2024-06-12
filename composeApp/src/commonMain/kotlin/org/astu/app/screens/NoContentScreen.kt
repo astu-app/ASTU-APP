@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Pacman
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 
-class NoContentScreen : Screen {
+class NoContentScreen : SerializableScreen {
     @Composable
     override fun Content() {
         Box(Modifier.fillMaxSize(), Alignment.Center) {

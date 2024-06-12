@@ -5,8 +5,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import cafe.adriel.voyager.core.screen.Screen
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 
-class TestScreen : Screen {
+class TestScreen : SerializableScreen {
     companion object {
         val views: ViewsMap = mutableStateMapOf()
 

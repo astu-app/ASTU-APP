@@ -20,8 +20,10 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import org.astu.app.view_models.AuthViewModel
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 
-class AuthScreen(private val onAuth: () -> Unit) : Screen {
+class AuthScreen(private val onAuth: () -> Unit) : SerializableScreen {
     private lateinit var viewModel: AuthViewModel
 
     @Composable

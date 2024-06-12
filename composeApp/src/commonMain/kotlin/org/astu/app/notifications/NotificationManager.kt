@@ -19,10 +19,11 @@ import org.astu.app.notifications.entities.NotificationMessage
 import org.astu.app.notifications.entities.NotificationMessageList
 import org.astu.feature.auth.IAccountSecurityManager
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.NotificationServerConfig
 import kotlin.random.Random
 
-object NotificationManager {
+object NotificationManager: JavaSerializable {
     private val config by GlobalDIContext.inject<NotificationServerConfig>()
     private val client: HttpClient by GlobalDIContext.inject<HttpClient>()
 

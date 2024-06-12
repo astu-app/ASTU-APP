@@ -8,9 +8,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.components.ComboBox
 
-class ConstructorCertificateScreen : Screen {
+class ConstructorCertificateScreen : SerializableScreen {
 
     private val requirements = mutableStateOf(listOf(Requirement(), Requirement(), Requirement(), Requirement()))
     private val name = mutableStateOf("")

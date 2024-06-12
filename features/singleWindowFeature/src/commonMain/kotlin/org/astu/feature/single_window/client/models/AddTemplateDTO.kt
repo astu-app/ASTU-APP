@@ -12,6 +12,7 @@
 package org.astu.feature.single_window.client.models
 
 import kotlinx.serialization.Serializable
+import org.astu.infrastructure.JavaSerializable
 
 /**
  * 
@@ -31,7 +32,7 @@ data class AddTemplateDTO (
     val departmentId: String,
     val requirements: List<AddRequirementDTO>,
     val groups: List<Groups>
-) {
+): JavaSerializable {
     /**
     * 
     * Values: STUDENT,EMPLOYEE,GRADUATE

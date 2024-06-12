@@ -11,9 +11,10 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import org.astu.feature.auth.IAccountSecurityManager
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.SecurityHttpClient
 
-class BearerSecurityHttpClient: SecurityHttpClient {
+class BearerSecurityHttpClient: SecurityHttpClient, JavaSerializable {
     private val httpClient by GlobalDIContext.inject<HttpClient>()
     private val accountSecurityManager by GlobalDIContext.inject<IAccountSecurityManager>()
 //    private val jwtApi by GlobalDIContext.inject<JWTApi>()

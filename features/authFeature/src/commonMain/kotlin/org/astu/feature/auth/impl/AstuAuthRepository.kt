@@ -8,8 +8,9 @@ import org.astu.feature.auth.client.apis.YandexApi
 import org.astu.feature.auth.client.models.JWTLoginDTO
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.GatewayServiceConfig
+import org.astu.infrastructure.JavaSerializable
 
-class AstuAuthRepository : AuthRepository {
+class AstuAuthRepository : AuthRepository, JavaSerializable {
     private val accountSecurityManager by GlobalDIContext.inject<IAccountSecurityManager>()
     private val config by GlobalDIContext.inject<GatewayServiceConfig>()
 

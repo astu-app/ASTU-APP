@@ -1,6 +1,7 @@
 package org.astu.feature.single_window.entities
 
 import kotlinx.serialization.Serializable
+import org.astu.infrastructure.JavaSerializable
 
 @Serializable
 class CreatedRequirementField<T>(
@@ -8,4 +9,4 @@ class CreatedRequirementField<T>(
     val description: String,
     val type: String,
     val value: T
-)
+): JavaSerializable

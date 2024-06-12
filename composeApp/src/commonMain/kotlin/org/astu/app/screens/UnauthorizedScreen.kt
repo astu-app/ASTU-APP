@@ -15,10 +15,12 @@ import org.astu.app.view_models.UnauthorizedViewModel
 import compose.icons.TablerIcons
 import compose.icons.tablericons.CalendarEvent
 import org.astu.feature.schedule.screens.ScheduleScreen
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.UnitOfNavigationBar
 import org.astu.infrastructure.components.NavigationBarScreens
 
-class UnauthorizedScreen(private val onAuth: () -> Unit) : Screen {
+class UnauthorizedScreen(private val onAuth: () -> Unit) : SerializableScreen {
     private lateinit var viewModel: UnauthorizedViewModel
 
     @Composable

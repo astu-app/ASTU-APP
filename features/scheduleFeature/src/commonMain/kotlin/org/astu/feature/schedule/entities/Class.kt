@@ -1,6 +1,7 @@
 package org.astu.feature.schedule.entities
 
 import org.astu.feature.schedule.entities.*
+import org.astu.infrastructure.JavaSerializable
 
 class Class(
     val dayOfWeek: DayOfWeek,
@@ -11,4 +12,4 @@ class Class(
     val teacher: Teacher,
     val discipline: Discipline,
     val groupsOfStudents: List<GroupOfStudents>
-)
+): JavaSerializable

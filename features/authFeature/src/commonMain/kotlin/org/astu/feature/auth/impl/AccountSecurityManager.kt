@@ -1,26 +1,26 @@
 package org.astu.feature.auth.impl
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.contains
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.astu.feature.auth.IAccountSecurityManager
 import org.astu.feature.auth.jwtDecoding.decodeJwtPayload
+import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.gateway.models.Tokens
 
 /**
  * Реализация хранилища/провайдера информации о средстве авторизации пользователя
  */
-class AccountSecurityManager : IAccountSecurityManager {
+class AccountSecurityManager : IAccountSecurityManager, JavaSerializable {
     private val accessTokenId = "org.astu.app.security.access_token"
     private val refreshTokenId = "org.astu.app.security.refresh_token"
 
     private val settings: Settings = Settings()
 
-    private val _data: MutableStateFlow<Tokens?> = MutableStateFlow(initData())
-    override val data = _data.asStateFlow()
-
+    private val _data: MutableState<Tokens?> = mutableStateOf(initData())
+    override val data = _data
 
 
     override val currentUserId: String?
@@ -28,7 +28,6 @@ class AccountSecurityManager : IAccountSecurityManager {
             val accessToken = _data.value?.accessToken ?: return null
             return decodeJwtPayload(accessToken)?.id
         }
-
 
 
     private fun initData(): Tokens? {
@@ -42,12 +41,11 @@ class AccountSecurityManager : IAccountSecurityManager {
     }
 
 
-
     override fun store(token: Tokens) {
         settings.putString(accessTokenId, token.accessToken)
         settings.putString(refreshTokenId, token.refreshToken)
 
-        _data.update { token }
+        _data.value = token
     }
 
     override fun hasAccess(): Boolean =
@@ -57,7 +55,7 @@ class AccountSecurityManager : IAccountSecurityManager {
         settings.remove(accessTokenId)
         settings.remove(refreshTokenId)
 
-        _data.update { null }
+        _data.value = null
     }
 }
 

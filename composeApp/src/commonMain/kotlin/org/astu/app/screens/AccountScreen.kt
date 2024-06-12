@@ -11,8 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import org.astu.app.view_models.AccountViewModel
+import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.SerializableScreen
 
-class AccountScreen(private val onLogout: () -> Unit) : Screen {
+class AccountScreen(private val onLogout: () -> Unit) : SerializableScreen {
     private lateinit var viewModel: AccountViewModel
 
     @Composable

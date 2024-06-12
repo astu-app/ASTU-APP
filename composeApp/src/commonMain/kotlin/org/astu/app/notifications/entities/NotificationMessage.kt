@@ -3,12 +3,13 @@ package org.astu.app.notifications.entities
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import org.astu.infrastructure.AnySerializer
+import org.astu.infrastructure.JavaSerializable
 
 /**
  * The MessageExternal holds information about a message which was sent by an Application.
  */
 @Serializable
-class NotificationMessage {
+class NotificationMessage : JavaSerializable {
     /**
      * The application id that send this message.
      */

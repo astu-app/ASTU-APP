@@ -1,8 +1,8 @@
 package org.astu.feature.chat.view_models
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,6 +16,7 @@ import org.astu.feature.chat.ChatRepository
 import org.astu.feature.chat.entities.Chat
 import org.astu.feature.chat.screens.ChatScreen
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.StateScreenModel
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -33,9 +34,9 @@ class ChatListViewModel : StateScreenModel<ChatListViewModel.State>(State.Init) 
         data object Create : DialogState()
     }
 
-    private val _dialogState = MutableStateFlow<DialogState>(DialogState.None)
-    val dialogState: StateFlow<DialogState>
-        get() = _dialogState.asStateFlow()
+    private val _dialogState = mutableStateOf<DialogState>(DialogState.None)
+    val dialogState: androidx.compose.runtime.State<DialogState>
+        get() = _dialogState
 
     private val repository by GlobalDIContext.inject<ChatRepository>()
 
@@ -66,7 +67,7 @@ class ChatListViewModel : StateScreenModel<ChatListViewModel.State>(State.Init) 
     }
 
     fun dialogDismiss() {
-        _dialogState.update { DialogState.None }
+        _dialogState.value = DialogState.None
     }
 
     override fun onDispose() {
@@ -74,7 +75,7 @@ class ChatListViewModel : StateScreenModel<ChatListViewModel.State>(State.Init) 
     }
 
     fun openCreateChatDialog() {
-        _dialogState.update { DialogState.Create }
+        _dialogState.value = DialogState.Create
     }
 
     fun selectChat(chat: Chat) = screenModelScope.launch {

@@ -1,6 +1,8 @@
 package org.astu.feature.schedule.entities
 
-enum class ClassType {
+import org.astu.infrastructure.JavaSerializable
+
+enum class ClassType: JavaSerializable {
     Lecture,
     Practice,
     Laboratory
