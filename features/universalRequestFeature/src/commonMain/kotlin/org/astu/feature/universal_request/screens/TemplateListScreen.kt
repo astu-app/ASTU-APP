@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,7 +18,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
 //import com.mohamedrejeb.calf.core.LocalPlatformContext
 //import com.mohamedrejeb.calf.io.getName
 //import com.mohamedrejeb.calf.picker.FilePickerFileType
@@ -27,7 +25,6 @@ import cafe.adriel.voyager.core.screen.Screen
 //import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import org.astu.feature.universal_request.client.models.TemplateDTO
 import org.astu.feature.universal_request.view_models.TemplateListViewModel
-import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.SerializableScreen
 
 class TemplateListScreen : SerializableScreen {
@@ -50,15 +47,17 @@ class TemplateListScreen : SerializableScreen {
         val state by remember { vm.state }
         val screen by remember { vm.screen }
         when (state) {
-            is TemplateListViewModel.State.Error -> TODO()
+            is TemplateListViewModel.State.Error -> TopBar {
+                ErrorScreen(Modifier.padding(it))
+            }
             TemplateListViewModel.State.Init -> TODO()
-            TemplateListViewModel.State.Loading -> TopBarOfChat {
+            TemplateListViewModel.State.Loading -> TopBar {
                 Loading(Modifier.padding(it))
             }
             TemplateListViewModel.State.ShowTemplate -> screen?.Content()
             TemplateListViewModel.State.ShowAddScreen -> screen?.Content()
             TemplateListViewModel.State.ShowList -> {
-                TopBarOfChat {
+                TopBar {
                     ShowList(Modifier.padding(it))
                 }
             }
@@ -77,6 +76,18 @@ class TemplateListScreen : SerializableScreen {
     }
 
     @Composable
+    fun ErrorScreen(modifier: Modifier) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+             val state = vm.state.value as TemplateListViewModel.State.Error
+            Text(state.message)
+
+        }
+    }
+
+    @Composable
     fun ShowList(modifier: Modifier) {
         val templates = remember { vm.templates }
         Box(
@@ -85,6 +96,7 @@ class TemplateListScreen : SerializableScreen {
             LazyColumn {
                 items(templates.value) {
                     TemplateListItem(it)
+                    HorizontalDivider()
                 }
             }
         }
@@ -92,10 +104,10 @@ class TemplateListScreen : SerializableScreen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun TopBarOfChat(content: @Composable (PaddingValues) -> Unit) {
+    fun TopBar(content: @Composable (PaddingValues) -> Unit) {
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(
-                { Text("Чаты", textAlign = TextAlign.Center) },
+                { Text("Универсальные заявления", textAlign = TextAlign.Center) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,

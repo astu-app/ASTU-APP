@@ -3,8 +3,6 @@ package org.astu.feature.universal_request.view_models
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.screenModelScope
 import io.github.vinceglb.filekit.core.FileKit
-import io.github.vinceglb.filekit.core.pickFile
-import io.ktor.utils.io.core.*
 import kotlinx.coroutines.launch
 import org.astu.feature.universal_request.UniversalTemplateRepository
 import org.astu.feature.universal_request.client.models.TemplateDTO
@@ -12,6 +10,7 @@ import org.astu.feature.universal_request.client.models.TemplateFieldDTO
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.StateScreenModel
+import org.astu.infrastructure.exceptions.ApiException
 
 class FillTemplateViewModel(private val templateDTO: TemplateDTO) :
     StateScreenModel<FillTemplateViewModel.State>(State.Init), JavaSerializable {
@@ -49,7 +48,7 @@ class FillTemplateViewModel(private val templateDTO: TemplateDTO) :
         }
     }
 
-    fun fillTemplate(dir: String) {
+    fun fillTemplate() {
         val repository by GlobalDIContext.inject<UniversalTemplateRepository>()
         val isNotFilled = templateFields.value.any{it.value.isBlank()}
 
@@ -59,8 +58,19 @@ class FillTemplateViewModel(private val templateDTO: TemplateDTO) :
         }
 
         screenModelScope.launch {
-            val bytes = repository.fillTemplate(templateDTO, templateFields.value)
-            FileKit.saveFile(bytes, templateDTO.name,"doc")
+            runCatching {
+                repository.fillTemplate(templateDTO, templateFields.value)
+            }.onFailure {
+                when(it){
+                    is ApiException -> error.value = it.message
+                    else -> {
+                        error.value = "Что-то случилось при скачивании :("
+                    }
+                }
+
+            }.onSuccess { bytes ->
+                FileKit.saveFile(bytes, templateDTO.name,"doc")
+            }
         }
     }
 

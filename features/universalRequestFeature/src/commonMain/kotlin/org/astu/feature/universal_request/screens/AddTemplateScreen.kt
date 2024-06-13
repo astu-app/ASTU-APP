@@ -1,33 +1,35 @@
 package org.astu.feature.universal_request.screens
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
-import com.mohamedrejeb.calf.core.LocalPlatformContext
-import com.mohamedrejeb.calf.io.getName
-import com.mohamedrejeb.calf.picker.FilePickerFileType
-import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
-import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
-import org.astu.feature.universal_request.client.models.TemplateDTO
-import org.astu.feature.universal_request.client.models.TemplateFieldDTO
 import org.astu.feature.universal_request.view_models.AddTemplateViewModel
-import org.astu.feature.universal_request.view_models.FillTemplateViewModel
-import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.SerializableScreen
 
 class AddTemplateScreen(private val onReturn: () -> Unit) : SerializableScreen {
@@ -66,10 +68,10 @@ class AddTemplateScreen(private val onReturn: () -> Unit) : SerializableScreen {
     fun Show(modifier: Modifier) {
         val (name, onChangeName) = remember { vm.name }
         val (desc, onChangeDesc) = remember { vm.description }
-        Box(
+        Column(
             modifier.fillMaxSize(),
         ) {
-            Column(Modifier.padding(start = 16.dp)) {
+            Column(Modifier.padding(horizontal = 16.dp)) {
                 Text("Название заявления")
                 Spacer(Modifier.height(5.dp))
                 TextField(value = name, onValueChange = onChangeName, Modifier.fillMaxWidth())
@@ -78,9 +80,17 @@ class AddTemplateScreen(private val onReturn: () -> Unit) : SerializableScreen {
                 Spacer(Modifier.height(5.dp))
                 TextField(value = desc, onValueChange = onChangeDesc, Modifier.fillMaxWidth())
             }
-            Button({
+            vm.error.value?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                    textAlign = TextAlign.Center,
+                )
+            }
+            Button(modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp), onClick = {
                 vm.uploadFile()
-            }){
+            }) {
                 Text("Выбрать файл и отправить")
             }
         }
@@ -91,7 +101,15 @@ class AddTemplateScreen(private val onReturn: () -> Unit) : SerializableScreen {
     fun TopBar(content: @Composable (PaddingValues) -> Unit) {
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(
-                { Text("Чаты", textAlign = TextAlign.Center) },
+                navigationIcon = {
+                    IconButton(onReturn) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                },
+                title = { Text("Добавление шаблона", textAlign = TextAlign.Center) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
