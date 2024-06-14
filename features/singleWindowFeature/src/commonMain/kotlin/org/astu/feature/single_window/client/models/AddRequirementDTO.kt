@@ -26,5 +26,6 @@ data class AddRequirementDTO (
 
     val requirementTypeId: String,
     val name: String,
-    val description: String
+    val description: String,
+    val isMandatory: Boolean = false
 ): JavaSerializable
