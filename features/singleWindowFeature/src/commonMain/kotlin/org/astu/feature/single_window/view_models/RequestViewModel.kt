@@ -33,7 +33,7 @@ class RequestViewModel(request: Request) : ScreenModel, JavaSerializable {
         }
     }
 
-    fun updateField(field: RequirementField<Any>) {
+    fun updateField(field: RequirementField) {
         fields.update { list ->
             list.map {
                 if (it.requirement.id == field.requirement.id) field else it

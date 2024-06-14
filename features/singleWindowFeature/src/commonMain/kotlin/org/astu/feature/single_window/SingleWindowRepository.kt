@@ -1,5 +1,6 @@
 package org.astu.feature.single_window
 
+import org.astu.feature.single_window.client.models.AddTemplateDTO
 import org.astu.feature.single_window.entities.CreatedRequest
 import org.astu.feature.single_window.entities.Request
 import org.astu.feature.single_window.entities.RequirementType
@@ -10,11 +11,11 @@ interface SingleWindowRepository {
 
     suspend fun getRequests(): List<CreatedRequest>
 
-    suspend fun saveTemplate(template: Template)
+    suspend fun saveTemplate(template: AddTemplateDTO)
 
     suspend fun sendRequest(request: Request)
 
     suspend fun getRequirementTypes(): List<RequirementType>
 
-    suspend fun makeAddRequest(template: Template)
+    suspend fun makeAddRequest(template: Template): Request
 }

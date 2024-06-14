@@ -37,9 +37,10 @@ data class AddTemplateDTO (
     * 
     * Values: STUDENT,EMPLOYEE,GRADUATE
     */
+    @Serializable
     enum class Groups(val value: String){
-        STUDENT("STUDENT"),
-        EMPLOYEE("EMPLOYEE"),
+        Student("Student"),
+        Employee("Employee"),
         GRADUATE("GRADUATE");
     }
 }

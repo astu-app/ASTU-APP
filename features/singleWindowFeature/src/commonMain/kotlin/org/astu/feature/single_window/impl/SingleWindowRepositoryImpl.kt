@@ -7,6 +7,7 @@ import org.astu.feature.single_window.SingleWindowRepository
 import org.astu.feature.single_window.client.RequestApi
 import org.astu.feature.single_window.client.models.AddRequestDTO
 import org.astu.feature.single_window.client.models.AddRequirementFieldDTO
+import org.astu.feature.single_window.client.models.AddTemplateDTO
 import org.astu.feature.single_window.client.models.RequirementFieldDTO
 import org.astu.feature.single_window.entities.CreatedRequest
 import org.astu.feature.single_window.entities.CreatedRequirementField
@@ -55,10 +56,8 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
         }
     }
 
-    override suspend fun saveTemplate(template: Template) {
-//        val dto = AddTemplateDTO(template.name, template.description, template.category, template.)
-//        api.apiRequestServiceTemplatePost()
-        TODO("Not yet implemented")
+    override suspend fun saveTemplate(template: AddTemplateDTO) {
+        api.apiRequestServiceTemplatePost(template)
     }
 
     override suspend fun sendRequest(request: Request) {
@@ -81,8 +80,8 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
         }
     }
 
-    override suspend fun makeAddRequest(template: Template) {
-        Request(template, AddRequestDTO.Type.FACETOFACE, "",
+    override suspend fun makeAddRequest(template: Template): Request {
+        return Request(template, AddRequestDTO.Type.FACETOFACE, "",
             template.requirements.map {
                 getField(it)
             })
@@ -97,7 +96,7 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
         }
     }
 
-    private fun getField(field: Requirement): RequirementField<Any> {
+    private fun getField(field: Requirement): RequirementField {
         return when (field.requirementType.uppercase()) {
             "STRING" -> createAddStringField(field)
             "FILE" -> createAddFileField(field)
@@ -105,12 +104,12 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
         }
     }
 
-    private fun createAddStringField(field: Requirement): RequirementField<Any> {
+    private fun createAddStringField(field: Requirement): RequirementField {
         return RequirementField(field, "")
     }
 
-    private fun createAddFileField(field: Requirement): RequirementField<Any> {
-        return RequirementField(field, File())
+    private fun createAddFileField(field: Requirement): RequirementField {
+        return RequirementField(field, "")
     }
 
     private fun createdStringField(field: RequirementFieldDTO): CreatedRequirementField<Any> {
@@ -121,7 +120,7 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
         return CreatedRequirementField(field.name, field.description, field.type, File())
     }
 
-    private fun serializeField(formatter: StringFormat, field: RequirementField<Any>): String {
+    private fun serializeField(formatter: StringFormat, field: RequirementField): String {
         return when (field.requirement.requirementType.uppercase()) {
             "STRING" -> formatter.encodeToString(field.value as String)
             "FILE" -> formatter.encodeToString(field.value as File)

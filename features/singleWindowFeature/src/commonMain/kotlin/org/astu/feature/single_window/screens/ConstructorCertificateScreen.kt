@@ -1,43 +1,95 @@
 package org.astu.feature.single_window.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import org.astu.infrastructure.JavaSerializable
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import org.astu.feature.single_window.entities.AddRequirementField
+import org.astu.feature.single_window.view_models.ConstructorViewModel
 import org.astu.infrastructure.SerializableScreen
-import org.astu.infrastructure.components.ComboBox
 
-class ConstructorCertificateScreen : SerializableScreen {
-
-    private val requirements = mutableStateOf(listOf(Requirement(), Requirement(), Requirement(), Requirement()))
-    private val name = mutableStateOf("")
-    private val description = mutableStateOf("")
+class ConstructorCertificateScreen(val onReturn: () -> Unit) : SerializableScreen {
+    private lateinit var vm: ConstructorViewModel
 
     @Composable
     override fun Content() {
-        Column {
-            NameField()
-            DescriptionField()
+        vm = rememberScreenModel { ConstructorViewModel() }
+        val done = remember { vm.done }
+        if (done.value)
+            list()
+        else
+            done()
+    }
 
-            key(requirements.value) {
-                requirements.value.forEach { requirement ->
-                    RequirementItem(requirement) { requirements.value = requirements.value.minus(it) }
+    @Composable
+    fun done() {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Шаблон был создан.")
+            Button(onReturn) {
+                Text("Вернуться")
+            }
+        }
+    }
+
+    @Composable
+    fun list() {
+        val fields = remember { vm.requirements }
+        LazyColumn {
+            item {
+                NameField()
+            }
+            item {
+                DescriptionField()
+            }
+            item {
+                CategoryField()
+            }
+            item {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(vm.forStudent.value, { vm.forStudent.value = it })
+                    Text("Для студентов")
                 }
             }
+            item {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(vm.forEmployee.value, { vm.forEmployee.value = it })
+                    Text("Для сотрудников")
+                }
+            }
+            item {
+                fields.value.forEach { requirement ->
+                    RequirementItem(requirement)
+                }
+            }
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+                ) {
+                    Button(vm::addRequirement) {
+                        Text("Добавить поле")
+                    }
+                    Button(vm::saveRequirement) {
+                        Text("Создать заявление")
+                    }
+                }
 
-            Button({ requirements.value = requirements.value.plus(Requirement()) }) {
-                Text("+")
             }
         }
     }
 
     @Composable
     fun NameField() {
+        val name = remember { vm.name }
         OutlinedTextField(
             modifier = Modifier.padding(10.dp).fillMaxWidth(),
             value = name.value,
@@ -49,6 +101,7 @@ class ConstructorCertificateScreen : SerializableScreen {
 
     @Composable
     fun DescriptionField() {
+        val description = remember { vm.description }
         OutlinedTextField(
             modifier = Modifier.padding(10.dp).fillMaxWidth(),
             value = description.value,
@@ -58,41 +111,33 @@ class ConstructorCertificateScreen : SerializableScreen {
     }
 
     @Composable
-    fun RequirementItem(requirement: Requirement, onDelete: (Requirement) -> Unit) {
-        val types = mutableListOf("Фото", "Поле")
-
-        var type by remember { requirement.type }
-        var name by remember { requirement.name }
-        var description by remember { requirement.description }
-        var dismiss by remember { mutableStateOf(false) }
-
-        Row(Modifier.padding(10.dp)) {
-            OutlinedTextField(modifier = Modifier.weight(1f), value = name, onValueChange = { name = it })
-            Spacer(Modifier.width(4.dp))
-            OutlinedTextField(modifier = Modifier.weight(2f), value = description, onValueChange = { description = it })
-            Spacer(Modifier.width(4.dp))
-            ComboBox(Modifier.weight(1f),
-                dismiss,
-                onAccept = { dismiss = true },
-                onDismiss = { dismiss = false },
-                text = { Text(type) }) {
-                types.forEach {
-                    TextButton({ type = it }, Modifier.fillMaxWidth(), shape = RectangleShape) {
-                        Text(it)
-                    }
-                }
-            }
-            Spacer(Modifier.width(4.dp))
-            OutlinedButton({ onDelete(requirement) }, colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
-                Text("x")
-            }
-
-        }
+    fun CategoryField() {
+        val category = remember { vm.category }
+        OutlinedTextField(
+            modifier = Modifier.padding(10.dp).fillMaxWidth(),
+            value = category.value,
+            onValueChange = { category.value = it },
+            placeholder = { Text("Категория") }
+        )
     }
 
-    data class Requirement(
-        var name: MutableState<String> = mutableStateOf(""),
-        var description: MutableState<String> = mutableStateOf(""),
-        var type: MutableState<String> = mutableStateOf("None"),
-    )
+    @Composable
+    fun RequirementItem(requirement: AddRequirementField) {
+        Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            OutlinedTextField(modifier = Modifier.fillMaxWidth(), value = requirement.name, onValueChange = {
+                vm.updateRequirement(requirement.copy(name = it))
+            }, placeholder = { Text("Название") })
+            Spacer(Modifier.width(4.dp))
+            OutlinedTextField(modifier = Modifier.fillMaxWidth(), value = requirement.description, onValueChange = {
+                vm.updateRequirement(requirement.copy(description = it))
+            }, placeholder = { Text("Описание") })
+            Spacer(Modifier.width(4.dp))
+            OutlinedButton(
+                { vm.minusRequirement(requirement) },
+            ) {
+                Text("Удалит поле")
+            }
+            HorizontalDivider()
+        }
+    }
 }

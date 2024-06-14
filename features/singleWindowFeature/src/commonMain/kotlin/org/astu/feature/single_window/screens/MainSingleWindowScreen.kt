@@ -1,64 +1,206 @@
 package org.astu.feature.single_window.screens
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
+import androidx.compose.ui.text.style.TextAlign
 import org.astu.feature.single_window.view_models.MainRequestViewModel
-import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.SerializableScreen
 
 class MainSingleWindowScreen : SerializableScreen {
-    private lateinit var viewModel: MainRequestViewModel
-
-    private lateinit var listOfServiceScreen: ListOfServicesSingleWindowScreen
-    private val serviceScreens = mutableStateListOf<ServiceScreen>()
+    private lateinit var vm: MainRequestViewModel
 
     @Composable
     override fun Content() {
-        viewModel = remember { MainRequestViewModel() }
-        listOfServiceScreen =
-            ListOfServicesSingleWindowScreen(
-                vm = viewModel
-            )
+        vm = remember { MainRequestViewModel() }
 
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            if (maxWidth < 700.dp)
-                mobileView()
-            else
-                desktopView()
-        }
-    }
+        val state = remember { vm.state }
+        when (state.value) {
+            MainRequestViewModel.State.Done -> TODO()
+            is MainRequestViewModel.State.Error -> TODO()
+            MainRequestViewModel.State.Init -> TODO()
+            MainRequestViewModel.State.Loading -> TopBar {
+                Loading(Modifier.padding(it))
+            }
 
-    @Composable
-    fun desktopView() = Row {
-        Column(Modifier.weight(3f).fillMaxHeight()) {
-            listOfServiceScreen.Content()
-        }
-        HorizontalDivider(Modifier.weight(0.01f).fillMaxHeight(), 4.dp)
-        Column(Modifier.weight(6f)) {
-            if (serviceScreens.any()) {
-                serviceScreens.last().Content()
+            MainRequestViewModel.State.ShowList -> TopBarOfList {
+                Box(Modifier.padding(it)) {
+                    vm.currentScreen.value?.Content()
+                }
+            }
+
+            MainRequestViewModel.State.ShowCreate -> TopBarOfCreate {
+                Box(Modifier.padding(it)) {
+                    vm.createScreen.value?.Content()
+                }
+            }
+
+            MainRequestViewModel.State.ShowScreen -> TopBar {
+                Box(Modifier.padding(it)) {
+                    vm.currentScreen.value?.Content()
+                }
             }
         }
     }
 
     @Composable
-    fun mobileView() = Column {
-        if (serviceScreens.any()) {
-            serviceScreens.last().Content()
-        } else
-            listOfServiceScreen.Content()
+    fun Loading(modifier: Modifier) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+
+        }
     }
 
-    private fun addScreen(screen: ServiceScreen) {
-        serviceScreens.add(screen)
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun TopBar(content: @Composable (PaddingValues) -> Unit) {
+        val currentScreen = remember { vm.currentScreen }
+        Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    currentScreen.value?.onReturn?.let {
+                        IconButton(it) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    }
+                },
+                title = {
+                    currentScreen.value?.name?.let {
+                        Text(it, textAlign = TextAlign.Center)
+                    } ?: Text("АГТУ.Заявка", textAlign = TextAlign.Center)
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+            )
+        }, content = content)
     }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun TopBarOfScreen(content: @Composable (PaddingValues) -> Unit) {
+        val currentScreen = remember { vm.currentScreen }
+        Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    currentScreen.value?.onReturn?.let {
+                        IconButton(it) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    }
+                },
+                title = {
+                    currentScreen.value?.name?.let {
+                        Text(it, textAlign = TextAlign.Center)
+                    } ?: Text("АГТУ.Заявка", textAlign = TextAlign.Center)
+                },
+                                actions = {
+                    IconButton(vm::openConstructor) {
+                        Icon(
+                            Icons.Default.Send,
+                            contentDescription = null
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+            )
+        }, content = content)
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun TopBarOfCreate(content: @Composable (PaddingValues) -> Unit) {
+        val createScreen = remember { vm.createScreen }
+
+        Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    createScreen.value?.onReturn?.let {
+                        IconButton(it) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    }
+                },
+                title = {
+                    Text("Конструктор", textAlign = TextAlign.Center)
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+//                actions = {
+//                    IconButton(vm::openConstructor) {
+//                        Icon(
+//                            Icons.Default.Add,
+//                            contentDescription = null
+//                        )
+//                    }
+//                }
+            )
+        }, content = content)
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun TopBarOfList(content: @Composable (PaddingValues) -> Unit) {
+        val currentScreen = remember { vm.currentScreen }
+        Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    currentScreen.value?.onReturn?.let {
+                        IconButton(it) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    }
+                },
+                title = {
+                    currentScreen.value?.name?.let {
+                        Text(it, textAlign = TextAlign.Center)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                actions = {
+                    IconButton(vm::openConstructor) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        }, content = content)
+    }
+
 }

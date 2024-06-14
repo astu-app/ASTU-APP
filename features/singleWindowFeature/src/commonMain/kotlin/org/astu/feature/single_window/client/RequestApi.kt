@@ -18,7 +18,7 @@ import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import org.astu.feature.single_window.client.models.AddRequestDTO
 import org.astu.feature.single_window.client.models.AddRequirementTypeDTO
 import org.astu.feature.single_window.client.models.AddTemplateDTO
@@ -173,6 +173,7 @@ class RequestApi(private val baseUrl: String = "/"): JavaSerializable {
      */
     suspend fun apiRequestServiceTemplatePost(body: AddTemplateDTO): String {
         val response = client.post("${baseUrl}api/request-service/template") {
+            contentType(ContentType.Application.Json)
             setBody(body)
         }
 

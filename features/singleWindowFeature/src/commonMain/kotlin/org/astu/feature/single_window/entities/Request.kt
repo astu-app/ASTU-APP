@@ -7,5 +7,5 @@ class Request(
     val template: Template,
     val type: AddRequestDTO.Type,
     val email: String? = null,
-    val fields: List<RequirementField<Any>>
+    val fields: List<RequirementField>
 ): JavaSerializable

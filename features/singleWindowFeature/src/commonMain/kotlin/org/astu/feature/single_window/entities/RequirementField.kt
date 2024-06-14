@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 import org.astu.infrastructure.JavaSerializable
 
 @Serializable
-class RequirementField<T>(val requirement: Requirement, var value: T): JavaSerializable
+class RequirementField(val requirement: Requirement, var value: String): JavaSerializable
 

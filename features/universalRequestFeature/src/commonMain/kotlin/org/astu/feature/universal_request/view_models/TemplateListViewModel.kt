@@ -27,7 +27,7 @@ class TemplateListViewModel : StateScreenModel<TemplateListViewModel.State>(Stat
 
     val templates = mutableStateOf(listOf<TemplateDTO>())
     var screen: MutableState<SerializableScreen?> = mutableStateOf(null)
-    val repository by GlobalDIContext.inject<UniversalTemplateRepository>()
+    private val repository by GlobalDIContext.inject<UniversalTemplateRepository>()
 
     init {
         mutableState.value = State.Loading
@@ -42,7 +42,7 @@ class TemplateListViewModel : StateScreenModel<TemplateListViewModel.State>(Stat
         mutableState.value = State.ShowTemplate
     }
 
-    fun retryLoad() {
+    private fun retryLoad() {
         screenModelScope.launch {
             runCatching {
                 repository.getAllTemplates()
