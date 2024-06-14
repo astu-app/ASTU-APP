@@ -20,7 +20,7 @@ class ConstructorCertificateScreen(val onReturn: () -> Unit) : SerializableScree
     override fun Content() {
         vm = rememberScreenModel { ConstructorViewModel() }
         val done = remember { vm.done }
-        if (done.value)
+        if (!done.value)
             list()
         else
             done()

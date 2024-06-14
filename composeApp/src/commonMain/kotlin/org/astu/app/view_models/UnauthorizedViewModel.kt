@@ -25,11 +25,6 @@ class UnauthorizedViewModel(onAuth: () -> Unit) : ScreenModel, JavaSerializable 
                 label = { Text("Расписание") },
                 icon = { Icon(TablerIcons.CalendarEvent, contentDescription = null) },
                 screen = ScheduleScreen()
-            ),
-            UnitOfNavigationBar(
-                label = { Text("Расписание") },
-                icon = { Icon(TablerIcons.CalendarEvent, contentDescription = null) },
-                screen = TemplateListScreen()
             )
         )
 }

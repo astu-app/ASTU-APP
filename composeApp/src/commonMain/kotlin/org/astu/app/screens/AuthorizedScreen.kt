@@ -15,15 +15,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import compose.icons.TablerIcons
-import compose.icons.tablericons.CalendarEvent
-import compose.icons.tablericons.FileExport
-import compose.icons.tablericons.Messages
-import compose.icons.tablericons.User
+import compose.icons.tablericons.*
 import org.astu.app.view_models.AuthorizedViewModel
 import org.astu.feature.bulletinBoard.views.screens.BulletInBoardScreen
 import org.astu.feature.chat.screens.ChannelListScreen
 import org.astu.feature.schedule.screens.ScheduleScreen
 import org.astu.feature.single_window.screens.MainSingleWindowScreen
+import org.astu.feature.universal_request.screens.TemplateListScreen
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.UnitOfNavigationBar
@@ -46,11 +44,11 @@ class AuthorizedScreen : SerializableScreen {
                     label = { Text("АГТУ.Заявка") },
                     icon = { Icon(TablerIcons.FileExport, contentDescription = null) },
                     screen = MainSingleWindowScreen()
-                ),
-                UnitOfNavigationBar(
-                    label = { Text("Чат") },
-                    icon = { Icon(TablerIcons.Messages, contentDescription = null) },
-                    screen = ChannelListScreen()
+//                ),
+//                UnitOfNavigationBar(
+//                    label = { Text("Чат") },
+//                    icon = { Icon(TablerIcons.Messages, contentDescription = null) },
+//                    screen = ChannelListScreen()
                 ),
                 UnitOfNavigationBar(
                     label = { Text("Расписание") },
@@ -64,6 +62,11 @@ class AuthorizedScreen : SerializableScreen {
                         nav::popUntilRoot.invoke()
                         viewModel.logout()
                     }
+                ),
+                UnitOfNavigationBar(
+                    label = { Text("Универсальные заявки") },
+                    icon = { Icon(TablerIcons.File, contentDescription = null) },
+                    screen = TemplateListScreen()
                 )
             )
         }
