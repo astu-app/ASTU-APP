@@ -20,7 +20,6 @@ import compose.icons.tablericons.User
 import org.astu.app.view_models.AuthorizedViewModel
 import org.astu.feature.bulletinBoard.views.screens.BulletInBoardScreen
 import org.astu.feature.schedule.screens.ScheduleScreen
-import org.astu.feature.single_window.screens.MainSingleWindowScreen
 import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.UnitOfNavigationBar
 import org.astu.infrastructure.components.NavigationBarScreens
@@ -30,6 +29,8 @@ class AuthorizedScreen : SerializableScreen {
 
     @Composable
     override fun Content() {
+        viewModel = remember { AuthorizedViewModel() }
+
         val nav = LocalNavigator.currentOrThrow
         val screens = remember {
             listOf(
@@ -39,9 +40,9 @@ class AuthorizedScreen : SerializableScreen {
                     screen = BulletInBoardScreen()
                 ),
                 UnitOfNavigationBar(
-                    label = { Text("АГТУ.Заявка") },
+                    label = { Text("Услуги") },
                     icon = { Icon(TablerIcons.FileExport, contentDescription = null) },
-                    screen = MainSingleWindowScreen()
+                    screen = AllServicesScreen()
 //                ),
 //                UnitOfNavigationBar(
 //                    label = { Text("Чат") },

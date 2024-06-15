@@ -32,13 +32,16 @@ object NotificationManager: JavaSerializable {
 
     @OptIn(InternalAPI::class)
     suspend fun loadExistingNotifications() {
-        val response = client.get("http://${config.host}/application/${config.clientId}/message?token=${config.clientToken}")
-        Logger.d(response.content.readUTF8Line(Int.MAX_VALUE) ?: "no content", tag = "notifications")
+        runCatching {
+            val response = client.get("http://${config.host}/application/${config.clientId}/message?token=${config.clientToken}")
+            Logger.d(response.content.readUTF8Line(Int.MAX_VALUE) ?: "no content", tag = "notifications")
 
-        val notifications = response.body<NotificationMessageList>()
-        notifications.messages.forEach {
-            handleMessage(it)
+            val notifications = response.body<NotificationMessageList>()
+            notifications.messages.forEach {
+                handleMessage(it)
+            }
         }
+
     }
 
     suspend fun connect() {

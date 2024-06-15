@@ -61,7 +61,7 @@ class MainRequestViewModel : StateScreenModel<MainRequestViewModel.State>(State.
         }
     }
 
-    private fun loadTemplates() {
+    fun loadTemplates() {
         screenModelScope.launch {
             runCatching {
                 repository.getTemplates()

@@ -30,7 +30,7 @@ class UnauthorizedViewModel(onAuth: () -> Unit) : ScreenModel, JavaSerializable 
             UnitOfNavigationBar(
                 label = { Text("Универсальные заявки") },
                 icon = { Icon(TablerIcons.File, contentDescription = null) },
-                screen = TemplateListScreen()
+                screen = TemplateListScreen(){}
             )
         )
 }

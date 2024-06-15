@@ -1,13 +1,6 @@
 package org.astu.feature.universal_request.screens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -49,6 +42,10 @@ class AddTemplateScreen(private val onReturn: () -> Unit) : SerializableScreen {
                 Show(Modifier.padding(it))
             }
 
+            AddTemplateViewModel.State.Done -> TopBar {
+                done(Modifier.padding(it))
+            }
+
             else -> TODO()
         }
     }
@@ -61,6 +58,20 @@ class AddTemplateScreen(private val onReturn: () -> Unit) : SerializableScreen {
         ) {
             CircularProgressIndicator()
 
+        }
+    }
+
+    @Composable
+    fun done(modifier: Modifier) {
+        Column(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Шаблон был создан.")
+            Button(onReturn) {
+                Text("Вернуться")
+            }
         }
     }
 

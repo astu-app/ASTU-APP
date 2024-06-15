@@ -42,7 +42,7 @@ class TemplateListViewModel : StateScreenModel<TemplateListViewModel.State>(Stat
         mutableState.value = State.ShowTemplate
     }
 
-    private fun retryLoad() {
+    fun retryLoad() {
         screenModelScope.launch {
             runCatching {
                 repository.getAllTemplates()
@@ -68,6 +68,7 @@ class TemplateListViewModel : StateScreenModel<TemplateListViewModel.State>(Stat
 
     fun openAddScreen() {
         screen.value = AddTemplateScreen {
+            retryLoad()
             screen.value = null
             mutableState.value = State.ShowList
         }

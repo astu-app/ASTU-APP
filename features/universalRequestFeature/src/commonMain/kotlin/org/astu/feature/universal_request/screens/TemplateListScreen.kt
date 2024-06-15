@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,33 +29,25 @@ import org.astu.feature.universal_request.client.models.TemplateDTO
 import org.astu.feature.universal_request.view_models.TemplateListViewModel
 import org.astu.infrastructure.SerializableScreen
 
-class TemplateListScreen : SerializableScreen {
+class TemplateListScreen(val onReturn: () -> Unit) : SerializableScreen {
     private lateinit var vm: TemplateListViewModel
 
 
     @Composable
     override fun Content() {
         vm = rememberScreenModel { TemplateListViewModel() }
-//        val context = LocalPlatformContext.current
-//        val pickerLauncher = rememberFilePickerLauncher(
-//            type = FilePickerFileType.Word,
-//            selectionMode = FilePickerSelectionMode.Single,
-//            onResult = { files ->
-//                files.forEach {
-//                    println(it.getName(context))
-//                }
-//            }
-//        )
         val state by remember { vm.state }
         val screen by remember { vm.screen }
         when (state) {
             is TemplateListViewModel.State.Error -> TopBar {
                 ErrorScreen(Modifier.padding(it))
             }
+
             TemplateListViewModel.State.Init -> TODO()
             TemplateListViewModel.State.Loading -> TopBar {
                 Loading(Modifier.padding(it))
             }
+
             TemplateListViewModel.State.ShowTemplate -> screen?.Content()
             TemplateListViewModel.State.ShowAddScreen -> screen?.Content()
             TemplateListViewModel.State.ShowList -> {
@@ -81,7 +75,7 @@ class TemplateListScreen : SerializableScreen {
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-             val state = vm.state.value as TemplateListViewModel.State.Error
+            val state = vm.state.value as TemplateListViewModel.State.Error
             Text(state.message)
 
         }
@@ -93,12 +87,20 @@ class TemplateListScreen : SerializableScreen {
         Box(
             modifier.fillMaxSize(),
         ) {
-            LazyColumn {
-                items(templates.value) {
-                    TemplateListItem(it)
-                    HorizontalDivider()
+            if (templates.value.isNotEmpty()) {
+                LazyColumn {
+                    items(templates.value) {
+                        TemplateListItem(it)
+                        HorizontalDivider()
+                    }
                 }
-            }
+            } else
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text("Пока заявлений нет")
+                }
         }
     }
 
@@ -107,17 +109,34 @@ class TemplateListScreen : SerializableScreen {
     fun TopBar(content: @Composable (PaddingValues) -> Unit) {
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(
-                { Text("Универсальные заявления", textAlign = TextAlign.Center) },
+                navigationIcon = {
+                    IconButton(onReturn) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                },
+                title = { Text("Универсальные заявления", textAlign = TextAlign.Center) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 actions = {
-                    IconButton(vm::openAddScreen) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = null
-                        )
+                    Row {
+                        IconButton(vm::openAddScreen) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = null
+                            )
+                        }
+                        IconButton(vm::retryLoad) {
+                            Icon(
+                                Icons.Default.Update,
+                                contentDescription = null
+                            )
+                        }
+
                     }
                 }
             )

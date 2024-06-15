@@ -1,13 +1,11 @@
 package org.astu.feature.single_window.screens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -17,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import org.astu.feature.single_window.view_models.MainRequestViewModel
 import org.astu.infrastructure.SerializableScreen
 
-class MainSingleWindowScreen : SerializableScreen {
+class MainSingleWindowScreen(val onReturn: () -> Unit) : SerializableScreen {
     private lateinit var vm: MainRequestViewModel
 
     @Composable
@@ -114,7 +112,7 @@ class MainSingleWindowScreen : SerializableScreen {
                         Text(it, textAlign = TextAlign.Center)
                     } ?: Text("АГТУ.Заявка", textAlign = TextAlign.Center)
                 },
-                                actions = {
+                actions = {
                     IconButton(vm::openConstructor) {
                         Icon(
                             Icons.Default.Send,
@@ -154,14 +152,6 @@ class MainSingleWindowScreen : SerializableScreen {
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
-//                actions = {
-//                    IconButton(vm::openConstructor) {
-//                        Icon(
-//                            Icons.Default.Add,
-//                            contentDescription = null
-//                        )
-//                    }
-//                }
             )
         }, content = content)
     }
@@ -173,13 +163,11 @@ class MainSingleWindowScreen : SerializableScreen {
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(
                 navigationIcon = {
-                    currentScreen.value?.onReturn?.let {
-                        IconButton(it) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Localized description"
-                            )
-                        }
+                    IconButton(onReturn) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Localized description"
+                        )
                     }
                 },
                 title = {
@@ -192,11 +180,19 @@ class MainSingleWindowScreen : SerializableScreen {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 actions = {
-                    IconButton(vm::openConstructor) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = null
-                        )
+                    Row{
+                        IconButton(vm::openConstructor) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = null
+                            )
+                        }
+                        IconButton(vm::loadTemplates) {
+                            Icon(
+                                Icons.Default.Update,
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
             )

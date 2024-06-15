@@ -1,5 +1,6 @@
 package org.astu.app
 
+import org.astu.infrastructure.AccountUser
 import org.astu.infrastructure.DependencyInjection.DependencyInjector
 import org.astu.infrastructure.DependencyInjection.FeatureModule
 import org.astu.infrastructure.DependencyInjection.KodeinDependencyInjector
@@ -17,5 +18,6 @@ object MainModule: FeatureModule {
             clientId = 1,
             clientToken = "CjO4CU7tmHjaaug" // todo изменить токен приложения
         ) }
+        bind<AccountUser>() with singleton { AccountUser() }
     })
 }
