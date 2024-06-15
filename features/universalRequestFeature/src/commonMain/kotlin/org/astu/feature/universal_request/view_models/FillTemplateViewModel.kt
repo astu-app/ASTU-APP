@@ -2,7 +2,7 @@ package org.astu.feature.universal_request.view_models
 
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.screenModelScope
-import io.github.vinceglb.filekit.core.FileKit
+//import io.github.vinceglb.filekit.core.FileKit
 import kotlinx.coroutines.launch
 import org.astu.feature.universal_request.UniversalTemplateRepository
 import org.astu.feature.universal_request.client.models.TemplateDTO
@@ -11,6 +11,7 @@ import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.StateScreenModel
 import org.astu.infrastructure.exceptions.ApiException
+import org.astu.infrastructure.utils.file.FileUtils
 
 class FillTemplateViewModel(private val templateDTO: TemplateDTO) :
     StateScreenModel<FillTemplateViewModel.State>(State.Init), JavaSerializable {
@@ -69,7 +70,7 @@ class FillTemplateViewModel(private val templateDTO: TemplateDTO) :
                 }
 
             }.onSuccess { bytes ->
-                FileKit.saveFile(bytes, templateDTO.name,"doc")
+                FileUtils.saveFile(bytes, templateDTO.name,"doc")
             }
         }
     }

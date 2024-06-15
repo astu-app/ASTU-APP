@@ -17,11 +17,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import com.mohamedrejeb.calf.core.LocalPlatformContext
-import com.mohamedrejeb.calf.io.getName
-import com.mohamedrejeb.calf.picker.FilePickerFileType
-import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
-import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
+//import com.mohamedrejeb.calf.core.LocalPlatformContext
+//import com.mohamedrejeb.calf.io.getName
+//import com.mohamedrejeb.calf.picker.FilePickerFileType
+//import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
+//import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import org.astu.feature.universal_request.client.models.TemplateDTO
 import org.astu.feature.universal_request.client.models.TemplateFieldDTO
 import org.astu.feature.universal_request.view_models.FillTemplateViewModel
@@ -76,17 +76,17 @@ class FillTemplateScreen(var templateDTO: TemplateDTO, val onReturn: () -> Unit)
     fun Show(modifier: Modifier) {
         val fields = remember { vm.templateFields }
 
-        val context = LocalPlatformContext.current
-        val pickerLauncher = rememberFilePickerLauncher(
-            type = FilePickerFileType.Folder,
-            selectionMode = FilePickerSelectionMode.Single,
-            onResult = { files ->
-                files.forEach {
+//        val context = LocalPlatformContext.current
+//        val pickerLauncher = rememberFilePickerLauncher(
+//            type = FilePickerFileType.Folder,
+//            selectionMode = FilePickerSelectionMode.Single,
+//            onResult = { files ->
+//                files.forEach {
 //                    vm.outputPath.value = it.getName(context) ?: ""
-                    println(it.getName(context))
-                }
-            }
-        )
+//                    println(it.getName(context))
+//                }
+//            }
+//        )
 
         LazyColumn(
             modifier.fillMaxSize(),

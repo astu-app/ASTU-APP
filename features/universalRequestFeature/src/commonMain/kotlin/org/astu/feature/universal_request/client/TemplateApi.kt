@@ -2,13 +2,11 @@ package org.astu.feature.universal_request.client
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.forms.FormPart
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.*
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsChannel
+import io.ktor.client.statement.*
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
@@ -16,6 +14,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.append
 import io.ktor.http.contentType
 import io.ktor.util.toByteArray
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.astu.feature.universal_request.client.models.TemplateDTO
 import org.astu.feature.universal_request.client.models.TemplateFieldDTO
 import org.astu.feature.universal_request.client.models.TemplateInfo
@@ -23,8 +23,8 @@ import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.exceptions.ApiException
 
-class TemplateApi(private val baseUrl: String): JavaSerializable {
-//    private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
+class TemplateApi(private val baseUrl: String) : JavaSerializable {
+    //    private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
     private val client by GlobalDIContext.inject<HttpClient>()
 //    private val client = securityHttpClient.instance
 
@@ -33,19 +33,19 @@ class TemplateApi(private val baseUrl: String): JavaSerializable {
         if (!filename.endsWith(".doc") && !filename.endsWith(".docx")) {
             throw RuntimeException()
         }
-        val response = client.post("${baseUrl}api/uni-request-service/templates/upload") {
-            setBody(MultiPartFormDataContent(
-                formData {
-                    append("file", array, Headers.build {
-                        append(HttpHeaders.ContentDisposition, "filename=$filename")
-                    })
-                    FormPart("info", info, Headers.build {
-                        append(HttpHeaders.ContentType, ContentType.Application.Json)
-                    })
-                }
-            ))
-        }
-
+        val response = client.submitFormWithBinaryData(url = "${baseUrl}api/uni-request-service/templates/upload",
+            formData = formData {
+                append("file", array, Headers.build {
+                    append(HttpHeaders.ContentDisposition, "filename=$filename")
+                })
+                val form = Json.encodeToString(info)
+                append("info", form, Headers.build {
+                    append(HttpHeaders.ContentType, ContentType.Application.Json)
+                })
+            }
+        )
+        println(response.status)
+        println(response.bodyAsText())
         return when (response.status) {
             HttpStatusCode.OK -> response.body<Unit>()
             HttpStatusCode.BadRequest -> throw ApiException("Некорректный запрос")
@@ -64,6 +64,7 @@ class TemplateApi(private val baseUrl: String): JavaSerializable {
     }
 
     suspend fun fillTemplate(templateId: String, fields: List<TemplateFieldDTO>): ByteArray {
+        println("template id $templateId")
         val response = client.post("${baseUrl}api/uni-request-service/templates/${templateId}") {
             contentType(ContentType.Application.Json)
             setBody(fields)

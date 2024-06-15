@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
-
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose)
@@ -56,8 +54,8 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kodein)
             implementation(libs.calf.ui)
-            implementation(libs.calf.file.picker)
-            implementation(libs.filekit.core)
+//            implementation(libs.calf.file.picker)
+//            implementation(libs.filekit.core)
         }
 
         commonTest.dependencies {
