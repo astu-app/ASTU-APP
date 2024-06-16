@@ -9,6 +9,7 @@ import org.astu.infrastructure.gateway.models.AccountDTO
 class AccountUser {
     private val config by GlobalDIContext.inject<GatewayServiceConfig>()
     private val instance: MutableState<AccountDTO?> = mutableStateOf(null)
+
     suspend fun checkPerm(condition: (AccountDTO) -> Boolean): Boolean {
         val client = AccountApi(config.url)
         runCatching {
@@ -25,7 +26,23 @@ class AccountUser {
         return false
     }
 
-    fun current(): MutableState<AccountDTO?> = instance
+    suspend fun current(): AccountDTO? {
+        if (instance.value != null)
+            return instance.value
+
+        println(instance.value)
+
+        val client = AccountApi(config.url)
+        runCatching {
+            client.apiAccountGet()
+        }.onSuccess {
+            println(it)
+            instance.value = it
+        }.onFailure {
+            println(it)
+        }
+        return instance.value
+    }
 
     fun logout() {
         instance.value = null

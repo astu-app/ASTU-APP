@@ -29,6 +29,8 @@ class AccountApi(private val baseUrl: String = "/") {
      */
     suspend fun apiAccountGet(): AccountDTO {
         val response = client.get("${baseUrl}api/account-service/me")
+        println(response.status)
+        println(response)
         return when (response.status) {
             HttpStatusCode.OK -> response.body<AccountDTO>()
             else -> throw RuntimeException()
