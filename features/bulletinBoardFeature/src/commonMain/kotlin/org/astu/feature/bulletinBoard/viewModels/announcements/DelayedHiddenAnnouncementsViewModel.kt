@@ -46,7 +46,7 @@ class DelayedHiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : St
 
                 val announcements = model.getDelayedHiddenAnnouncementList()
                 if (announcements.isContentValid) {
-                    content.clear()
+                    content.removeAll { true }
                     content.addAll(announcements.content!!)
                     mutableState.value = State.LoadingDone
                     return@launch

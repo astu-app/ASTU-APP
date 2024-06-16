@@ -1,4 +1,4 @@
-package org.astu.infrastructure.utils
+package org.astu.infrastructure.modifierUtils
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable

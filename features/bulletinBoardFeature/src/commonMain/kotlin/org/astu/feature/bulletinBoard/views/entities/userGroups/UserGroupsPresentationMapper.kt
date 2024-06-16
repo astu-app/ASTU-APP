@@ -8,19 +8,23 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
-import org.astu.feature.bulletinBoard.models.entities.audience.*
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroup
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupDetails
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
+import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupSummary
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
-import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.Leaf
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.Node
 import org.astu.feature.bulletinBoard.views.entities.userGroups.details.UserGroupDetailsContent
 import org.astu.feature.bulletinBoard.views.entities.userGroups.summary.UserGroupSummaryContent
-import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
 import org.astu.feature.bulletinBoard.views.entities.users.UserToPresentationMappers.toPresentation
 import kotlin.jvm.JvmName
 
@@ -28,16 +32,10 @@ object UserGroupsPresentationMapper {
     private val mappedNodes: MutableMap<Uuid, INode> = mutableMapOf()
 
 
-    @JvmName("AudienceHierarchyToDetailedUserGroupHierarchy")
-    fun UserGroupHierarchy.toDetailedUserGroupHierarchy(): List<INode> {
-        mappedNodes.clear()
-        return this.roots.map { mapDetailedUserGroupHierarchyNode(it) }
-    }
-
     @JvmName("AudienceHierarchyToShortUserGroupHierarchy")
     fun UserGroupHierarchy.toShortUserGroupHierarchy(
         onUserGroupClick: (UserGroup) -> Unit = { },
-        onUserGroupLongPress: (UserGroup, DpOffset) -> Unit
+        onUserGroupLongPress: (UserGroup, LayoutCoordinates, DpOffset) -> Unit,
     ): List<INode> {
         mappedNodes.clear()
         return this.roots.map { mapShortUserGroupHierarchyNode(it, onUserGroupClick, onUserGroupLongPress) }
@@ -63,31 +61,11 @@ object UserGroupsPresentationMapper {
         UserGroupSummaryContent(this.id, this.name, this.adminName)
 
 
-    private fun mapDetailedUserGroupHierarchyNode(userGroup: UserGroup): Node {
-        if (mappedNodes.containsKey(userGroup.id)) {
-            return mappedNodes[userGroup.id] as Node
-        }
-
-        val members = mapMembers(userGroup.members)
-        val childUserGroups = userGroup.userGroups.map { mapDetailedUserGroupHierarchyNode(it) }
-
-        val childrenNodes = members + childUserGroups
-        val userGroupNode = Node(
-            children = childrenNodes,
-            content = makeStaticUserGroupText(userGroup.name, userGroup.adminName, { }, { })
-        )
-
-        userGroupNode.content = makeStaticUserGroupText(userGroup.name, userGroup.adminName, { }, { })
-        childrenNodes.forEach { it.parentNodes.add(userGroupNode) }
-
-        mappedNodes[userGroup.id] = userGroupNode
-        return userGroupNode
-    }
 
     private fun mapShortUserGroupHierarchyNode(
         userGroup: UserGroup,
         onUserGroupClicked: (UserGroup) -> Unit,
-        onUserGroupLongPress: (UserGroup, DpOffset) -> Unit
+        onUserGroupLongPress: (UserGroup, LayoutCoordinates, DpOffset) -> Unit,
     ): Node {
         if (mappedNodes.containsKey(userGroup.id)) {
             return mappedNodes[userGroup.id] as Node
@@ -100,7 +78,7 @@ object UserGroupsPresentationMapper {
                 groupName = userGroup.name,
                 adminName = userGroup.adminName,
                 onTap = { onUserGroupClicked.invoke(userGroup) },
-                onLongPress = { offset -> onUserGroupLongPress.invoke(userGroup, offset) }
+                onLongPress = { coordinates, offset -> onUserGroupLongPress.invoke(userGroup, coordinates, offset) },
             )
         )
 
@@ -110,26 +88,28 @@ object UserGroupsPresentationMapper {
         return userGroupNode
     }
 
-    fun makeStaticUserGroupText(
+    private fun makeStaticUserGroupText(
         groupName: String,
         adminName: String?,
         onTap: (Offset) -> Unit,
-        onLongPress: (DpOffset) -> Unit
+        onLongPress: (LayoutCoordinates, DpOffset) -> Unit,
     ): @Composable () -> Unit = {
+        var globalPosition: LayoutCoordinates? = remember { null }
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .pointerInput(true) {
+                .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = onTap,
                         onLongPress = {
-                            val offset = DpOffset(it.x.toDp(), it.y.toDp()) // todo корректная позиция dropdown'а
-                            onLongPress.invoke(offset)
+                            val offset = DpOffset(it.x.toDp(), it.y.toDp())
+                            onLongPress.invoke(globalPosition!!, offset)
                         }
                     )
-                },
+                }
+                .onGloballyPositioned { globalPosition = it },
         ) {
             Text(
                 text = groupName,
@@ -148,43 +128,5 @@ object UserGroupsPresentationMapper {
             )
         }
 
-    }
-
-
-    private fun mapMembers(members: List<User>): List<Leaf> {
-        return members.map { mapMember(it) }
-    }
-
-    private fun mapMember(member: User): Leaf {
-        if (mappedNodes.containsKey(member.id)) {
-            return mappedNodes[member.id] as Leaf
-        }
-
-        val userSummary = UserSummary(member.id, member.firstName, member.secondName, member.patronymic)
-        val userLeaf = Leaf(content = { })
-
-        userLeaf.content = makeStaticUserText(userSummary)
-
-        mappedNodes[member.id] = userLeaf
-        return userLeaf
-    }
-
-    private fun makeStaticUserText(
-        user: UserSummary,
-        modifier: Modifier = Modifier,
-    ): @Composable () -> Unit = {
-        Column(modifier = modifier) {
-            Text(
-                text = user.firstName
-            )
-            val secondPartOfName =
-                if (user.patronymic != null)
-                    "${user.secondName} ${user.patronymic}"
-                else user.secondName
-            Text(
-                text = secondPartOfName,
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }
     }
 }

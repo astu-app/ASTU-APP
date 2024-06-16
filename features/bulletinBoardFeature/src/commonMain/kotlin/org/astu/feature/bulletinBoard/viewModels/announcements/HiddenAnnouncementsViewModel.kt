@@ -44,10 +44,9 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
             try {
                 mutableState.value = State.Loading
 
-
                 val announcements = model.getHiddenAnnouncementList()
                 if (announcements.isContentValid) {
-                    content.clear()
+                    content.removeAll { true }
                     content.addAll(announcements.content!!)
                     mutableState.value = State.LoadingDone
                     return@launch

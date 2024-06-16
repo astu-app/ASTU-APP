@@ -2,7 +2,11 @@ package org.astu.feature.bulletinBoard.viewModels.userGroups
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import cafe.adriel.voyager.navigator.Navigator
@@ -31,10 +35,14 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
     var userGroups: SnapshotStateList<INode> = mutableStateListOf()
 
     var pressOffset by mutableStateOf(DpOffset.Zero)
+    var selectedUserGroupPosition: LayoutCoordinates? = null
     var showDropDown by mutableStateOf(false)
     var selectedUserGroupId by mutableStateOf(uuidFrom("00000000-0000-0000-0000-000000000000"))
     var selectedUserGroupName by mutableStateOf("Группа пользователей")
     var currentDensity by mutableStateOf(1f)
+
+    val selectedUserGroupYPosition: Dp
+        get() = selectedUserGroupPosition?.positionInRoot()?.y?.dp ?: 0.dp
 
     private val unexpectedErrorTitle: String = "Ошибка"
     private val unexpectedErrorBody: String = "Неожиданная ошибка. Повторите попытку"
@@ -62,12 +70,17 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
                                 val userGroupDetailsScreen = UserGroupDetailsScreen(it.id, it.name) { navigator.pop() }
                                 navigator.push(userGroupDetailsScreen)
                             },
-                            onUserGroupLongPress = { userGroup, offset ->
+                            onUserGroupLongPress = { userGroup, position, offset ->
                                 selectedUserGroupId = userGroup.id
                                 selectedUserGroupName = userGroup.name
+                                selectedUserGroupPosition = try {
+                                    position
+                                } catch (e: Exception) {
+                                    null
+                                }
                                 pressOffset = offset
                                 showDropDown = true
-                            }
+                            },
                         )
                     )
                     mutableState.value = State.LoadingDone

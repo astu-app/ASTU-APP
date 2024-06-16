@@ -30,12 +30,8 @@ fun AnnouncementSummary(
     content: AnnouncementSummaryContent,
     headerMoment: String,
     announcementDropDown: @Composable (DpOffset, MutableState<Boolean>) -> Unit,
-    modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .padding(
-            vertical = 8.dp,
-            horizontal = 16.dp
-        ),
+    modifier: Modifier
+
 ) {
     val navigator = LocalNavigator.currentOrThrow
 
@@ -56,7 +52,7 @@ fun AnnouncementSummary(
                 top = 10.dp,
                 bottom = 10.dp
             )
-                .pointerInput(true) {
+                .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
                             val detailsScreen = AnnouncementDetailsScreen(content.id) { navigator.pop() }
