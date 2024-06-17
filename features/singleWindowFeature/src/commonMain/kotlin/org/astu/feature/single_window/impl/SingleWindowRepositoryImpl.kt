@@ -5,18 +5,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.astu.feature.single_window.SingleWindowRepository
 import org.astu.feature.single_window.client.RequestApi
-import org.astu.feature.single_window.client.models.AddRequestDTO
-import org.astu.feature.single_window.client.models.AddRequirementFieldDTO
-import org.astu.feature.single_window.client.models.AddTemplateDTO
-import org.astu.feature.single_window.client.models.RequirementFieldDTO
-import org.astu.feature.single_window.entities.CreatedRequest
-import org.astu.feature.single_window.entities.CreatedRequirementField
-import org.astu.feature.single_window.entities.File
-import org.astu.feature.single_window.entities.Request
-import org.astu.feature.single_window.entities.Requirement
-import org.astu.feature.single_window.entities.RequirementField
-import org.astu.feature.single_window.entities.RequirementType
-import org.astu.feature.single_window.entities.Template
+import org.astu.feature.single_window.client.models.*
+import org.astu.feature.single_window.entities.*
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.GatewayServiceConfig
 import org.astu.infrastructure.JavaSerializable
@@ -28,6 +18,8 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
 
     override suspend fun getTemplates(): List<Template> {
         return api.apiRequestServiceTemplateGet().map { dto ->
+            println("Шаблон: ${dto}")
+            println("Количество полей ${dto.requirements.count()}")
             Template(
                 dto.id,
                 dto.name,
@@ -44,14 +36,44 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
         }
     }
 
-    override suspend fun getRequests(): List<CreatedRequest> {
+    override suspend fun getUserRequests(): List<CreatedRequest> {
         return api.apiRequestServiceUserRequestGet().map { dto ->
             CreatedRequest(
                 dto.id,
                 dto.name,
                 dto.description,
-                dto.fields.map { getCreatedField(it) },
-                dto.createdAt
+                dto.fields.map { CreatedRequirementField(it.name, it.description, it.type, it.value) },
+                dto.createdAt,
+                dto.type,
+                dto.status,
+                dto.message
+            )
+        }
+    }
+
+    override suspend fun failRequest(id: String, body: FailRequestDTO) {
+        return api.apiRequestServiceEmployeeRequestIdFailPost(body, id)
+    }
+
+    override suspend fun removeRequest(id: String) {
+        return api.apiRequestServiceUserRequestIdDelete(id)
+
+    }
+
+    override suspend fun successRequest(id: String, filename: String, body: ByteArray) {
+        api.apiRequestServiceEmployeeRequestIdSuccessPost(id, filename, body)
+    }
+
+    override suspend fun getEmployeeRequests(): List<EmployeeCreatedRequest> {
+        return api.apiRequestServiceEmployeeRequestGet().map { dto ->
+            EmployeeCreatedRequest(
+                dto.id,
+                dto.name,
+                dto.description,
+                dto.fields.map { CreatedRequirementField(it.name, it.description, it.type, it.value) },
+                dto.userInfo!!,
+                dto.createdAt,
+                dto.type
             )
         }
     }
@@ -66,12 +88,13 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
             AddRequirementFieldDTO(it.requirement.id, json.encodeToString(it.value))
         }
 
-        AddRequestDTO(
+        val addDTO = AddRequestDTO(
             request.template.id,
             request.type,
             if (request.email.isNullOrBlank()) null else request.email,
             fields
         )
+        val id = api.apiRequestServiceUserRequestPost(addDTO)
     }
 
     override suspend fun getRequirementTypes(): List<RequirementType> {
@@ -81,7 +104,7 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
     }
 
     override suspend fun makeAddRequest(template: Template): Request {
-        return Request(template, AddRequestDTO.Type.FACETOFACE, "",
+        return Request(template, AddRequestDTO.Type.FaceToFace, "",
             template.requirements.map {
                 getField(it)
             })

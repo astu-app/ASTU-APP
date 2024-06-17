@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kodein)
             implementation(libs.calf.ui)
+            implementation(libs.uuid)
 //            implementation(libs.calf.file.picker)
 //            implementation(libs.filekit.core)
         }

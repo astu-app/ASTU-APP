@@ -33,8 +33,9 @@ data class AddRequestDTO (
     * 
     * Values: FACETOFACE,EMAIL
     */
+    @Serializable
     enum class Type(val value: String){
-        FACETOFACE("FACETOFACE"),
-        EMAIL("EMAIL");
+        FaceToFace("FACETOFACE"),
+        Email("EMAIL");
     }
 }

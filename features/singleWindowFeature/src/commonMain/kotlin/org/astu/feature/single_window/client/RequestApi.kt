@@ -13,8 +13,7 @@ package org.astu.feature.single_window.client
 
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.*
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -30,7 +29,7 @@ import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.SecurityHttpClient
 
-class RequestApi(private val baseUrl: String = "/"): JavaSerializable {
+class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
     private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
     private val client = securityHttpClient.instance
 
@@ -57,6 +56,7 @@ class RequestApi(private val baseUrl: String = "/"): JavaSerializable {
      */
     suspend fun apiRequestServiceEmployeeRequestIdFailPost(body: FailRequestDTO, id: String) {
         val response = client.post("${baseUrl}api/request-service/employee/request/$id/fail") {
+            contentType(ContentType.Application.Json)
             setBody(body)
         }
 
@@ -72,18 +72,17 @@ class RequestApi(private val baseUrl: String = "/"): JavaSerializable {
      * @param id
      * @return kotlin.Any
      */
-    suspend fun apiRequestServiceEmployeeRequestIdSuccessPost(id: String, file: Array<Byte>): Any {
-        val response = client.post("${baseUrl}api/request-service/employee/request/$id/success") {
-            setBody(MultiPartFormDataContent(
-                parts = formData {
-                    //TODO Добавить реализацию
-                    //append()
-                }
-            ))
-        }
+    suspend fun apiRequestServiceEmployeeRequestIdSuccessPost(id: String, filename: String, file: ByteArray): Unit {
+        val response = client.submitFormWithBinaryData(
+            url = "${baseUrl}api/request-service/employee/request/$id/success",
+            formData = formData {
+                append("files", file, Headers.build {
+                    append(HttpHeaders.ContentDisposition, "filename=$filename")
+                })
+            })
 
         return when (response.status) {
-            HttpStatusCode.OK -> response.body<Any>()
+            HttpStatusCode.OK -> response.body<Unit>()
             else -> throw RuntimeException()
         }
     }
@@ -111,6 +110,7 @@ class RequestApi(private val baseUrl: String = "/"): JavaSerializable {
      */
     suspend fun apiRequestServiceUserRequestPost(body: AddRequestDTO): String {
         val response = client.post("${baseUrl}api/request-service/user/request") {
+            contentType(ContentType.Application.Json)
             setBody(body)
         }
 
@@ -135,11 +135,12 @@ class RequestApi(private val baseUrl: String = "/"): JavaSerializable {
     }
 
     /**
-     *
+     * Добавление нового типа требований
      *
      * @param body
      * @return RequirementTypeDTO
      */
+    @Deprecated("")
     suspend fun apiRequestServiceRequirementTypesPost(body: AddRequirementTypeDTO): RequirementTypeDTO {
         val response = client.post("${baseUrl}api/request-service/requirement-types") {
             setBody(body)
@@ -158,7 +159,6 @@ class RequestApi(private val baseUrl: String = "/"): JavaSerializable {
      */
     suspend fun apiRequestServiceTemplateGet(): List<TemplateDTO> {
         val response = client.get("${baseUrl}api/request-service/template")
-
         return when (response.status) {
             HttpStatusCode.OK -> response.body<List<TemplateDTO>>()
             else -> throw RuntimeException()
@@ -166,7 +166,7 @@ class RequestApi(private val baseUrl: String = "/"): JavaSerializable {
     }
 
     /**
-     *
+     * Добавление шаблона
      *
      * @param body
      * @return java.util.UUID

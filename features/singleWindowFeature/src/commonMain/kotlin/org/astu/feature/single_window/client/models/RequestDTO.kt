@@ -14,6 +14,7 @@ package org.astu.feature.single_window.client.models
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.gateway.models.AccountDTO
 
 /**
  * 
@@ -34,6 +35,7 @@ data class RequestDTO (
     val name: String,
     val description: String,
     val userId: String,
+    val userInfo: AccountDTO? = null,
     val type: Type,
     val status: Status,
     val message: String? = null,
@@ -45,17 +47,17 @@ data class RequestDTO (
     * Values: FACETOFACE,EMAIL
     */
     enum class Type(val value: String){
-        FACETOFACE("FACETOFACE"),
-        EMAIL("EMAIL");
+        FaceToFace("FACETOFACE"),
+        Email("EMAIL");
     }
     /**
     * 
     * Values: SUCCESS,INPROGRESS,DENIED,REMOVED
     */
     enum class Status(val value: String){
-        SUCCESS("SUCCESS"),
-        INPROGRESS("INPROGRESS"),
-        DENIED("DENIED"),
-        REMOVED("REMOVED");
+        Success("SUCCESS"),
+        InProgress("INPROGRESS"),
+        Denied("DENIED"),
+        Removed("REMOVED");
     }
 }

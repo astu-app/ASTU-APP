@@ -12,7 +12,6 @@ data class AccountDTO(
     val isStudent: Boolean = false,
     val isTeacher: Boolean = false,
     val isAdmin: Boolean = false,
-    val employeeInfo: EmployeeInfoDTO? = null,
-    val studentInfo: StudentInfoDTO? = null,
-    val teacherInfo: TeacherInfoDTO? = null
+    val departmentId: String? = null,
+    val studentGroupId: String? = null
 )

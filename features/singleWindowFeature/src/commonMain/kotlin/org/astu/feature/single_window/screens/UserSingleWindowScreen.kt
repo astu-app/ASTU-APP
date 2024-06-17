@@ -12,43 +12,44 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import org.astu.feature.single_window.view_models.MainRequestViewModel
+import org.astu.feature.single_window.view_models.EmployeeRequestViewModel
+import org.astu.feature.single_window.view_models.UserRequestViewModel
 import org.astu.infrastructure.SerializableScreen
 
-class MainSingleWindowScreen(val onReturn: () -> Unit) : SerializableScreen {
-    private lateinit var vm: MainRequestViewModel
+class UserSingleWindowScreen(private val onReturn: () -> Unit) : SerializableScreen {
+    private lateinit var vm: UserRequestViewModel
 
     @Composable
     override fun Content() {
-        vm = remember { MainRequestViewModel() }
+        vm = remember { UserRequestViewModel() }
 
         val state = remember { vm.state }
         when (state.value) {
-            MainRequestViewModel.State.Done -> TODO()
-            is MainRequestViewModel.State.Error -> TODO()
-            MainRequestViewModel.State.Init -> TODO()
-            MainRequestViewModel.State.Loading -> TopBar {
+//            MainRequestViewModel.State.Done -> TODO()
+//            is MainRequestViewModel.State.Error -> TODO()
+//            MainRequestViewModel.State.Init -> TODO()
+            UserRequestViewModel.State.Loading -> TopBar {
                 Loading(Modifier.padding(it))
             }
 
-            MainRequestViewModel.State.ShowList -> TopBarOfList {
+            UserRequestViewModel.State.ShowList -> TopBarOfList {
                 Box(Modifier.padding(it)) {
                     vm.currentScreen.value?.Content()
                 }
             }
 
-            MainRequestViewModel.State.ShowCreate -> TopBarOfCreate {
+            UserRequestViewModel.State.ShowCreate -> TopBarOfCreate {
                 Box(Modifier.padding(it)) {
                     vm.createScreen.value?.Content()
                 }
             }
 
-            MainRequestViewModel.State.ShowScreen -> TopBar {
+            UserRequestViewModel.State.ShowScreen -> TopBar {
                 Box(Modifier.padding(it)) {
                     vm.currentScreen.value?.Content()
                 }
             }
+            else -> TODO()
         }
     }
 
@@ -114,12 +115,6 @@ class MainSingleWindowScreen(val onReturn: () -> Unit) : SerializableScreen {
                     } ?: Text("АГТУ.Заявка", textAlign = TextAlign.Center)
                 },
                 actions = {
-                    IconButton(vm::openConstructor) {
-                        Icon(
-                            Icons.Default.Send,
-                            contentDescription = null
-                        )
-                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -182,13 +177,7 @@ class MainSingleWindowScreen(val onReturn: () -> Unit) : SerializableScreen {
                 ),
                 actions = {
                     Row{
-//                        IconButton(vm::openConstructor) {
-//                            Icon(
-//                                Icons.Default.Add,
-//                                contentDescription = null
-//                            )
-//                        }
-                        IconButton(vm::loadTemplates) {
+                        IconButton(vm::loadRequests) {
                             Icon(
                                 Icons.Default.Update,
                                 contentDescription = null

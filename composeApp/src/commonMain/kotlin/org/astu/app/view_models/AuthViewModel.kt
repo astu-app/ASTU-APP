@@ -16,6 +16,12 @@ class AuthViewModel : ScreenModel, JavaSerializable {
     fun login(onSuccess: () -> Unit) = screenModelScope.launch {
         val authRepository by GlobalDIContext.inject<AuthRepository>()
 
+        if(password.value.isBlank() || email.value.isBlank()) {
+            error.value = "Все поля должны быть заполнены"
+            return@launch
+        }
+
+
         runCatching {
             authRepository.authJWT(email.value, password.value)
         }.onSuccess {
@@ -25,7 +31,7 @@ class AuthViewModel : ScreenModel, JavaSerializable {
             onSuccess()
         }.onFailure {
             password.value = ""
-            error.value = it.message
+            error.value = "Не удалось подключиться к серверу"
         }
     }
 }
