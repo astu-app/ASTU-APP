@@ -31,6 +31,7 @@ object AttachmentToPresentationMappers {
             isOpen = this.isOpen,
             showResults = this.showResults,
             isAnonymous = this.isAnonymous,
+            autoClosingAt = this.autoClosingAt
         )
 
     @JvmName("SurveyDetailsToPresentation")
@@ -50,6 +51,7 @@ object AttachmentToPresentationMappers {
             isOpen = this.isOpen,
             showResults = this.showResults,
             isAnonymous = this.isAnonymous,
+            autoClosingAt = this.autoClosingAt
         )
 
     @JvmName("SurveyDetailsCollectionToPresentations")

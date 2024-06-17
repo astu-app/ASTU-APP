@@ -1,6 +1,7 @@
 package org.astu.feature.bulletinBoard.viewModels.humanization
 
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.*
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CloseSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CreateSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.VoteInSurveyErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.*
@@ -94,6 +95,14 @@ object ErrorCodesHumanization {
             HidePostedAnnouncementErrors.AnnouncementAlreadyHidden -> "Нельзя скрыть уже скрытое объявление"
             HidePostedAnnouncementErrors.AnnouncementNotYetPublished -> "Нельзя скрыть объявление, которое еще не было опубликовано"
             else -> DEFAULT_ERROR_MESSAGE
+        }
+
+    fun CloseSurveyErrors?.humanize() : String =
+        when (this) {
+            CloseSurveyErrors.SurveyClosingForbidden -> "Пользователь не имеет права закрыть этот опрос"
+            CloseSurveyErrors.SurveyDoesNotExist -> "Опрос не существует"
+            CloseSurveyErrors.SurveyAlreadyClosed -> "Опрос уже закрыт"
+            null -> DEFAULT_ERROR_MESSAGE
         }
 
 

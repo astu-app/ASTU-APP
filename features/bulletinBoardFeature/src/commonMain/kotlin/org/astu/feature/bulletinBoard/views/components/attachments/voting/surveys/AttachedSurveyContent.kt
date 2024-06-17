@@ -10,6 +10,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
+import kotlinx.datetime.LocalDateTime
+import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
 import org.astu.feature.bulletinBoard.viewModels.surveys.AttachedSurveyViewModel
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.VoteButton
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.questions.PagedQuestions
@@ -31,6 +33,7 @@ class AttachedSurveyContent(
     val isOpen: Boolean,
     val showResults: Boolean,
     val isAnonymous: Boolean,
+    val autoClosingAt: LocalDateTime?
 ) : SurveyContentBase(id, voters, showVoters, questions) {
     @Composable
     override fun Content(modifier: Modifier) {
@@ -44,10 +47,18 @@ class AttachedSurveyContent(
             AttachedSurveyViewModel.State.VotesUploading -> { } // todo получение результатов опроса и вывод их на экран
         }
 
+        if (!isOpen) {
+            Text("Опрос закрыт", modifier = Modifier.padding(bottom = 8.dp), color = CurrentColorScheme.outline)
+        }
+
         if (!showResults) {
-            Text("Результаты недоступны, пока опрос открыт", modifier = Modifier.padding(bottom = 8.dp), color = CurrentColorScheme.outline)
+            Text("Результаты недоступны", modifier = Modifier.padding(bottom = 8.dp), color = CurrentColorScheme.outline)
         } else if (isAnonymous) {
             Text("Опрос анонимный", modifier = Modifier.padding(bottom = 8.dp), color = CurrentColorScheme.outline)
+        }
+
+        if (autoClosingAt != null) {
+            Text("Будет закрыт ${humanizeDateTime(autoClosingAt)}", modifier = Modifier.padding(bottom = 8.dp), color = CurrentColorScheme.outline)
         }
 
         Questions(viewModel, modifier)

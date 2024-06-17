@@ -80,7 +80,8 @@ fun DelayedMomentPicker(
                     dateMillis.value = datePickerState.selectedDateMillis ?: 0
                     dateString.value = humanizeDate(dateMillis.value)
                     datePickerDialogOpen.value = false
-                }
+                },
+                dialogHorizontalExpansion = 24.dp
             ) {
                 AdaptiveDatePicker(
                     state = datePickerState, // todo добавить заголовок диалога
@@ -129,7 +130,7 @@ private fun DatePickerTextField(
             .also { interactionSource ->
                 LaunchedEffect(interactionSource) {
                     interactionSource.interactions.collect {
-                        if (it is PressInteraction.Release) {
+                        if (it is PressInteraction.Release || it is PressInteraction.Press) {
                             dialogOpen.value = true
                         }
                     }
