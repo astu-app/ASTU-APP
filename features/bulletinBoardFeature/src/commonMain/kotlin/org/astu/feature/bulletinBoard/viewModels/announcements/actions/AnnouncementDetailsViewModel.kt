@@ -123,7 +123,7 @@ class AnnouncementDetailsViewModel (
     }
 
     private fun surveyToViewModel(survey: SurveyDetails): AttachedSurveyContent {
-        return survey.toPresentation(true) as AttachedSurveyContent
+        return survey.toPresentation(true, showOnlyResults = true) as AttachedSurveyContent
     }
 
     private fun constructErrorDialogContent(error: GetAnnouncementDetailsErrors? = null) {

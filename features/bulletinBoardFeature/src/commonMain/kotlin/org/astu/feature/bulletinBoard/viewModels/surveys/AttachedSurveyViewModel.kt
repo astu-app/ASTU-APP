@@ -13,9 +13,8 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.survey
 
 class AttachedSurveyViewModel(
     private val survey: AttachedSurveyContent,
-    private val isVotedByUser: Boolean,
-    private val isClosed: Boolean,
-    private val hideResults: Boolean,
+    isVotedByUser: Boolean,
+    isClosed: Boolean,
 ) : StateScreenModel<AttachedSurveyViewModel.State>(
     State.NotVoted
 ) {
@@ -40,12 +39,12 @@ class AttachedSurveyViewModel(
 
     init {
         mutableState.value =
-            if (isVotedByUser || isClosed || hideResults) State.VoteUnavailable
+            if (isVotedByUser || isClosed) State.VoteUnavailable
             else State.NotVoted
     }
 
     fun canVote(): Boolean {
-        return survey.getVotes().isValid();
+        return survey.getVotes().isValid()
     }
 
     fun vote() {
@@ -71,7 +70,7 @@ class AttachedSurveyViewModel(
     }
 
     fun resetViewModelState() {
-        mutableState.value = AttachedSurveyViewModel.State.NotVoted
+        mutableState.value = State.NotVoted
     }
 
 

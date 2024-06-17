@@ -34,16 +34,21 @@ object AttachmentToPresentationMappers {
             autoClosingAt = this.autoClosingAt
         )
 
+    /**
+     * @param showVoters показывать список проголосовавших
+     * @param showOnlyResults показывать только результаты, если они доступны, без элементов, позволяющих проголосовать
+     */
     @JvmName("SurveyDetailsToPresentation")
-    fun SurveyDetails.toPresentation(showVoters: Boolean): SurveyContentBase =
+    fun SurveyDetails.toPresentation(showVoters: Boolean, showOnlyResults: Boolean = false): SurveyContentBase =
         AttachedSurveyContent(
             id = this.id,
             questions = mapQuestions(
+                showOnlyResults = showOnlyResults,
                 questions = this.questions,
                 showResults = this.showResults,
                 surveyVotersAmount = this.votersAmount,
-                voteFinished = this.voteFinishedAt != null,
-                isOpen = this.isOpen
+                isOpen = this.isOpen,
+                isVotedByCurrentUser = this.isVotedByUser
             ),
             voters = this.voters.toPresentations(),
             showVoters = showVoters,
@@ -55,8 +60,8 @@ object AttachmentToPresentationMappers {
         )
 
     @JvmName("SurveyDetailsCollectionToPresentations")
-    fun Collection<SurveyDetails>?.toPresentations(showVoters: Boolean): List<AttachmentContentBase> =
-        this?.map { it.toPresentation(showVoters) } ?: emptyList()
+    fun Collection<SurveyDetails>?.toPresentations(showVoters: Boolean, showOnlyResults: Boolean = false): List<AttachmentContentBase> =
+        this?.map { it.toPresentation(showVoters, showOnlyResults) } ?: emptyList()
 
     fun mapVotedQuestions(
         questions: List<QuestionDetails>,
@@ -70,17 +75,22 @@ object AttachmentToPresentationMappers {
     fun mapQuestions(
         questions: List<QuestionDetails>,
         showResults: Boolean,
+        isVotedByCurrentUser: Boolean,
         surveyVotersAmount: Int,
-        voteFinished: Boolean,
-        isOpen: Boolean
+        isOpen: Boolean,
+        showOnlyResults: Boolean = false,
     ): List<QuestionContentBase> {
         return questions
             .sortedBy { question -> question.serial }
             .map { question ->
-                if (!showResults) {
-                    mapClosedResultsQuestion(question)
-                } else if (voteFinished || !isOpen) {
+                if (isVotedByCurrentUser || !isOpen || showOnlyResults) {
                     mapVotedQuestion(question, surveyVotersAmount)
+                } else if ((isVotedByCurrentUser || isOpen) && showResults || !isOpen) {
+                    mapClosedResultsQuestion(question)
+//                if (showOnlyResults || voteFinished || !isOpen) {
+//                    mapVotedQuestion(question, surveyVotersAmount)
+//                } else if (!showResults || isVotedByCurrentUser) {
+//                    mapClosedResultsQuestion(question)
                 } else if (question.isMultipleChoiceAllowed) {
                     mapMultipleChoiceQuestion(question)
                 } else {

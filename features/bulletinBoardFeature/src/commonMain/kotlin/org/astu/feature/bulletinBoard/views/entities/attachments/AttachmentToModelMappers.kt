@@ -11,7 +11,12 @@ import kotlin.jvm.JvmName
 object AttachmentToModelMappers {
     @JvmName("NewSurveyToModel")
     fun NewSurvey.toModel(): CreateSurvey =
-        CreateSurvey(this.questions.toModels(), this.isAnonymous.value, this.resultsOpenBeforeClosing.value, this.autoClosingMoment)
+        CreateSurvey(
+            questions = this.questions.toModels(),
+            isAnonymous = this.isAnonymous.value,
+            resultsOpenBeforeClosing = this.resultsOpenBeforeClosing.value,
+            voteUntil = this.autoClosingMoment
+        )
 
     @JvmName("NewQuestionCollectionToModels")
     fun Collection<NewQuestion>.toModels(): List<CreateQuestion> =

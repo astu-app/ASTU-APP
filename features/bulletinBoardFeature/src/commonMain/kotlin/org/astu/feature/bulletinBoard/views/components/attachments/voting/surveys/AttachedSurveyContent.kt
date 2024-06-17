@@ -37,7 +37,7 @@ class AttachedSurveyContent(
 ) : SurveyContentBase(id, voters, showVoters, questions) {
     @Composable
     override fun Content(modifier: Modifier) {
-        val viewModel = remember { AttachedSurveyViewModel(this, isVotedByUser, !isOpen, !showResults) }
+        val viewModel = remember { AttachedSurveyViewModel(this, isVotedByUser, !isOpen) }
 
         val state by viewModel.state.collectAsState()
         when(state) {

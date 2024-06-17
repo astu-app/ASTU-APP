@@ -41,23 +41,25 @@ import kotlin.time.Duration
 class NewSurvey(private val onSurveyDeleteRequest: () -> Unit) : ContentProvider, DefaultModifierProvider {
     var isAnonymous: MutableState<Boolean> = mutableStateOf(false)
     var resultsOpenBeforeClosing: MutableState<Boolean> = mutableStateOf(true)
-    var isAutoClosingEnabled: MutableState<Boolean> = mutableStateOf(false)
     val questions: SnapshotStateList<NewQuestion> = mutableStateListOf()
-    var lastQuestionId: Int = 0
+    private var lastQuestionId: Int = 0
 
     private val autoClosingSwitchTitle = "Автоматическое закрытие"
-    val autoClosingEnabled: MutableState<Boolean> = mutableStateOf(false)
-    var autoClosingDateMillis: MutableState<Long>
-    var autoClosingDateString: MutableState<String>
+    private val isAutoClosingEnabled: MutableState<Boolean> = mutableStateOf(false)
+    private var autoClosingDateMillis: MutableState<Long>
+    private var autoClosingDateString: MutableState<String>
 
-    var autoClosingTimeHours: MutableState<Int>
-    var autoClosingTimeMinutes: MutableState<Int> = mutableStateOf(0)
-    var autoClosingTimeString: MutableState<String>
+    private var autoClosingTimeHours: MutableState<Int>
+    private var autoClosingTimeMinutes: MutableState<Int> = mutableStateOf(0)
+    private var autoClosingTimeString: MutableState<String>
 
 
 
-    val autoClosingMoment: LocalDateTime
+    val autoClosingMoment: LocalDateTime?
         get() {
+            if (!isAutoClosingEnabled.value)
+                return null
+
             val dateMillis = autoClosingDateMillis.value
             val hour = autoClosingTimeHours.value
             val minute = autoClosingTimeMinutes.value
@@ -209,7 +211,7 @@ class NewSurvey(private val onSurveyDeleteRequest: () -> Unit) : ContentProvider
     private fun AutoClosingMomentSetter() {
         DelayedMomentPicker(
             switchTitle = autoClosingSwitchTitle,
-            delayedMomentEnabled = autoClosingEnabled,
+            delayedMomentEnabled = isAutoClosingEnabled,
             dateMillis = autoClosingDateMillis,
             dateString = autoClosingDateString,
             timeHours = autoClosingTimeHours,
