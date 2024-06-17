@@ -4,10 +4,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.contains
+import kotlinx.coroutines.flow.update
 import org.astu.feature.auth.IAccountSecurityManager
 import org.astu.feature.auth.jwtDecoding.decodeJwtPayload
-import org.astu.infrastructure.AccountUser
-import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.gateway.models.Tokens
 
@@ -19,8 +18,6 @@ class AccountSecurityManager : IAccountSecurityManager, JavaSerializable {
     private val refreshTokenId = "org.astu.app.security.refresh_token"
 
     private val settings: Settings = Settings()
-
-    private val account by GlobalDIContext.inject<AccountUser>()
 
     private val _data: MutableState<Tokens?> = mutableStateOf(initData())
     override val data = _data
@@ -58,7 +55,6 @@ class AccountSecurityManager : IAccountSecurityManager, JavaSerializable {
         settings.remove(accessTokenId)
         settings.remove(refreshTokenId)
 
-        account.logout()
         _data.value = null
     }
 }

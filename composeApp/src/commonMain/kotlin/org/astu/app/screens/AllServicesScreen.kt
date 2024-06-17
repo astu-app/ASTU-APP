@@ -12,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.astu.feature.single_window.screens.EmployeeSingleWindowScreen
 import org.astu.feature.single_window.screens.MainSingleWindowScreen
+import org.astu.feature.single_window.screens.UserSingleWindowScreen
 import org.astu.feature.universal_request.screens.TemplateListScreen
 import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.components.card.Description
@@ -36,7 +38,6 @@ class AllServicesScreen : SerializableScreen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun TopBar(content: @Composable (PaddingValues) -> Unit) {
-
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(
                 title = {
@@ -56,6 +57,17 @@ class AllServicesScreen : SerializableScreen {
             item {
                 ListItem(
                     Modifier.fillMaxWidth(),
+                    "Список моих заявлений на справку",
+                    "Просмотр поданных заявлений на получение справок"
+                ) {
+                    currentScreen.value = UserSingleWindowScreen {
+                        currentScreen.value = null
+                    }
+                }
+            }
+            item {
+                ListItem(
+                    Modifier.fillMaxWidth(),
                     "Подача заявлений на справки",
                     "Сервис для подачи заявлений на получение справок"
                 ) {
@@ -69,7 +81,7 @@ class AllServicesScreen : SerializableScreen {
                     Modifier.fillMaxWidth(), "Обработка заявлений на справки",
                     "Сервис для обработки заявлений на получение справок"
                 ) {
-                    currentScreen.value = TemplateListScreen {
+                    currentScreen.value = EmployeeSingleWindowScreen {
                         currentScreen.value = null
                     }
                 }
@@ -77,13 +89,14 @@ class AllServicesScreen : SerializableScreen {
             item {
                 ListItem(
                     Modifier.fillMaxWidth(),
-                    "Генерация заявлений(АСОИУ)",
+                    "Генерация универсальных заявлений(АСОИУ)",
                     "Сервис для генерации заявлений на кафедре АСОИУ"
                 ) {
                     currentScreen.value = TemplateListScreen {
                         currentScreen.value = null
                     }
                 }
+                HorizontalDivider()
             }
         }
     }

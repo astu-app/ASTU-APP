@@ -25,8 +25,13 @@ class AccountViewModel(private val onLogout: () -> Unit) : StateScreenModel<Acco
         mutableState.value = State.Loading
         val accountUser by GlobalDIContext.inject<AccountUser>()
         screenModelScope.launch {
-            account.value = accountUser.current()
-            mutableState.value = State.Show
+            runCatching {
+                account.value = accountUser.current()
+            }.onSuccess {
+                mutableState.value = State.Show
+            }.onFailure {
+                mutableState.value = State.Show
+            }
         }
     }
 

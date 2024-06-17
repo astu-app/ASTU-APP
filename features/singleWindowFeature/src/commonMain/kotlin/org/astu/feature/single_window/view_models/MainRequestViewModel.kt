@@ -9,10 +9,7 @@ import kotlinx.coroutines.launch
 import org.astu.feature.single_window.SingleWindowRepository
 import org.astu.feature.single_window.entities.Request
 import org.astu.feature.single_window.entities.Template
-import org.astu.feature.single_window.screens.ConstructorCertificateScreen
-import org.astu.feature.single_window.screens.ListOfServicesSingleWindowScreen
-import org.astu.feature.single_window.screens.PrimitiveServiceScreen
-import org.astu.feature.single_window.screens.ServiceScreen
+import org.astu.feature.single_window.screens.*
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.StateScreenModel

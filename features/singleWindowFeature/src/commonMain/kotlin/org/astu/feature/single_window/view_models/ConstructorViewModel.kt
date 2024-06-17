@@ -9,6 +9,7 @@ import org.astu.feature.single_window.SingleWindowRepository
 import org.astu.feature.single_window.client.models.AddRequirementDTO
 import org.astu.feature.single_window.client.models.AddTemplateDTO
 import org.astu.feature.single_window.entities.AddRequirementField
+import org.astu.infrastructure.AccountUser
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 
@@ -23,6 +24,7 @@ class ConstructorViewModel : ScreenModel, JavaSerializable {
     val done = mutableStateOf(false)
 
     private val repository by GlobalDIContext.inject<SingleWindowRepository>()
+    private val user by GlobalDIContext.inject<AccountUser>()
 
 
     fun updateRequirement(addRequirementField: AddRequirementField) {
@@ -40,9 +42,10 @@ class ConstructorViewModel : ScreenModel, JavaSerializable {
     fun saveRequirement() {
         screenModelScope.launch {
             runCatching {
+                val id = user.current()?.departmentId ?: throw RuntimeException()
                 val types = repository.getRequirementTypes().single { it.name.uppercase() == "STRING" }
                 val dto = AddTemplateDTO(
-                    name.value, description.value, category.value, "31ee2503-59e1-4dc1-ae25-0359e1bdc1fd",
+                    name.value, description.value, category.value, id,
                     requirements.value.map {
                         AddRequirementDTO(types.id, it.name, it.description)
                     },

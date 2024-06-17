@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import org.astu.feature.single_window.view_models.MainRequestViewModel
 import org.astu.infrastructure.SerializableScreen
 
@@ -181,12 +182,12 @@ class MainSingleWindowScreen(val onReturn: () -> Unit) : SerializableScreen {
                 ),
                 actions = {
                     Row{
-                        IconButton(vm::openConstructor) {
-                            Icon(
-                                Icons.Default.Add,
-                                contentDescription = null
-                            )
-                        }
+//                        IconButton(vm::openConstructor) {
+//                            Icon(
+//                                Icons.Default.Add,
+//                                contentDescription = null
+//                            )
+//                        }
                         IconButton(vm::loadTemplates) {
                             Icon(
                                 Icons.Default.Update,

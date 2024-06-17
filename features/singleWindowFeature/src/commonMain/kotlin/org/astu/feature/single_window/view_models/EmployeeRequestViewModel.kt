@@ -7,9 +7,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.astu.feature.single_window.SingleWindowRepository
+import org.astu.feature.single_window.entities.CreatedRequest
+import org.astu.feature.single_window.entities.EmployeeCreatedRequest
 import org.astu.feature.single_window.entities.Request
 import org.astu.feature.single_window.entities.Template
 import org.astu.feature.single_window.screens.ConstructorCertificateScreen
+import org.astu.feature.single_window.screens.EmployeeListOfRequestSingleWindowScreen
+import org.astu.feature.single_window.screens.EmployeeRequestScreen
 import org.astu.feature.single_window.screens.ServiceScreen
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
@@ -30,14 +34,14 @@ class EmployeeRequestViewModel : StateScreenModel<EmployeeRequestViewModel.State
 
     private val repository by GlobalDIContext.inject<SingleWindowRepository>()
 
-    val templates = mutableStateOf(mutableListOf<Template>())
+    val requests = mutableStateOf(mutableListOf<EmployeeCreatedRequest>())
 
     val prevState: MutableState<State> = mutableStateOf(State.Init)
 
     val currentScreen: MutableState<ServiceScreen?> = mutableStateOf(null)
     val createScreen: MutableState<ConstructorCertificateScreen?> = mutableStateOf(null)
 
-    val currentRequest: MutableState<Request?> = mutableStateOf(null)
+    val currentRequest: MutableState<EmployeeCreatedRequest?> = mutableStateOf(null)
 
     private val job: Job
 
@@ -45,10 +49,10 @@ class EmployeeRequestViewModel : StateScreenModel<EmployeeRequestViewModel.State
         prevState.value = mutableState.value
         mutableState.value = State.Loading
         job = screenModelScope.launch {
-//            loadTemplates()
-//            currentScreen.value = ListOfServicesSingleWindowScreen(vm = this@EmployeeRequestViewModel, null) {
-//                currentScreen.value = it
-//            }
+            loadRequests()
+            currentScreen.value = EmployeeListOfRequestSingleWindowScreen(vm = this@EmployeeRequestViewModel, null) {
+                currentScreen.value = it
+            }
             mutableState.value = State.ShowList
             delay(10.toDuration(DurationUnit.SECONDS))
 
@@ -59,27 +63,29 @@ class EmployeeRequestViewModel : StateScreenModel<EmployeeRequestViewModel.State
         }
     }
 
-    fun loadTemplates() {
+    fun loadRequests() {
         screenModelScope.launch {
             runCatching {
-                repository.getTemplates()
+                repository.getEmployeeRequests()
             }.onSuccess {
-                templates.value = it.toMutableList()
+                requests.value = it.toMutableList()
+            }.onFailure {
+                println(it)
+                println(it.message)
             }
         }
     }
 
-    fun openRequestScreen(template: Template) = screenModelScope.launch {
-        val request = repository.makeAddRequest(template)
+    fun openRequestScreen(request: EmployeeCreatedRequest) = screenModelScope.launch {
         currentRequest.value = request
-//        currentScreen.value = PrimitiveServiceScreen(this@EmployeeRequestViewModel, {
-//            currentScreen.value = ListOfServicesSingleWindowScreen(this@EmployeeRequestViewModel, null) {
-//                currentScreen.value = it
-//            }
-//            mutableState.value = State.ShowList
-//        }, {
-//
-//        })
+        currentScreen.value = EmployeeRequestScreen(this@EmployeeRequestViewModel, {
+            currentScreen.value = EmployeeListOfRequestSingleWindowScreen(this@EmployeeRequestViewModel, null) {
+                currentScreen.value = it
+            }
+            mutableState.value = State.ShowList
+        }, {
+
+        })
         mutableState.value = State.ShowScreen
     }
 
@@ -87,7 +93,7 @@ class EmployeeRequestViewModel : StateScreenModel<EmployeeRequestViewModel.State
         prevState.value = mutableState.value
         createScreen.value = ConstructorCertificateScreen {
             mutableState.value = prevState.value
-            loadTemplates()
+            loadRequests()
         }
         mutableState.value = State.ShowCreate
     }
