@@ -4,11 +4,11 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -24,7 +24,6 @@ class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewMode
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-//        val viewModel = rememberScreenModel { UserGroupHierarchyViewModel(navigator) }
         viewModel.currentDensity = LocalDensity.current.density
 
         val state by viewModel.state.collectAsState()
@@ -52,14 +51,14 @@ class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewMode
                     },
                 )
             }
-            var dropDownHeight by remember { mutableStateOf(0.dp) }
             val density = LocalDensity.current
 
             DropdownMenu(
                 expanded = viewModel.showDropDown,
                 onDismissRequest = { viewModel.showDropDown = false },
-                offset = viewModel.pressOffset.copy(y = viewModel.pressOffset.y + dropDownHeight),
-                modifier = Modifier.onSizeChanged { dropDownHeight = with(density) { it.height.toDp() } }
+                offset = viewModel.pressOffset.copy(
+                    y = with(density) { viewModel.selectedUserGroupYPosition.value.toDp() }
+                ),
             ) {
                 dropDownMenuContent.items.forEach { item ->
                     if (item.icon != null) {

@@ -8,6 +8,7 @@ import org.astu.feature.bulletinBoard.models.AnnouncementModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.DeleteAnnouncementErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.GetPostedAnnouncementListErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.responses.HidePostedAnnouncementErrors
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.responses.CloseSurveyErrors
 import org.astu.feature.bulletinBoard.models.services.surveys.SurveyService
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
@@ -38,16 +39,17 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
     var onErrorDialogDismissRequest by mutableStateOf({ })
 
     init {
-        mutableState.value = State.Loading
         loadAnnouncements()
     }
 
     fun loadAnnouncements() {
         screenModelScope.launch {
+            mutableState.value = State.Loading
+
             try {
                 val announcements = announcementModel.getAnnouncementList()
                 if (announcements.isContentValid) {
-                    content.clear()
+                    content.removeAll { true }
                     content.addAll(announcements.content!!)
                     mutableState.value = State.LoadingDone
                     return@launch
@@ -66,15 +68,15 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
     fun closeSurveys(surveyIds: List<Uuid>) {
         screenModelScope.launch {
             try {
-                content.clear()
-
                 surveyIds.forEach { surveyId ->
                     val error = surveyService.close(surveyId)
-                    if (error != null) {
+                    if (error == null) {
                         mutableState.value = State.LoadingDone
+
+                        loadAnnouncements()
                         return@launch
                     } else {
-                        constructAnnouncementsLoadingErrorDialogContent(error)
+                        constructSurveyClosedErrorDialogContent(surveyId, error)
                         mutableState.value = State.StoppingSurveyError
                     }
                 }
@@ -161,6 +163,17 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             hide(announcementId)
+            mutableState.value = State.Loading
+        }
+        onErrorDialogDismissRequest = {
+            mutableState.value = State.LoadingDone
+        }
+    }
+
+    private fun constructSurveyClosedErrorDialogContent(surveyId: Uuid, error: CloseSurveyErrors? = null) {
+        errorDialogBody = error.humanize()
+        onErrorDialogTryAgainRequest = {
+            closeSurveys(listOf(surveyId))
             mutableState.value = State.Loading
         }
         onErrorDialogDismissRequest = {
