@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -49,17 +50,11 @@ class BulletInBoardScreen : Screen {
                     title = { Text("Объявления") },
                     actions = {
                         // Кнопка обновить
-                        Button(
-                            onClick = { viewModel.loadAnnouncements() },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = CurrentColorScheme.surface,
-                                disabledContainerColor = CurrentColorScheme.surface,
-                                contentColor = CurrentColorScheme.primary,
-                            )
-                        ) {
-                            Text(
-                                text = "Обновить",
-                                style = MaterialTheme.typography.titleLarge,
+                        IconButton(onClick = { viewModel.loadAnnouncements() }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Refresh,
+                                contentDescription = "Обновить список опубликованных объявлений",
+                                tint = CurrentColorScheme.primary
                             )
                         }
 

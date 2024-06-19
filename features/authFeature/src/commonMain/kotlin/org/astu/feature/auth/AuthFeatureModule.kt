@@ -1,11 +1,15 @@
 package org.astu.feature.auth
 
-import org.astu.feature.auth.impl.*
+import org.astu.feature.auth.impl.AccountSecurityManager
+import org.astu.feature.auth.impl.AstuAccountRepository
+import org.astu.feature.auth.impl.AstuAuthRepository
+import org.astu.feature.auth.impl.BearerSecurityHttpClient
 import org.astu.infrastructure.DependencyInjection.DependencyInjector
 import org.astu.infrastructure.DependencyInjection.FeatureModule
 import org.astu.infrastructure.DependencyInjection.KodeinDependencyInjector
 import org.astu.infrastructure.IAccountRepository
 import org.astu.infrastructure.SecurityHttpClient
+import org.astu.infrastructure.security.IAccountSecurityManager
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.singleton

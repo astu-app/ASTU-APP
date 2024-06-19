@@ -85,12 +85,8 @@ object AttachmentToPresentationMappers {
             .map { question ->
                 if (isVotedByCurrentUser || !isOpen || showOnlyResults) {
                     mapVotedQuestion(question, surveyVotersAmount)
-                } else if ((isVotedByCurrentUser || isOpen) && showResults || !isOpen) {
+                } else if ((isVotedByCurrentUser || isOpen) && !showResults || !isOpen) {
                     mapClosedResultsQuestion(question)
-//                if (showOnlyResults || voteFinished || !isOpen) {
-//                    mapVotedQuestion(question, surveyVotersAmount)
-//                } else if (!showResults || isVotedByCurrentUser) {
-//                    mapClosedResultsQuestion(question)
                 } else if (question.isMultipleChoiceAllowed) {
                     mapMultipleChoiceQuestion(question)
                 } else {

@@ -2,8 +2,10 @@ package org.astu.feature.bulletinBoard.views.screens.announcements.actions
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,6 +43,15 @@ class AnnouncementDetailsScreen(
                     containerColor = CurrentColorScheme.tertiaryContainer,
                 ) {
                     Icon(Icons.Outlined.Edit, null)
+                }
+            },
+            actions = {
+                IconButton(onClick = { viewModel.loadDetails() }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Refresh,
+                        contentDescription = "Обновить данные по объявлению",
+                        tint = CurrentColorScheme.primary
+                    )
                 }
             }
         ) {

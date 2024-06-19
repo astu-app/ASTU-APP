@@ -6,6 +6,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.dtos.UpdateIdentifierListDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.common.mappers.UpdateIdentifierListMappers.toDto
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.UserGroupToModelMappers.toModel
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.UserMappers.toModels
 import org.astu.feature.bulletinBoard.models.entities.announcements.*
 import kotlin.jvm.JvmName
@@ -66,7 +67,7 @@ object AnnouncementMappers {
     fun AnnouncementSummaryDto.toModel(): AnnouncementSummary =
         AnnouncementSummary(
             id = uuidFrom(this.id),
-            author = this.authorName,
+            author = this.author.toModel(),
             publicationTime = this.publishedAt,
             hidingTime = this.hiddenAt,
             delayedPublicationTime = this.delayedPublishingAt,

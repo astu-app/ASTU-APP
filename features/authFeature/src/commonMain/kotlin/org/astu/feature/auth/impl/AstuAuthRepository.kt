@@ -1,7 +1,6 @@
 package org.astu.feature.auth.impl
 
 import org.astu.feature.auth.AuthRepository
-import org.astu.feature.auth.IAccountSecurityManager
 import org.astu.feature.auth.client.apis.AuthApi
 import org.astu.feature.auth.client.apis.GoogleApi
 import org.astu.feature.auth.client.apis.YandexApi
@@ -9,6 +8,7 @@ import org.astu.feature.auth.client.models.JWTLoginDTO
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.GatewayServiceConfig
 import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.security.IAccountSecurityManager
 
 class AstuAuthRepository : AuthRepository, JavaSerializable {
     private val accountSecurityManager by GlobalDIContext.inject<IAccountSecurityManager>()

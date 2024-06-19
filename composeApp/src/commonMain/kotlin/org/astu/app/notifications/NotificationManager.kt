@@ -17,10 +17,10 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.astu.app.notifications.entities.NotificationMessage
 import org.astu.app.notifications.entities.NotificationMessageList
-import org.astu.feature.auth.IAccountSecurityManager
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.NotificationServerConfig
+import org.astu.infrastructure.security.IAccountSecurityManager
 import kotlin.random.Random
 
 object NotificationManager: JavaSerializable {

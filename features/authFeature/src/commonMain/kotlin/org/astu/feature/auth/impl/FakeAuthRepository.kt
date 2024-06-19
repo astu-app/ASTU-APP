@@ -1,10 +1,10 @@
 package org.astu.feature.auth.impl
 
-import org.astu.infrastructure.gateway.models.Tokens
 import org.astu.feature.auth.AuthRepository
-import org.astu.feature.auth.IAccountSecurityManager
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
+import org.astu.infrastructure.gateway.models.Tokens
+import org.astu.infrastructure.security.IAccountSecurityManager
 
 class FakeAuthRepository : AuthRepository, JavaSerializable {
     private val accountSecurityManager by GlobalDIContext.inject<IAccountSecurityManager>()

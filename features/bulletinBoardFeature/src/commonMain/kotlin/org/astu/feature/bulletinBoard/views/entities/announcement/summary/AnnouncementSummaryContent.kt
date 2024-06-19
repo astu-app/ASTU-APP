@@ -4,10 +4,11 @@ import com.benasher44.uuid.Uuid
 import kotlinx.datetime.LocalDateTime
 import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
+import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
 
 data class AnnouncementSummaryContent(
     val id: Uuid,
-    val author: String,
+    val author: UserSummary,
     val publicationTime: LocalDateTime?,
     val hidingTime: LocalDateTime?,
     val delayedPublicationTime: LocalDateTime?,

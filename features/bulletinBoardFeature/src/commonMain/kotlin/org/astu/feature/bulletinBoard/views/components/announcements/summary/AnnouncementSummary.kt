@@ -20,6 +20,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.astu.feature.bulletinBoard.views.components.attachments.Attachment
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
 import org.astu.feature.bulletinBoard.views.screens.announcements.actions.AnnouncementDetailsScreen
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.security.IAccountSecurityManager
 import org.astu.infrastructure.theme.CurrentColorScheme
 
 /**
@@ -33,6 +35,7 @@ fun AnnouncementSummary(
     modifier: Modifier
 
 ) {
+    val accountSecurityManager by GlobalDIContext.inject<IAccountSecurityManager>()
     val navigator = LocalNavigator.currentOrThrow
 
     val showDropdownMenu = remember { mutableStateOf(false) }
@@ -66,7 +69,7 @@ fun AnnouncementSummary(
                 }
         ) {
             Column {
-                AnnouncementHeader(content.author, headerMoment, Modifier.fillMaxWidth())
+                AnnouncementHeader(content.author.fullName, headerMoment, Modifier.fillMaxWidth())
                 Text(
                     text = content.text,
                     modifier = Modifier
@@ -88,7 +91,10 @@ fun AnnouncementSummary(
                         .sortedBy { it.type }
                         .forEach { Attachment(it) }
                 }
-                AnnouncementFooter(content.viewed, content.audienceSize)
+
+                if (accountSecurityManager.currentUserId == content.author.id.toString()) {
+                    AnnouncementFooter(content.viewed, content.audienceSize)
+                }
             }
         }
 

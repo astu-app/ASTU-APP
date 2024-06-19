@@ -4,13 +4,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
-import org.astu.feature.auth.IAccountSecurityManager
-import org.astu.feature.universal_request.view_models.AddTemplateViewModel.State
 import org.astu.infrastructure.AccountUser
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.StateScreenModel
 import org.astu.infrastructure.gateway.models.AccountDTO
+import org.astu.infrastructure.security.IAccountSecurityManager
 
 class AccountViewModel(private val onLogout: () -> Unit) : StateScreenModel<AccountViewModel.State>(State.Init), JavaSerializable {
     sealed class State: JavaSerializable{

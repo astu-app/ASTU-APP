@@ -1,7 +1,6 @@
-package org.astu.feature.auth
+package org.astu.infrastructure.security
 
 import androidx.compose.runtime.MutableState
-import kotlinx.coroutines.flow.StateFlow
 import org.astu.infrastructure.gateway.models.Tokens
 
 interface IAccountSecurityManager {

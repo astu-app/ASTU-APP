@@ -3,10 +3,11 @@ package org.astu.feature.bulletinBoard.models.dataSoruces.api.announcements.dtos
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys.dtos.details.SurveyDetailsDto
+import org.astu.feature.bulletinBoard.models.dataSoruces.api.users.dtos.UserSummaryDto
 
 /**
  * @param id Идентификатор объявления
- * @param authorName Автор объявления
+ * @param author Автор объявления
  * @param content Текстовое содержимое объявления
  * @param publishedAt Время публикации объявления
  * @param hiddenAt Время сокрытия объявления
@@ -19,7 +20,7 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys
 @Serializable
 data class AnnouncementSummaryDto (
     val id: String,
-    val authorName: String,
+    val author: UserSummaryDto,
     val content: String,
     val publishedAt: LocalDateTime?,
     val hiddenAt: LocalDateTime?,
