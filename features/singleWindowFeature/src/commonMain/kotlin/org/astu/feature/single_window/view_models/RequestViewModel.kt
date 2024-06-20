@@ -19,7 +19,7 @@ class RequestViewModel(request: Request) : ScreenModel, JavaSerializable {
     val description = request.template.description
     val template = request.template
     val email = mutableStateOf("")
-    val fields = mutableStateOf(request.fields.asSequence().toMutableList().toList())
+    val fields = mutableStateOf(request.fields.toMutableList().toList())
     val checked = mutableStateOf(true)
     val state = mutableStateOf(true)
     val done = mutableStateOf(false)
@@ -34,7 +34,15 @@ class RequestViewModel(request: Request) : ScreenModel, JavaSerializable {
         state.value = true
     }
 
+    fun fill(){
+        email.value = "azimusma@gmail.com"
+        fields.value.forEach {
+            
+        }
+    }
+
     fun send() {
+        error.value = null
         screenModelScope.launch {
             runCatching {
                 val dto = Request(
@@ -45,10 +53,9 @@ class RequestViewModel(request: Request) : ScreenModel, JavaSerializable {
                 )
                 repository.sendRequest(dto)
             }.onFailure {
-                println(it)
+                error.value = it.message
             }.onSuccess {
                 done.value = true
-                println("OK")
             }
 
         }

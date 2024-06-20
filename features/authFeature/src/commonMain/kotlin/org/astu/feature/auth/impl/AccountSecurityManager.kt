@@ -7,6 +7,8 @@ import com.russhwolf.settings.contains
 import kotlinx.coroutines.flow.update
 import org.astu.feature.auth.IAccountSecurityManager
 import org.astu.feature.auth.jwtDecoding.decodeJwtPayload
+import org.astu.infrastructure.AccountUser
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.gateway.models.Tokens
 
@@ -52,8 +54,11 @@ class AccountSecurityManager : IAccountSecurityManager, JavaSerializable {
         settings.contains(accessTokenId) && settings.contains(refreshTokenId)
 
     override fun logout() {
+        val user by GlobalDIContext.inject<AccountUser>()
+
         settings.remove(accessTokenId)
         settings.remove(refreshTokenId)
+        user.logout()
 
         _data.value = null
     }

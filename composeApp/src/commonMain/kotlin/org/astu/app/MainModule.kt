@@ -13,7 +13,7 @@ import org.kodein.di.singleton
 object MainModule: FeatureModule {
     override fun init(): DependencyInjector = KodeinDependencyInjector(DI {
 //        bind<GatewayServiceConfig>() with singleton { GatewayServiceConfig("http://api.ttraum.ru/") }
-        bind<GatewayServiceConfig>() with singleton { GatewayServiceConfig("http://192.168.1.11:8091/") }
+        bind<GatewayServiceConfig>() with singleton { GatewayServiceConfig("http://api.ttraum.ru/") }
         bind<NotificationServerConfig>() with singleton { NotificationServerConfig(
             host = "192.168.1.11:12080",
             clientId = 1,

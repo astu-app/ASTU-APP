@@ -14,10 +14,12 @@ package org.astu.feature.auth.client.apis
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import org.astu.feature.auth.client.models.JWTLoginDTO
 import org.astu.infrastructure.gateway.models.Tokens
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.exceptions.ApiException
 
 class AuthApi(private val basePath: String = "/") {
     private val client by GlobalDIContext.inject<HttpClient>()
@@ -37,7 +39,8 @@ class AuthApi(private val basePath: String = "/") {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body<Tokens>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 }

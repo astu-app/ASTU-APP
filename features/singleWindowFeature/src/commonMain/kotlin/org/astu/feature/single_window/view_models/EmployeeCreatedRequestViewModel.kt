@@ -38,11 +38,9 @@ class EmployeeCreatedRequestViewModel(var request: EmployeeCreatedRequest) : Scr
             runCatching {
                 repository.failRequest(request.id, dto)
             }.onFailure {
-                println(it)
-                println(it.message)
-                error.value = "Не удалось обратиться к серверу"
+                error.value = it.message
             }.onSuccess {
-                println("OK")
+                done.value = true
             }
         }
     }
@@ -66,10 +64,6 @@ class EmployeeCreatedRequestViewModel(var request: EmployeeCreatedRequest) : Scr
                     runCatching {
                         repository.successRequest(request.id, file.name + "." + file.extension, bytes)
                     }.onFailure {
-                        println(it.message)
-                        println(it)
-                        println("Не удалось загрузить шаблон :(")
-
                         when (it) {
                             is ApiException -> error.value = it.message
                             else -> {
@@ -77,6 +71,7 @@ class EmployeeCreatedRequestViewModel(var request: EmployeeCreatedRequest) : Scr
                             }
                         }
                     }.onSuccess {
+                        done.value = true
                         println("OK send file")
                     }
                 }

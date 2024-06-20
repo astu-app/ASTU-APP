@@ -11,18 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import com.benasher44.uuid.uuid4
-//import com.mohamedrejeb.calf.core.LocalPlatformContext
-//import com.mohamedrejeb.calf.io.getName
-//import com.mohamedrejeb.calf.picker.FilePickerFileType
-//import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
-//import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import org.astu.feature.universal_request.client.models.TemplateDTO
 import org.astu.feature.universal_request.client.models.TemplateFieldDTO
 import org.astu.feature.universal_request.view_models.FillTemplateViewModel
@@ -35,7 +29,7 @@ class FillTemplateScreen(var templateDTO: TemplateDTO, val onReturn: () -> Unit)
 
     @Composable
     override fun Content() {
-        vm = rememberScreenModel { FillTemplateViewModel(templateDTO) }
+        vm = remember { FillTemplateViewModel(templateDTO) }
 //        val context = LocalPlatformContext.current
 //        val pickerLauncher = rememberFilePickerLauncher(
 //            type = FilePickerFileType.Word,
@@ -106,6 +100,11 @@ class FillTemplateScreen(var templateDTO: TemplateDTO, val onReturn: () -> Unit)
                 }
                 HorizontalDivider()
             }
+            item {
+                Button({vm.fill()}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow)){
+                    Text("Заполнить поля")
+                }
+            }
 
             items(fields.value) {
                 TemplateListItem(it)
@@ -138,7 +137,7 @@ class FillTemplateScreen(var templateDTO: TemplateDTO, val onReturn: () -> Unit)
                         )
                     }
                 },
-                title = { Text("Заполнение заявления", textAlign = TextAlign.Center) },
+                title = { Text("Заполнение универсального заявления", textAlign = TextAlign.Center) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,

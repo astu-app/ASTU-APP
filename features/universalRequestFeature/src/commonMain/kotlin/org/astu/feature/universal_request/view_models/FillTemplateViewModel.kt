@@ -40,6 +40,81 @@ class FillTemplateViewModel(private val templateDTO: TemplateDTO) :
         mutableState.value = State.Show
     }
 
+    fun fill(){
+        templateFields.value.forEach { field ->
+            if(field.name.lowercase() == "ооо название организации".lowercase())
+                updateField(field.copy(value = "ООО Кристалл"))
+            if(field.name.lowercase() == "фио студента".lowercase())
+                updateField(field.copy(value = "Усманов Азим Маннурович"))
+            if(field.name.lowercase() == "последняя цифра направления".lowercase())
+                updateField(field.copy(value = "4"))
+            if(field.name.lowercase() == "название направления".lowercase())
+                updateField(field.copy(value = "Программная инженерия"))
+            if(field.name.lowercase() == "Номер договора".lowercase())
+                updateField(field.copy(value = "115545215"))
+            if(field.name.lowercase() == "День начала договора".lowercase())
+                updateField(field.copy(value = "04"))
+            if(field.name.lowercase() == "Месяц начала договора".lowercase())
+                updateField(field.copy(value = "04"))
+            if(field.name.lowercase() == "Две цифры года начала договора".lowercase())
+                updateField(field.copy(value = "23"))
+            if(field.name.lowercase() == "Тип практики".lowercase())
+                updateField(field.copy(value = "производственная"))
+            if(field.name.lowercase() == "День начала практики".lowercase())
+                updateField(field.copy(value = "05"))
+            if(field.name.lowercase() == "Месяц начала практики".lowercase())
+                updateField(field.copy(value = "05"))
+            if(field.name.lowercase() == "Две цифры года начала практики".lowercase())
+                updateField(field.copy(value = "23"))
+            if(field.name.lowercase() == "День конца практики".lowercase())
+                updateField(field.copy(value = "06"))
+            if(field.name.lowercase() == "Месяц конца практики".lowercase())
+                updateField(field.copy(value = "06"))
+            if(field.name.lowercase() == "Две цифры года конца практики".lowercase())
+                updateField(field.copy(value = "23"))
+
+            if(field.name.lowercase() == "Номер курса".lowercase())
+                updateField(field.copy(value = "4"))
+
+            if(field.name.lowercase() == "цифра направления".lowercase())
+                updateField(field.copy(value = "4"))
+            if(field.name.lowercase() == "направление".lowercase())
+                updateField(field.copy(value = "Программная инженерия"))
+
+            if(field.name.lowercase() == "форма обучения".lowercase())
+                updateField(field.copy(value = "очная"))
+
+            if(field.name.lowercase() == "название организации".lowercase())
+                updateField(field.copy(value = "ООО Кристалл"))
+
+            if(field.name.lowercase() == "День договора".lowercase())
+                updateField(field.copy(value = "04"))
+            if(field.name.lowercase() == "Месяц договора".lowercase())
+                updateField(field.copy(value = "04"))
+            if(field.name.lowercase() == "год договора".lowercase())
+                updateField(field.copy(value = "23"))
+
+            if(field.name.lowercase() == "Год начала практики".lowercase())
+                updateField(field.copy(value = "2023"))
+
+            if(field.name.lowercase() == "Год конца практики".lowercase())
+                updateField(field.copy(value = "2023"))
+
+            if(field.name.lowercase() == "Руководитель практики от университета".lowercase())
+                updateField(field.copy(value = "Морозов А. В."))
+
+            if(field.name.lowercase() == "Директор ИИТИК".lowercase())
+                updateField(field.copy(value = "Белов С. В."))
+
+            if(field.name.lowercase() == "День конца практики".lowercase())
+                updateField(field.copy(value = "06"))
+            if(field.name.lowercase() == "Месяц конца практики".lowercase())
+                updateField(field.copy(value = "06"))
+            if(field.name.lowercase() == "Две цифры года конца практики".lowercase())
+                updateField(field.copy(value = "23"))
+        }
+    }
+
     fun updateField(field: TemplateFieldDTO) {
         templateFields.value = templateFields.value.map { toReplace ->
             if (toReplace.name == field.name) {

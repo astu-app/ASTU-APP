@@ -13,10 +13,12 @@ package org.astu.infrastructure.gateway.apis
 
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.statement.*
 import io.ktor.http.HttpStatusCode
 import org.astu.infrastructure.gateway.models.AccountDTO
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.SecurityHttpClient
+import org.astu.infrastructure.exceptions.ApiException
 
 class AccountApi(private val baseUrl: String = "/") {
     private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
@@ -33,7 +35,8 @@ class AccountApi(private val baseUrl: String = "/") {
         println(response)
         return when (response.status) {
             HttpStatusCode.OK -> response.body<AccountDTO>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 }

@@ -3,26 +3,15 @@ package org.astu.feature.universal_request.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import com.benasher44.uuid.uuid4
 import org.astu.feature.universal_request.view_models.AddTemplateViewModel
 import org.astu.infrastructure.SerializableScreen
 
@@ -32,7 +21,7 @@ class AddTemplateScreen(private val onReturn: () -> Unit) : SerializableScreen {
 
     @Composable
     override fun Content() {
-        vm = rememberScreenModel { AddTemplateViewModel() }
+        vm = remember { AddTemplateViewModel() }
         val state by remember { vm.state }
         when (state) {
             AddTemplateViewModel.State.Loading -> TopBar {
@@ -104,6 +93,9 @@ class AddTemplateScreen(private val onReturn: () -> Unit) : SerializableScreen {
                 vm.uploadFile()
             }) {
                 Text("Выбрать файл и отправить")
+            }
+            Button({vm.fill()}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow)){
+                Text("Заполнить поля")
             }
         }
     }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import org.astu.feature.auth.AuthRepository
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
+import kotlin.math.log
 
 class AuthViewModel : ScreenModel, JavaSerializable {
     val email = mutableStateOf("")
@@ -33,5 +34,16 @@ class AuthViewModel : ScreenModel, JavaSerializable {
             password.value = ""
             error.value = "Не удалось подключиться к серверу"
         }
+    }
+
+    fun loginAsStudent(onSuccess: () -> Unit){
+        email.value = "iivan"
+        password.value = "iivan"
+        login(onSuccess)
+    }
+    fun loginAsEmployee(onSuccess: () -> Unit){
+        email.value = "aus"
+        password.value = "aus"
+        login(onSuccess)
     }
 }

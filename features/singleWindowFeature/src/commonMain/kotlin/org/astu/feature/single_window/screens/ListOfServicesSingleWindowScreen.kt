@@ -18,7 +18,6 @@ import org.astu.feature.single_window.entities.Template
 import org.astu.feature.single_window.view_models.MainRequestViewModel
 import org.astu.infrastructure.components.card.Description
 import org.astu.infrastructure.components.card.Title
-import org.astu.infrastructure.theme.CurrentColorScheme
 
 
 class ListOfServicesSingleWindowScreen(
