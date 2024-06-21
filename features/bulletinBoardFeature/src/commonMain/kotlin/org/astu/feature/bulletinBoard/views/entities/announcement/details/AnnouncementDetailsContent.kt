@@ -1,5 +1,6 @@
 package org.astu.feature.bulletinBoard.views.entities.announcement.details
 
+import androidx.compose.runtime.MutableState
 import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
 import org.astu.feature.bulletinBoard.views.entities.users.CheckableUserSummary
@@ -11,7 +12,7 @@ class AnnouncementDetailsContent(
     val hidingTime: String,
     val delayedPublicationTime: String,
     val delayedHidingTime: String,
-    val viewed: Int,
+    val viewed: MutableState<Int>,
     val viewedPercent: Int,
     val audienceSize: Int,
     val text: String,

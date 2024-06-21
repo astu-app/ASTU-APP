@@ -1,3 +1,4 @@
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import cafe.adriel.voyager.core.model.StateScreenModel
@@ -12,6 +13,8 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.attachments.surveys
 import org.astu.feature.bulletinBoard.models.services.surveys.SurveyService
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.views.entities.announcement.summary.AnnouncementSummaryContent
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
+import org.astu.infrastructure.security.IAccountSecurityManager
 
 class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(State.Loading) {
     sealed class State {
@@ -26,9 +29,13 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
         data object DeletingAnnouncementError : State()
     }
 
+    private val securityManager by GlobalDIContext.inject<IAccountSecurityManager>()
+
     private val announcementModel: AnnouncementModel = AnnouncementModel()
     private val surveyService: SurveyService = SurveyService()
     var content: SnapshotStateList<AnnouncementSummaryContent> = mutableStateListOf()
+
+    var lazyListState: LazyListState = LazyListState()
 
     private val unexpectedErrorTitle: String = "Ошибка"
     private val unexpectedErrorBody: String = "Неожиданная ошибка. Повторите попытку"
@@ -62,6 +69,21 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
                 constructAnnouncementsLoadingErrorDialogContent()
                 mutableState.value = State.LoadingAnnouncementsError
             }
+        }
+    }
+
+    fun addViewToAnnouncement(announcementIndex: Int) {
+        if (announcementIndex < 0)
+            return
+
+        val announcement = content[announcementIndex]
+        if (announcement.seen || announcement.author.id.toString() == securityManager.currentUserId)
+            return
+
+        screenModelScope.launch {
+            announcementModel.addView(announcement.id)
+            announcement.seen = true
+            announcement.viewed.value += 1
         }
     }
 

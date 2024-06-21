@@ -58,8 +58,10 @@ fun AnnouncementSummary(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
-                            val detailsScreen = AnnouncementDetailsScreen(content.id) { navigator.pop() }
-                            navigator.push(detailsScreen)
+                            if (accountSecurityManager.currentUserId == content.author.id.toString()) {
+                                val detailsScreen = AnnouncementDetailsScreen(content.id) { navigator.pop() }
+                                navigator.push(detailsScreen)
+                            }
                         },
                         onLongPress = {
                             pressOffset = DpOffset(it.x.toDp(), it.y.toDp())

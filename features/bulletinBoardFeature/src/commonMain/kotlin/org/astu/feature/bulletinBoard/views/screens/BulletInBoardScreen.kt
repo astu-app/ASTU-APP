@@ -78,10 +78,28 @@ class BulletInBoardScreen : Screen {
             Surface(
                 modifier = Modifier.padding(top = it.calculateTopPadding())
             ) {
+                // были ли отмечены ли все видимые в текущий момент элементы ленты объявлений просмотренными
+                val visibleAnnouncementsViewsInitialized = remember { mutableStateOf(false) }
+                val lastVisibleAnnouncementIndex: Int = viewModel.lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+                // если еще не отмечали все объявления как просмотренные и в ленте объявлений не пусто
+                if (!visibleAnnouncementsViewsInitialized.value && viewModel.lazyListState.layoutInfo.visibleItemsInfo.firstOrNull() != null) {
+                    viewModel.lazyListState.layoutInfo.visibleItemsInfo.forEach { vi ->
+                        viewModel.addViewToAnnouncement(vi.index)
+                    }
+                    visibleAnnouncementsViewsInitialized.value = true
+                }
+
+                LaunchedEffect(lastVisibleAnnouncementIndex) {
+                    viewModel.addViewToAnnouncement(lastVisibleAnnouncementIndex)
+                }
+
                 val state by viewModel.state.collectAsState()
                 when (state) {
                     BulletInBoardViewModel.State.Loading -> { hideErrorDialog(viewModel); Loading() }
-                    BulletInBoardViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); AnnouncementFeed(mapAnnouncements(viewModel)) }
+                    BulletInBoardViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); AnnouncementFeed(
+                        mapAnnouncements(viewModel),
+                        viewModel.lazyListState
+                    ) }
                     BulletInBoardViewModel.State.LoadingAnnouncementsError -> showErrorDialog(viewModel)
                     BulletInBoardViewModel.State.StoppingSurvey -> hideErrorDialog(viewModel)
                     BulletInBoardViewModel.State.StoppingSurveyError -> showErrorDialog(viewModel)

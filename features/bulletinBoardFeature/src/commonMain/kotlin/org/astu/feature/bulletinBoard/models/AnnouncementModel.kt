@@ -67,6 +67,10 @@ class AnnouncementModel {
         return announcementRepository.edit(announcement)
     }
 
+    suspend fun addView(announcementId: Uuid) {
+        return announcementRepository.addView(announcementId)
+    }
+
     suspend fun delete(id: Uuid): DeleteAnnouncementErrors? {
         return announcementRepository.delete(id)
     }

@@ -8,6 +8,7 @@ data class UserSummaryWithUserRights(
     val canViewAnnouncements: Boolean,
     val canCreateAnnouncements: Boolean,
     val canCreateSurveys: Boolean,
+    val canRuleUserGroupHierarchy: Boolean,
     val canViewUserGroupDetails: Boolean,
     val canCreateUserGroups: Boolean,
     val canEditUserGroups: Boolean,

@@ -21,6 +21,7 @@ object UserToPresentationMappers {
             canViewAnnouncements = this.rights.canViewAnnouncements,
             canCreateAnnouncements = this.rights.canCreateAnnouncements,
             canCreateSurveys = this.rights.canCreateSurveys,
+            canRuleUserGroupHierarchy = this.rights.canRuleUserGroupHierarchy,
             canViewUserGroupDetails = this.rights.canViewUserGroupDetails,
             canCreateUserGroups = this.rights.canCreateUserGroups,
             canEditUserGroups = this.rights.canEditUserGroups,

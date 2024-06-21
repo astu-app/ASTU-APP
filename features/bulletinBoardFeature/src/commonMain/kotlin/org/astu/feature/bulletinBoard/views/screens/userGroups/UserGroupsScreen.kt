@@ -2,7 +2,11 @@ package org.astu.feature.bulletinBoard.views.screens.userGroups
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.*
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -14,24 +18,9 @@ import org.astu.feature.bulletinBoard.views.screens.userGroups.actions.CreateUse
 import org.astu.infrastructure.theme.CurrentColorScheme
 
 class UserGroupsScreen(private val onReturn: () -> Unit) : Screen {
-//    private val screens: List<UnitOfNavigationBar> = // remove
-//        listOf(
-//            UnitOfNavigationBar(
-//                label = { Text("Иерархия") },
-//                icon = { Icon(Icons.Default.Newspaper, contentDescription = null) },
-//                screen = UserGroupHierarchyScreen()
-//            ),
-////            UnitOfNavigationBar(
-////                label = { Text("Список") },
-////                icon = { Icon(TablerIcons.FileExport, contentDescription = null) },
-////                screen = UserGroupListScreen()
-////            )
-//        )
-
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-//        val selected = remember { mutableStateOf(0) } // remove
 
         val viewModel = rememberScreenModel { UserGroupHierarchyViewModel(navigator) }
         val screen = UserGroupHierarchyScreen(viewModel)
@@ -52,28 +41,16 @@ class UserGroupsScreen(private val onReturn: () -> Unit) : Screen {
             },
             actions = {
                 // Кнопка обновить
-                Button(
-                    onClick = { viewModel.loadUserGroups() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = CurrentColorScheme.surface,
-                        disabledContainerColor = CurrentColorScheme.surface,
-                        contentColor = CurrentColorScheme.primary,
-                    )
-                ) {
-                    Text(
-                        text = "Обновить",
-                        style = MaterialTheme.typography.titleLarge,
+                IconButton(onClick = { viewModel.loadUserGroups() }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Refresh,
+                        contentDescription = "Обновить иерархию групп пользователей",
+                        tint = CurrentColorScheme.primary
                     )
                 }
             }
-//            bottomBar = { NavigationBarScreens(selected, screens, setValue) } // remove
         ) {
-//            screens.getOrNull(selected)?.screen?.Content() // remove
             screen.Content()
         }
     }
-
-
-
-
 }

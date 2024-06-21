@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.astu.feature.bulletinBoard.views.components.tree.Tree
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
+import org.astu.infrastructure.components.EmptyContent
 
 @Composable
 fun DisplayUserGroupHierarchySection(
@@ -18,6 +19,11 @@ fun DisplayUserGroupHierarchySection(
         .padding(all = 16.dp)
         .wrapContentHeight()
 ) {
+    if (rootNodes.isEmpty()) {
+        EmptyContent()
+        return
+    }
+
     Column(modifier = modifier) {
         Tree(rootNodes)
     }

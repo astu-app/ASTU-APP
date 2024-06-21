@@ -1,6 +1,7 @@
 package org.astu.feature.bulletinBoard.views.components.userGroups
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.*
@@ -76,7 +77,7 @@ fun UserGroupDetails(
                     viewModel.showShowUserRightsDialog.value = false
                 }
             ) {
-                ShowUserRightsDialogContent(detailsSnapshot, viewModel)
+                ShowUserRightsDialogContent(viewModel)
             }
         }
 
@@ -110,21 +111,24 @@ fun UserGroupDetails(
 
 
 @Composable
-private fun ShowUserRightsDialogContent(details: UserGroupDetailsContent, viewModel: UserGroupDetailsViewModel) {
+private fun ShowUserRightsDialogContent(viewModel: UserGroupDetailsViewModel) {
     val selectedUserSnapshot = viewModel.selectedUserForRightsShowing
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        UserRightRow("Просмотр объявлений", selectedUserSnapshot.value?.canViewAnnouncements)
-        UserRightRow("Создание объявлений", selectedUserSnapshot.value?.canCreateAnnouncements)
-        UserRightRow("Создание опросов", selectedUserSnapshot.value?.canCreateSurveys)
-        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(1) {
+            UserRightRow("Просмотр объявлений", selectedUserSnapshot.value?.canViewAnnouncements)
+            UserRightRow("Создание объявлений", selectedUserSnapshot.value?.canCreateAnnouncements)
+            UserRightRow("Создание опросов", selectedUserSnapshot.value?.canCreateSurveys)
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
-        UserRightRow("Просмотр деталей групп пользователей", selectedUserSnapshot.value?.canViewUserGroupDetails)
-        UserRightRow("Создание групп пользователей", selectedUserSnapshot.value?.canCreateUserGroups)
-        UserRightRow("Редактирование групп пользователей", selectedUserSnapshot.value?.canEditUserGroups)
-        UserRightRow("Изменение состава участников группы пользователей", selectedUserSnapshot.value?.canEditMembers)
-        UserRightRow("Изменение прав участников группы пользователей", selectedUserSnapshot.value?.canEditMemberRights)
-        UserRightRow("Изменение администратора группы пользователей", selectedUserSnapshot.value?.canEditUserGroupAdmin)
-        UserRightRow("Удаление групп пользователей", selectedUserSnapshot.value?.canDeleteUserGroup)
+            UserRightRow("Управление иерархией групп пользователей", selectedUserSnapshot.value?.canRuleUserGroupHierarchy)
+            UserRightRow("Просмотр деталей групп пользователей", selectedUserSnapshot.value?.canViewUserGroupDetails)
+            UserRightRow("Создание групп пользователей", selectedUserSnapshot.value?.canCreateUserGroups)
+            UserRightRow("Редактирование групп пользователей", selectedUserSnapshot.value?.canEditUserGroups)
+            UserRightRow("Изменение состава участников группы пользователей", selectedUserSnapshot.value?.canEditMembers)
+            UserRightRow("Изменение прав участников группы пользователей", selectedUserSnapshot.value?.canEditMemberRights)
+            UserRightRow("Изменение администратора группы пользователей", selectedUserSnapshot.value?.canEditUserGroupAdmin)
+            UserRightRow("Удаление групп пользователей", selectedUserSnapshot.value?.canDeleteUserGroup)
+        }
     }
 }
 

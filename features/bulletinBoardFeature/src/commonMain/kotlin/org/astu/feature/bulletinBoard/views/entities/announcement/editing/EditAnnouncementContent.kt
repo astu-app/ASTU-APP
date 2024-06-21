@@ -10,6 +10,7 @@ import org.astu.feature.bulletinBoard.models.entities.audience.getUserGroupHiera
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDate
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeTime
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.VotedAnswerContentDetails
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeFromEpochMillis
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.votedSurveyToPresentation
@@ -27,7 +28,7 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
     lateinit var hidingTimeString: String
     lateinit var initialDelayedPublicationTimeString: String
     lateinit var initialDelayedHidingTimeString: String
-    val viewed: Int = editContent.viewsCount
+    val viewed: MutableState<Int> = mutableStateOf(editContent.viewsCount)
     val viewedPercent: Int = round(editContent.viewsCount * 1f / editContent.audienceSize).roundToInt()
     val audienceSize: Int = editContent.audienceSize
     var text: MutableState<String> = mutableStateOf(editContent.content)
@@ -74,7 +75,7 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
         setDelayedHidingTimeString()
         setDelayedMoments()
 
-        attachedSurvey = editContent.surveys?.elementAtOrNull(0)?.votedSurveyToPresentation(showVoters = true) as AttachedSurveyContent?
+        attachedSurvey = editContent.surveys?.elementAtOrNull(0)?.votedSurveyToPresentation<VotedAnswerContentDetails>(showVoters = true) as AttachedSurveyContent?
 
         selectedUserIds = editContent.audienceHierarchy.roots
             .flatMap {

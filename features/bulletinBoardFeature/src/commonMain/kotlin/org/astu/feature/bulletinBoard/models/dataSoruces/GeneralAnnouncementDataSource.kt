@@ -34,6 +34,12 @@ interface GeneralAnnouncementDataSource {
     suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrorsAggregate?
 
     /**
+     * Добавить просмотр указанному объявлению. Не отлавливает неуспешные попытки
+     * @param id идентификатор объявления, к которому добавляется просмотр
+     */
+    suspend fun addView(id: Uuid)
+
+    /**
      * Выполнить запрос на редактирование объявления
      * @param id идентификатор удаляемого объявления
      * @return Код неуспешного ответа или null, если запрос выполнен успешно

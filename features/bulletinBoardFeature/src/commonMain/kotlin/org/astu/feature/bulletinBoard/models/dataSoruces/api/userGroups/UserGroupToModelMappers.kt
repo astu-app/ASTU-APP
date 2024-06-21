@@ -71,6 +71,7 @@ object UserGroupToModelMappers {
             canViewAnnouncements = this.canViewAnnouncements,
             canCreateAnnouncements = this.canCreateAnnouncements,
             canCreateSurveys = this.canCreateSurveys,
+            canRuleUserGroupHierarchy = canRuleUserGroupHierarchy,
             canViewUserGroupDetails = this.canViewUserGroupDetails,
             canCreateUserGroups = this.canCreateUserGroups,
             canEditUserGroups = this.canEditUserGroups,

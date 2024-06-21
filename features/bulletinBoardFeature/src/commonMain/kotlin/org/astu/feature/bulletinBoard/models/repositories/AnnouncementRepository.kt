@@ -46,6 +46,10 @@ class AnnouncementRepository {
         return generalAnnouncementsSource.edit(announcement)
     }
 
+    suspend fun addView(announcementId: Uuid) {
+        return generalAnnouncementsSource.addView(announcementId)
+    }
+
     suspend fun loadHiddenList(): ContentWithError<List<AnnouncementSummaryContent>, GetHiddenAnnouncementListErrors> {
         val content = hiddenAnnouncementsSource.getList()
         val announcements = content.content?.toPresentations()

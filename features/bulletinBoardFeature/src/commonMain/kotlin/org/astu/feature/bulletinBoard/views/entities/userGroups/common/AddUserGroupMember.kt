@@ -10,6 +10,7 @@ data class AddUserGroupMember (
     val canViewAnnouncements: MutableState<Boolean> = mutableStateOf(true),
     val canCreateAnnouncements: MutableState<Boolean> = mutableStateOf(false),
     val canCreateSurveys: MutableState<Boolean> = mutableStateOf(false),
+    val canRuleUserGroupHierarchy: MutableState<Boolean> = mutableStateOf(false),
     val canViewUserGroupDetails: MutableState<Boolean> = mutableStateOf(false),
     val canCreateUserGroups: MutableState<Boolean> = mutableStateOf(false),
     val canEditUserGroups: MutableState<Boolean> = mutableStateOf(false),

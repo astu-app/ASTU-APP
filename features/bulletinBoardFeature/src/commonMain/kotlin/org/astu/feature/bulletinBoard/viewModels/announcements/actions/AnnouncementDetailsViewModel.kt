@@ -15,6 +15,7 @@ import org.astu.feature.bulletinBoard.models.entities.audience.CheckableUser
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDateTime
 import org.astu.feature.bulletinBoard.views.components.attachments.common.models.AttachmentContentBase
+import org.astu.feature.bulletinBoard.views.components.attachments.voting.answers.models.VotedAnswerContentDetails
 import org.astu.feature.bulletinBoard.views.components.attachments.voting.surveys.AttachedSurveyContent
 import org.astu.feature.bulletinBoard.views.entities.announcement.details.AnnouncementDetailsContent
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.toPresentation
@@ -92,7 +93,7 @@ class AnnouncementDetailsViewModel (
             hidingTime = hidingTimeString,
             delayedPublicationTime = delayedPublicationTimeString,
             delayedHidingTime = delayedHidingTimeString,
-            viewed = details.viewsCount,
+            viewed = mutableStateOf(details.viewsCount),
             viewedPercent = calculateVotersPercentage(details.viewsCount, details.audienceSize),
             audienceSize = details.audienceSize,
             text = details.content,
@@ -123,7 +124,7 @@ class AnnouncementDetailsViewModel (
     }
 
     private fun surveyToViewModel(survey: SurveyDetails): AttachedSurveyContent {
-        return survey.toPresentation(true, showOnlyResults = true) as AttachedSurveyContent
+        return survey.toPresentation<VotedAnswerContentDetails>(true, showOnlyResults = true) as AttachedSurveyContent
     }
 
     private fun constructErrorDialogContent(error: GetAnnouncementDetailsErrors? = null) {

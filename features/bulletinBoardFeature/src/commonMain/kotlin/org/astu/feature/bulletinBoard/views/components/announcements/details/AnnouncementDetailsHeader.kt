@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -19,8 +20,8 @@ fun AnnouncementDetailsHeader(
     hidingMoment: String,
     delayedPublicationMoment: String,
     delayedHidingMoment: String,
-    viewed: Int,
-    viewedPercent: Int,
+    viewed: MutableState<Int>,
+            viewedPercent: Int,
     audienceSize: Int,
     modifier: Modifier = Modifier
 ) {

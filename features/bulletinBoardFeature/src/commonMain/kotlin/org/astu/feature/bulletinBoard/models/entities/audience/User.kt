@@ -9,5 +9,7 @@ open class User(
     val patronymic: String?
 ) {
     val fullName: String
-        get() = "$firstName $secondName $patronymic"
+        get() =
+            if (patronymic != null) "$secondName $firstName $patronymic"
+            else "$secondName $firstName"
 }

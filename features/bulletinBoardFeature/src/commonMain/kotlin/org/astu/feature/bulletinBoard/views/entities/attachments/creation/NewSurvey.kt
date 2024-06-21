@@ -7,11 +7,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ChevronLeft
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -121,7 +120,7 @@ class NewSurvey(private val onSurveyDeleteRequest: () -> Unit) : ContentProvider
                     end = 12.dp
                 )
         ) {
-            // Заголовое
+            // Заголовок
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -159,8 +158,47 @@ class NewSurvey(private val onSurveyDeleteRequest: () -> Unit) : ContentProvider
                 state = pagerState,
                 modifier = modifier
             ) { page ->
-                val question = questions[page]
-                question.Content(question.getDefaultModifier())
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    val scope = rememberCoroutineScope()
+
+                    val showChevrons = questions.size > 1
+                    val sideButtonsWeight = remember { 0.025f }
+
+                    if (showChevrons) {
+                        IconButton(
+                            onClick = {
+                                val prevPage = if (page > 1) page - 1 else 0
+                                scope.launch { pagerState.animateScrollToPage(prevPage) }
+                            },
+                            modifier = Modifier.weight(sideButtonsWeight).fillMaxHeight(),
+                        ) {
+                            Icon(Icons.Outlined.ChevronLeft, null)
+                        }
+                    }
+
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.weight(0.8f)
+                    ) {
+                        val question = questions[page]
+                        question.Content(question.getDefaultModifier())
+                    }
+
+                    if (showChevrons) {
+                        IconButton(
+                            onClick = {
+                                val nextPage = if (page < pagerState.pageCount - 1) page + 1 else page
+                                scope.launch { pagerState.animateScrollToPage(nextPage) }
+                            },
+                            modifier = Modifier.weight(sideButtonsWeight).fillMaxHeight(),
+                        ) {
+                            Icon(Icons.Outlined.ChevronRight, null)
+                        }
+                    }
+                }
             }
             Paginator(pagerState.currentPage, pagerState.pageCount)
 

@@ -87,6 +87,14 @@ class ApiGeneralAnnouncementDataSource(private val baseUrl: String) : GeneralAnn
         )
     }
 
+    override suspend fun addView(id: Uuid) {
+        val dto = "\"${id}\""
+        client.post("${baseUrl}/api/bulletin-board-service/announcements/addView") {
+            contentType(ContentType.Application.Json)
+            setBody(dto)
+        }
+    }
+
     override suspend fun delete(id: Uuid): DeleteAnnouncementErrors? {
         val dto = "\"${id}\""
         val response = client.delete("${baseUrl}/api/bulletin-board-service/announcements/delete") {

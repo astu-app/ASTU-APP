@@ -35,6 +35,7 @@ object UserGroupToDtoMappers {
             canViewAnnouncements = this.canViewAnnouncements,
             canCreateAnnouncements = this.canCreateAnnouncements,
             canCreateSurveys = this.canCreateSurveys,
+            canRuleUserGroupHierarchy = this.canRuleUserGroupHierarchy,
             canViewUserGroupDetails = this.canViewUserGroupDetails,
             canCreateUserGroups = this.canCreateUserGroups,
             canEditUserGroups = this.canEditUserGroups,
