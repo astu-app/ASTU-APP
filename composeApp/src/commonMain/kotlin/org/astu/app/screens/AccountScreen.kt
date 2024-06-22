@@ -1,19 +1,22 @@
 package org.astu.app.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import org.astu.app.view_models.AccountViewModel
 import org.astu.infrastructure.SerializableScreen
-import org.astu.infrastructure.components.card.Title
+import org.astu.infrastructure.components.ActionFailedDialog
+import org.astu.infrastructure.components.common.getButtonColors
+import org.astu.infrastructure.theme.CurrentColorScheme
 
 class AccountScreen(private val onLogout: () -> Unit) : SerializableScreen {
     private lateinit var vm: AccountViewModel
@@ -43,44 +46,75 @@ class AccountScreen(private val onLogout: () -> Unit) : SerializableScreen {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Show() {
         val account = vm.account
-        Column {
-            Column(Modifier.fillMaxWidth()) {
-                Text(
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
-                    text = "Привет, ${account.value?.firstName}!"
-                )
-                HorizontalDivider()
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                LazyColumn {
-                    item {
-                        ListItem(Modifier, "Выйти из аккаунта", vm::logout)
-                    }
-                }
-            }
-        }
-    }
 
-    @Composable
-    fun ListItem(modifier: Modifier, title: String, onClick: () -> Unit) {
-        Card(
-            modifier.padding(horizontal = 10.dp, vertical = 10.dp).clickable(onClick = onClick),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Аккаунт") },
+                    actions = {
+                        // Кнопка разлогиниться
+                        IconButton(onClick = vm::logout) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.Logout,
+                                contentDescription = "Выйти из аккаунта",
+                                tint = CurrentColorScheme.primary
+                            )
+                        }
+                    }
+                )
+            },
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Surface(
+                modifier = Modifier.padding(top = it.calculateTopPadding())
             ) {
-                Column(Modifier.padding(start = 10.dp)) {
-                    Title(title)
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = "Добрый день,\n${account.value?.fullName}!",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .padding(vertical = 24.dp),
+                    )
+                    HorizontalDivider()
+
+                    if (account.value != null && account.value!!.isAdmin) {
+                        Button(
+                            onClick = vm::uploadFile,
+                            colors = Color.getButtonColors(
+                                containerColor = CurrentColorScheme.tertiaryContainer
+                            ),
+                            modifier = Modifier.padding(vertical = 16.dp)
+                        ) {
+                            Row (
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.wrapContentWidth()
+                            ) {
+                                Icon(Icons.Outlined.PersonAdd, contentDescription = "Зарегистрировать пользователей")
+                                Text("Зарегистрировать пользователей")
+                            }
+
+                        }
+                        HorizontalDivider()
+                    }
+
+                    if (vm.showErrorDialog.value) {
+                        ActionFailedDialog(
+                            label = vm.unexpectedErrorTitle,
+                            body = vm.error.value ?: vm.unexpectedErrorBody,
+                            tryAgainButtonLabel = "Ок",
+                            onTryAgainRequest = { vm.showErrorDialog.value = false },
+                            showDismissButton = false
+                        )
+                    }
                 }
             }
         }

@@ -14,4 +14,9 @@ data class AccountDTO(
     val isAdmin: Boolean = false,
     val departmentId: String? = null,
     val studentGroupId: String? = null
-)
+) {
+    val fullName: String
+        get() =
+            if (patronymic != null) "$secondName $firstName $patronymic"
+            else "$secondName $firstName"
+}

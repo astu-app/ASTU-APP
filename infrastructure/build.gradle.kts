@@ -50,7 +50,9 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kodein)
+            implementation(libs.uuid)
 
+            implementation(libs.github.kotlin.csv.all)
         }
 
         commonTest.dependencies {
@@ -58,12 +60,15 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.activity.ktx)
+            implementation(libs.github.kotlin.csv.jvm)
         }
 
         jvmMain.dependencies {
+            implementation(libs.github.kotlin.csv.jvm)
         }
 
         jsMain.dependencies {
+            implementation(libs.kotlin.csv.js)
         }
 
         iosMain.dependencies {
