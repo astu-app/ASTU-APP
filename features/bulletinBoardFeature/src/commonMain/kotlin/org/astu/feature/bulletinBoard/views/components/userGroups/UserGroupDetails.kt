@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.viewModels.userGroups.actions.UserGroupDetailsViewModel
 import org.astu.feature.bulletinBoard.views.components.UserViewMappers.toStaticView
 import org.astu.feature.bulletinBoard.views.components.userGroups.UserGroupViewMappers.toClickableView
@@ -27,7 +29,6 @@ import org.astu.infrastructure.theme.CurrentColorScheme
 @Composable
 fun UserGroupDetails(
     viewModel: UserGroupDetailsViewModel,
-//    details: MutableState<UserGroupDetailsContent?>,
     modifier: Modifier = Modifier,
 ) {
     val detailsSnapshot = viewModel.content.value ?: return
@@ -66,7 +67,8 @@ fun UserGroupDetails(
                 .wrapContentHeight()
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                DropDown(memberViews) { Text("Участники") }
+                val dropdownExpanded = remember { mutableStateOf(false) }
+                DropDown(memberViews, isExpanded = dropdownExpanded) { Text("Участники") }
             }
         }
 
@@ -82,7 +84,7 @@ fun UserGroupDetails(
         }
 
         // Родительские группы пользователей
-        val parentViews = remember { detailsSnapshot.parents.toViews(navigator) }
+        val parentViews = remember { detailsSnapshot.parents.toViews(navigator, viewModel.rootUserGroupId) }
         Card(
             colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
             modifier = Modifier
@@ -90,12 +92,13 @@ fun UserGroupDetails(
                 .wrapContentHeight()
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                DropDown(parentViews) { Text("Родительские группы") }
+                val dropdownExpanded = remember { mutableStateOf(false) }
+                DropDown(parentViews, isExpanded = dropdownExpanded) { Text("Родительские группы") }
             }
         }
 
         // Дочерние группы пользователей
-        val childrenViews = remember { detailsSnapshot.children.toViews(navigator) }
+        val childrenViews = remember { detailsSnapshot.children.toViews(navigator, viewModel.rootUserGroupId) }
         Card(
             colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
             modifier = Modifier
@@ -103,7 +106,8 @@ fun UserGroupDetails(
                 .wrapContentHeight()
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                DropDown(childrenViews) { Text("Дочерние группы") }
+                val dropdownExpanded = remember { mutableStateOf(false) }
+                DropDown(childrenViews, isExpanded = dropdownExpanded) { Text("Дочерние группы") }
             }
         }
     }
@@ -115,7 +119,6 @@ private fun ShowUserRightsDialogContent(viewModel: UserGroupDetailsViewModel) {
     val selectedUserSnapshot = viewModel.selectedUserForRightsShowing
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         items(1) {
-            UserRightRow("Просмотр объявлений", selectedUserSnapshot.value?.canViewAnnouncements)
             UserRightRow("Создание объявлений", selectedUserSnapshot.value?.canCreateAnnouncements)
             UserRightRow("Создание опросов", selectedUserSnapshot.value?.canCreateSurveys)
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
@@ -150,10 +153,10 @@ private fun UserRightRow(
         }
     }
 
-private fun Collection<UserGroupSummaryContent>.toViews(navigator: Navigator): List<@Composable () -> Unit> =
+private fun Collection<UserGroupSummaryContent>.toViews(navigator: Navigator, rootUserGroupId: Uuid): List<@Composable () -> Unit> =
     this.map {
         it.toClickableView {
-            val userGroupDetailsScreen = UserGroupDetailsScreen(it.id, it.name) { navigator.pop() }
+            val userGroupDetailsScreen = UserGroupDetailsScreen(it.id, it.name, rootUserGroupId) { navigator.pop() }
             navigator.push(userGroupDetailsScreen)
         }
     }

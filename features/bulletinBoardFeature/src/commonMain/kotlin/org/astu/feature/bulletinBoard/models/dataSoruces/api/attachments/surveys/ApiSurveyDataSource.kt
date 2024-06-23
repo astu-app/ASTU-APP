@@ -22,9 +22,10 @@ class ApiSurveyDataSource(private val baseUrl: String) : SurveyDataSource {
     private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
     private val client = securityHttpClient.instance
 
-    override suspend fun create(survey: CreateSurvey): ContentWithError<Uuid, CreateSurveyErrors> {
+    override suspend fun create(survey: CreateSurvey, rootUserGroupId: Uuid): ContentWithError<Uuid, CreateSurveyErrors> {
         val dto = survey.toDto()
         val response = client.post("${baseUrl}/api/bulletin-board-service/surveys/create") {
+            headers { append("X-Root-UserGroup-Id", rootUserGroupId.toString()) }
             contentType(ContentType.Application.Json)
             setBody(dto)
         }

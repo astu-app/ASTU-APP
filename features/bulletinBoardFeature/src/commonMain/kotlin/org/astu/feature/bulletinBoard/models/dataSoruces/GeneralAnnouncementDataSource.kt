@@ -17,7 +17,7 @@ interface GeneralAnnouncementDataSource {
      * @param announcement данные для создания объявления
      * @return Код неуспешного ответа или null, если запрос выполнен успешно
      */
-    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrorsAggregate?
+    suspend fun create(announcement: CreateAnnouncement, rootUserGroupId: Uuid): CreateAnnouncementErrorsAggregate?
 
     /**
      * Выполнить запрос на получение данных для редактирования объявления

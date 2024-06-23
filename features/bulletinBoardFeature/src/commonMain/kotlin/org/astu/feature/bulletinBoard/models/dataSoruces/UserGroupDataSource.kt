@@ -6,12 +6,12 @@ import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.response
 import org.astu.feature.bulletinBoard.models.entities.audience.*
 
 interface UserGroupDataSource {
-    suspend fun getCreateContent(): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors>
-    suspend fun create(content: CreateUserGroup): CreateUserGroupErrors?
-    suspend fun getDetails(id: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors>
-    suspend fun getUpdateContent(id: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors>
-    suspend fun update(content: UpdateUserGroup): UpdateUsergroupErrors?
+    suspend fun getCreateContent(rootUserGroupId: Uuid): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors>
+    suspend fun create(content: CreateUserGroup, rootUserGroupId: Uuid): CreateUserGroupErrors?
+    suspend fun getDetails(id: Uuid, rootUserGroupId: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors>
+    suspend fun getUpdateContent(id: Uuid, rootUserGroupId: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors>
+    suspend fun update(content: UpdateUserGroup, rootUserGroupId: Uuid): UpdateUsergroupErrors?
     suspend fun getUserGroupHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors>
     suspend fun getUserGroupList(): ContentWithError<List<UserGroupSummary>, GetUserListErrors>
-    suspend fun delete(id: Uuid): DeleteUserGroupErrors?
+    suspend fun delete(id: Uuid, rootUserGroupId: Uuid): DeleteUserGroupErrors?
 }

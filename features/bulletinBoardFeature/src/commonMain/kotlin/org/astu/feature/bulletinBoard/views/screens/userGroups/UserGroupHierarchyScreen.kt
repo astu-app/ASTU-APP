@@ -1,24 +1,29 @@
 package org.astu.feature.bulletinBoard.views.screens.userGroups
 
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.astu.feature.bulletinBoard.viewModels.userGroups.UserGroupHierarchyViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.common.DisplayUserGroupHierarchySection
+import org.astu.feature.bulletinBoard.views.components.announcements.creation.DropDownSelector
 import org.astu.feature.bulletinBoard.views.components.userGroups.dropdownMenuContent.UserGroupSummaryDropDownMenuContent
 import org.astu.feature.bulletinBoard.views.screens.userGroups.actions.EditUserGroupScreen
 import org.astu.feature.bulletinBoard.views.screens.userGroups.actions.UserGroupDetailsScreen
 import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
+import org.astu.infrastructure.theme.CurrentColorScheme
 
 class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewModel) : Screen {
     @Composable
@@ -29,7 +34,7 @@ class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewMode
         val state by viewModel.state.collectAsState()
         when (state) {
             UserGroupHierarchyViewModel.State.Loading -> { hideErrorDialog(viewModel); Loading() }
-            UserGroupHierarchyViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); DisplayUserGroupHierarchySection(viewModel.userGroups) }
+            UserGroupHierarchyViewModel.State.LoadingDone -> { hideErrorDialog(viewModel); ShowLoadedContent(viewModel) }
             UserGroupHierarchyViewModel.State.LoadingUserGroupsError -> showErrorDialog(viewModel)
             UserGroupHierarchyViewModel.State.Deleting -> hideErrorDialog(viewModel)
             UserGroupHierarchyViewModel.State.DeletingError -> showErrorDialog(viewModel)
@@ -39,11 +44,11 @@ class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewMode
             val dropDownMenuContent = remember {
                 createDropdownMenuContent(
                     info = {
-                        val userGroupDetailsScreen = UserGroupDetailsScreen(viewModel.selectedUserGroupId, viewModel.selectedUserGroupName) { navigator.pop()}
+                        val userGroupDetailsScreen = UserGroupDetailsScreen(viewModel.selectedUserGroupId, viewModel.selectedUserGroupName, viewModel.rootUserGroupId) { navigator.pop()}
                         navigator.push(userGroupDetailsScreen)
                     },
                     edit = {
-                        val editUserGroupScreen = EditUserGroupScreen(viewModel.selectedUserGroupId) { navigator.pop() }
+                        val editUserGroupScreen = EditUserGroupScreen(viewModel.selectedUserGroupId, viewModel.rootUserGroupId) { navigator.pop() }
                         navigator.push(editUserGroupScreen)
                     },
                     delete = {
@@ -95,6 +100,33 @@ class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewMode
     }
 
 
+
+    @Composable
+    private fun ShowLoadedContent(viewModel: UserGroupHierarchyViewModel) {
+        Column {
+            // Группа пользователей
+            Card(
+                colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.surface),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                Text(
+                    text = "Группа пользователей",
+                    modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                )
+                DropDownSelector(
+                    viewModel.hierarchyRootsForUserGroupSelection.values,
+                    viewModel.hierarchyRootsForUserGroupSelection[viewModel.selectedRootId.value]!!,
+                    viewModel.isSelectUserGroupExpanded
+                )
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+
+            DisplayUserGroupHierarchySection(viewModel.userGroups)
+        }
+    }
 
     private fun showErrorDialog(viewModel: UserGroupHierarchyViewModel) {
         viewModel.showErrorDialog = true

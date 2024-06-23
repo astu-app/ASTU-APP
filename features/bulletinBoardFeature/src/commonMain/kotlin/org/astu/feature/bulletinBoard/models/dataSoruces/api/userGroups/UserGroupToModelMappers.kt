@@ -68,7 +68,6 @@ object UserGroupToModelMappers {
     @JvmName("MemberRightsDtoToModel")
     fun MemberRightsDto.toModel(): MemberRights =
         MemberRights(
-            canViewAnnouncements = this.canViewAnnouncements,
             canCreateAnnouncements = this.canCreateAnnouncements,
             canCreateSurveys = this.canCreateSurveys,
             canRuleUserGroupHierarchy = canRuleUserGroupHierarchy,

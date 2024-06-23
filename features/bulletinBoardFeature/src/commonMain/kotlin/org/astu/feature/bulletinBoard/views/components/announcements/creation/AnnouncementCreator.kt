@@ -7,7 +7,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.astu.feature.bulletinBoard.viewModels.announcements.actions.CreateAnnouncementViewModel
 import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachSurveySection
@@ -16,6 +18,7 @@ import org.astu.feature.bulletinBoard.views.components.announcements.common.Disp
 import org.astu.feature.bulletinBoard.views.entities.ContentProvider
 import org.astu.feature.bulletinBoard.views.entities.DefaultModifierProvider
 import org.astu.feature.bulletinBoard.views.entities.announcement.creation.CreateAnnouncementContent
+import org.astu.infrastructure.components.dropdown.DropDown
 import org.astu.infrastructure.theme.CurrentColorScheme
 
 /**
@@ -32,13 +35,39 @@ class AnnouncementCreator(
 
     @Composable
     override fun Content(modifier: Modifier) {
-        if (announcement.value == null)
+        val announcementSnapshot = announcement.value ?: return
+
+        if (announcementSnapshot.selectedRootId.value == null) {
+            Text(
+                text = "Вы не можете установить аудиторию объявления, а значит, и создать его",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
             return
+        }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier
         ) {
+            // Группа пользователей
+            Card(
+                colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                Text(
+                    text = "Группа пользователей",
+                    modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                )
+                DropDownSelector(
+                    announcementSnapshot.audienceRootsForUserGroupSelection.values,
+                    announcementSnapshot.audienceRootsForUserGroupSelection[announcementSnapshot.selectedRootId.value]!!,
+                    announcementSnapshot.isSelectUserGroupExpanded
+                )
+            }
+
             // Текст
             Card(
                 colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
@@ -69,10 +98,11 @@ class AnnouncementCreator(
 
 
             // Опрос
-            AttachSurveySection(announcement.value!!.survey)
+            AttachSurveySection(announcementSnapshot.survey)
 
             // Аудитория
-            DisplayAudienceHierarchySection(announcement.value!!.audienceRoots)
+            if (announcementSnapshot.selectedRootId.value != null)
+                DisplayAudienceHierarchySection(listOf(announcementSnapshot.audienceRoots[announcementSnapshot.selectedRootId.value]!!))
         }
     }
 
@@ -109,5 +139,22 @@ class AnnouncementCreator(
             timeMinutes = announcement.value!!.delayedHidingTimeMinutes,
             timeString = announcement.value!!.delayedHidingTimeString,
         )
+    }
+}
+
+
+@Composable
+fun DropDownSelector(
+    elements: Collection<@Composable () -> Unit>,
+    selectedElement: @Composable () -> Unit,
+    isExpanded: MutableState<Boolean> = mutableStateOf(false)
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(16.dp)
+    ) {
+        DropDown(elements, isExpanded = isExpanded) {
+            selectedElement.invoke()
+        }
     }
 }

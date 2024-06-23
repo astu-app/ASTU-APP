@@ -27,8 +27,8 @@ class ApiGeneralAnnouncementDataSource(private val baseUrl: String) : GeneralAnn
     private val surveyDataSource = ApiSurveyDataSource(baseUrl)
 
 
-    override suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrorsAggregate? {
-        val newSurveyIdContent = if (announcement.survey != null) uploadSurvey(announcement.survey) else null
+    override suspend fun create(announcement: CreateAnnouncement, rootUserGroupId: Uuid): CreateAnnouncementErrorsAggregate? {
+        val newSurveyIdContent = if (announcement.survey != null) uploadSurvey(announcement.survey, rootUserGroupId) else null
         if (newSurveyIdContent != null && !newSurveyIdContent.isContentValid) {
             return CreateAnnouncementErrorsAggregate(createSurveyError = newSurveyIdContent.error)
         }
@@ -37,6 +37,7 @@ class ApiGeneralAnnouncementDataSource(private val baseUrl: String) : GeneralAnn
 
         val dto = announcement.toDto(constructAttachmentIds(newSurveyId?.toString()))
         val response = client.post("${baseUrl}/api/bulletin-board-service/announcements/create") {
+            headers { append("X-Root-UserGroup-Id", rootUserGroupId.toString()) }
             contentType(ContentType.Application.Json)
             setBody(dto)
         }
@@ -64,7 +65,7 @@ class ApiGeneralAnnouncementDataSource(private val baseUrl: String) : GeneralAnn
     }
 
     override suspend fun edit(announcement: EditAnnouncement): EditAnnouncementErrorsAggregate? {
-        val newSurveyIdContent = if (announcement.newSurvey != null) uploadSurvey(announcement.newSurvey) else null
+        val newSurveyIdContent = if (announcement.newSurvey != null) uploadSurvey(announcement.newSurvey, announcement.rootUserGroupId) else null
         if (newSurveyIdContent != null && !newSurveyIdContent.isContentValid) {
             return EditAnnouncementErrorsAggregate(createSurveyError = newSurveyIdContent.error)
         }
@@ -110,8 +111,9 @@ class ApiGeneralAnnouncementDataSource(private val baseUrl: String) : GeneralAnn
 
 
 
-    private suspend fun uploadSurvey(survey: CreateSurvey): ContentWithError<Uuid, CreateSurveyErrors> {
-        return surveyDataSource.create(survey)
+    private suspend fun uploadSurvey(survey: CreateSurvey, rootUserGroupId: Uuid): ContentWithError<Uuid, CreateSurveyErrors> {
+        survey.rootUserGroupId = rootUserGroupId
+        return surveyDataSource.create(survey, rootUserGroupId)
     }
 
     private fun constructAttachmentIds(surveyId: String?): List<String> = if (surveyId != null)

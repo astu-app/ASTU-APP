@@ -10,12 +10,12 @@ import org.astu.feature.bulletinBoard.views.entities.userGroups.editing.EditUser
 class UserGroupModel {
     private val repository: UserGroupRepository = UserGroupRepository()
 
-    suspend fun getCreateContent(): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors> {
-        return repository.getCreateContent()
+    suspend fun getCreateContent(rootUserGroupId: Uuid): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors> {
+        return repository.getCreateContent(rootUserGroupId)
     }
 
-    suspend fun create(content: CreateUserGroup): CreateUserGroupErrors? {
-        return repository.create(content)
+    suspend fun create(content: CreateUserGroup, rootUserGroupId: Uuid): CreateUserGroupErrors? {
+        return repository.create(content, rootUserGroupId)
     }
 
     suspend fun getUserGroupHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
@@ -26,23 +26,23 @@ class UserGroupModel {
 //        return repository.getUserGroupList()
 //    }
 
-    suspend fun getDetails(id: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {
-        return repository.getDetails(id)
+    suspend fun getDetails(id: Uuid, rootUserGroupId: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {
+        return repository.getDetails(id, rootUserGroupId)
     }
 
-    suspend fun getUpdateContent(id: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors> {
-        return repository.getUpdateContent(id)
+    suspend fun getUpdateContent(id: Uuid, rootUserGroupId: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors> {
+        return repository.getUpdateContent(id, rootUserGroupId)
     }
 
     fun canUpdate(content: EditUserGroupContent?): Boolean {
         return content != null && content.canEdit()
     }
 
-    suspend fun update(content: UpdateUserGroup): UpdateUsergroupErrors? {
-        return repository.update(content)
+    suspend fun update(content: UpdateUserGroup, rootUserGroupId: Uuid): UpdateUsergroupErrors? {
+        return repository.update(content, rootUserGroupId)
     }
 
-    suspend fun delete(id: Uuid): DeleteUserGroupErrors? {
-        return repository.delete(id)
+    suspend fun delete(id: Uuid, rootUserGroupId: Uuid): DeleteUserGroupErrors? {
+        return repository.delete(id, rootUserGroupId)
     }
 }

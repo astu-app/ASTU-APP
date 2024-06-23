@@ -13,12 +13,12 @@ class UserGroupRepository {
     private val config by GlobalDIContext.inject<GatewayServiceConfig>()
     private val userGroupDataSource = ApiUserGroupDataSource(config.url)
 
-    suspend fun getCreateContent(): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors> {
-        return userGroupDataSource.getCreateContent()
+    suspend fun getCreateContent(rootUserGroupId: Uuid): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors> {
+        return userGroupDataSource.getCreateContent(rootUserGroupId)
     }
 
-    suspend fun create(content: CreateUserGroup): CreateUserGroupErrors? {
-        return userGroupDataSource.create(content)
+    suspend fun create(content: CreateUserGroup, rootUserGroupId: Uuid): CreateUserGroupErrors? {
+        return userGroupDataSource.create(content, rootUserGroupId)
     }
 
     suspend fun getUserGroupHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {
@@ -29,19 +29,19 @@ class UserGroupRepository {
 //        return userGroupDataSource.getUserGroupList()
 //    }
 
-    suspend fun getDetails(id: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {
-        return userGroupDataSource.getDetails(id)
+    suspend fun getDetails(id: Uuid, rootUserGroupId: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {
+        return userGroupDataSource.getDetails(id, rootUserGroupId)
     }
 
-    suspend fun getUpdateContent(id: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors> {
-        return userGroupDataSource.getUpdateContent(id)
+    suspend fun getUpdateContent(id: Uuid, rootUserGroupId: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors> {
+        return userGroupDataSource.getUpdateContent(id, rootUserGroupId)
     }
 
-    suspend fun update(content: UpdateUserGroup): UpdateUsergroupErrors? {
-        return userGroupDataSource.update(content)
+    suspend fun update(content: UpdateUserGroup, rootUserGroupId: Uuid): UpdateUsergroupErrors? {
+        return userGroupDataSource.update(content, rootUserGroupId)
     }
 
-    suspend fun delete(id: Uuid): DeleteUserGroupErrors? {
-        return userGroupDataSource.delete(id)
+    suspend fun delete(id: Uuid, rootUserGroupId: Uuid): DeleteUserGroupErrors? {
+        return userGroupDataSource.delete(id, rootUserGroupId)
     }
 }

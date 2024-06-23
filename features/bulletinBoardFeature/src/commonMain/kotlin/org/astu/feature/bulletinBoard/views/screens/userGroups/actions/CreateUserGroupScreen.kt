@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import com.benasher44.uuid.Uuid
 import org.astu.feature.bulletinBoard.viewModels.userGroups.actions.CreateUserGroupViewModel
 import org.astu.feature.bulletinBoard.views.components.userGroups.creation.UserGroupCreator
 import org.astu.feature.bulletinBoard.views.screens.ActionScreenScaffold
@@ -16,10 +17,10 @@ import org.astu.infrastructure.components.ActionFailedDialog
 import org.astu.infrastructure.components.Loading
 import org.astu.infrastructure.theme.CurrentColorScheme
 
-class CreateUserGroupScreen(private val onReturn: () -> Unit) : Screen {
+class CreateUserGroupScreen(private val rootUserGroupId: Uuid, private val onReturn: () -> Unit) : Screen {
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel { CreateUserGroupViewModel() }
+        val viewModel = rememberScreenModel { CreateUserGroupViewModel(rootUserGroupId, onReturn) }
         val creator = UserGroupCreator(viewModel)
 
         ActionScreenScaffold(

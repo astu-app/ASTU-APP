@@ -16,8 +16,8 @@ class SurveyService {
     private val config by GlobalDIContext.inject<GatewayServiceConfig>()
     private val source: SurveyDataSource = ApiSurveyDataSource(config.url)
 
-    suspend fun create(survey: CreateSurvey): ContentWithError<Uuid, CreateSurveyErrors> =
-        source.create(survey)
+    suspend fun create(survey: CreateSurvey, rootUserGroupId: Uuid): ContentWithError<Uuid, CreateSurveyErrors> =
+        source.create(survey, rootUserGroupId)
 
     suspend fun vote(votes: VoteInSurvey): VoteInSurveyErrors? =
         source.vote(votes)

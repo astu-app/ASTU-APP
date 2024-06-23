@@ -28,7 +28,6 @@ object UserGroupsModelMappers {
             userId = this.userId,
             usergroupId = null,
             rights  = MemberRights(
-                canViewAnnouncements = this.canViewAnnouncements.value,
                 canCreateAnnouncements = this.canCreateAnnouncements.value,
                 canCreateSurveys = this.canCreateSurveys.value,
                 canRuleUserGroupHierarchy = canRuleUserGroupHierarchy.value,

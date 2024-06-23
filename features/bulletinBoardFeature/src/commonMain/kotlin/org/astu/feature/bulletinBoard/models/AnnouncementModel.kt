@@ -30,8 +30,8 @@ class AnnouncementModel {
         return announcementRepository.loadDetails(id)
     }
 
-    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrorsAggregate? {
-        return announcementRepository.create(announcement)
+    suspend fun create(announcement: CreateAnnouncement, rootUserGroupId: Uuid): CreateAnnouncementErrorsAggregate? {
+        return announcementRepository.create(announcement, rootUserGroupId)
     }
 
     suspend fun getAudienceHierarchy(): ContentWithError<UserGroupHierarchy, GetUserHierarchyErrors> {

@@ -17,6 +17,7 @@ import org.astu.feature.bulletinBoard.views.entities.userGroups.details.UserSumm
 
 class UserGroupDetailsViewModel(
     private val id: Uuid,
+    val rootUserGroupId: Uuid,
     private val onReturn: () -> Unit,
 ) : StateScreenModel<UserGroupDetailsViewModel.State>(State.Loading) {
     sealed class State {
@@ -50,7 +51,7 @@ class UserGroupDetailsViewModel(
             try {
                 mutableState.value = State.Loading
 
-                val details = userGroupModel.getDetails(id)
+                val details = userGroupModel.getDetails(id, rootUserGroupId)
                 if (!details.isContentValid) {
                     constructLoadingUserGroupDetailsErrorDialogContent(details.error)
                     mutableState.value = State.LoadingError

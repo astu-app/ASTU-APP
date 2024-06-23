@@ -13,7 +13,7 @@ interface SurveyDataSource {
     /**
      * Отправить запрос на создание опроса
      */
-    suspend fun create(survey: CreateSurvey): ContentWithError<Uuid, CreateSurveyErrors>
+    suspend fun create(survey: CreateSurvey, rootUserGroupId: Uuid): ContentWithError<Uuid, CreateSurveyErrors>
 
     /**
      * Отправить опрос на голосование в опросе

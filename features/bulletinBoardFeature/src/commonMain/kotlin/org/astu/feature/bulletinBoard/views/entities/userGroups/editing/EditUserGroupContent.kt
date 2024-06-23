@@ -37,7 +37,7 @@ class EditUserGroupContent(
 
     var admin: MutableState<UserSummary?>
     val adminChanged: Boolean
-        get() = admin.value != content.admin
+        get() = admin.value?.id != content.admin?.id
 
 
     private val checkedMemberRights: MutableMap<Uuid, AddUserGroupMember>
@@ -218,9 +218,9 @@ class EditUserGroupContent(
     }
 
     private fun areRightsEqual(left: MemberRights, right: AddUserGroupMember) =
-        left.canViewAnnouncements == right.canViewAnnouncements.value &&
         left.canCreateAnnouncements == right.canCreateAnnouncements.value &&
         left.canCreateSurveys == right.canCreateSurveys.value &&
+        left.canRuleUserGroupHierarchy == right.canRuleUserGroupHierarchy.value &&
         left.canViewUserGroupDetails == right.canViewUserGroupDetails.value &&
         left.canCreateUserGroups == right.canCreateUserGroups.value &&
         left.canEditUserGroups == right.canEditUserGroups.value &&
@@ -232,9 +232,9 @@ class EditUserGroupContent(
     private fun MemberWithRights.toAddUserGroupMember(): AddUserGroupMember =
         AddUserGroupMember(
             userId = this.user.id,
-            canViewAnnouncements = mutableStateOf(this.rights.canViewAnnouncements),
             canCreateAnnouncements = mutableStateOf(this.rights.canCreateAnnouncements),
             canCreateSurveys = mutableStateOf(this.rights.canCreateSurveys),
+            canRuleUserGroupHierarchy = mutableStateOf(this.rights.canRuleUserGroupHierarchy),
             canViewUserGroupDetails = mutableStateOf(this.rights.canViewUserGroupDetails),
             canCreateUserGroups = mutableStateOf(this.rights.canCreateUserGroups),
             canEditUserGroups = mutableStateOf(this.rights.canEditUserGroups),

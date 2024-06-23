@@ -24,10 +24,9 @@ fun DropDown(
         .fillMaxWidth()
         .wrapContentHeight()
         .padding(vertical = 8.dp),
-    isExpanded: Boolean = false,
+    isExpanded: MutableState<Boolean>,
     title: @Composable () -> Unit,
 ) {
-    var mutableIsExpanded by remember { mutableStateOf(isExpanded) }
     var currentRotation by remember { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotation) }
 
@@ -37,15 +36,15 @@ fun DropDown(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .clickable { mutableIsExpanded = !mutableIsExpanded }
+                .clickable { isExpanded.value = !isExpanded.value }
         ) {
             Row(verticalAlignment = Alignment.CenterVertically,) {
                 Row(modifier = Modifier.weight(1f),) {
                     title()
                 }
 
-                LaunchedEffect(mutableIsExpanded) {
-                    val targetRotation = if (mutableIsExpanded) currentRotation - 180f else currentRotation + 180f
+                LaunchedEffect(isExpanded.value) {
+                    val targetRotation = if (isExpanded.value) currentRotation - 180f else currentRotation + 180f
                     rotation.animateTo(targetRotation, animationSpec = tween(300)) {
                         currentRotation = value
                     }
@@ -64,7 +63,7 @@ fun DropDown(
         // анимация развертывания и сворачивания
         val density = LocalDensity.current
         AnimatedVisibility(
-            visible = mutableIsExpanded,
+            visible = isExpanded.value,
             enter = slideInVertically {
                 // Slide in from 40 dp from the top.
                 with(density) { -40.dp.roundToPx() }

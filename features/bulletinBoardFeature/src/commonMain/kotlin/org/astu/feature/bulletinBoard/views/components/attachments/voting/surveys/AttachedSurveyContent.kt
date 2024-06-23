@@ -3,10 +3,7 @@ package org.astu.feature.bulletinBoard.views.components.attachments.voting.surve
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
@@ -66,7 +63,8 @@ class AttachedSurveyContent(
         if (showVoters) {
             HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp))
             val voterViews = remember { voters.toViews() }
-            DropDown(voterViews) {
+            val dropdownExpanded = remember { mutableStateOf(false) }
+            DropDown(voterViews, isExpanded = dropdownExpanded) {
                 Text(
                     text = "Проголосовавшие",
                     modifier = Modifier

@@ -19,6 +19,7 @@ import org.astu.feature.bulletinBoard.views.entities.userGroups.editing.EditUser
 
 class EditUserGroupViewModel(
     private val userGroupId: Uuid,
+    private val rootUserGroupId: Uuid,
     val onReturn: () -> Unit,
 ) : StateScreenModel<EditUserGroupViewModel.State>(State.EditContentLoading) {
     sealed class State {
@@ -61,17 +62,21 @@ class EditUserGroupViewModel(
             mutableState.value = State.EditContentLoading
 
             try {
-                val getContent = model.getUpdateContent(userGroupId)
+                val getContent = model.getUpdateContent(userGroupId, rootUserGroupId)
+                Logger.d("getContent: ${getContent.isContentValid}, error: ${getContent.error}", tag = "getContent")
                 if (getContent.isContentValid) {
                     original = getContent.content
                     content.value = EditUserGroupContent(getContent.content!!) // так как not-null заложен в isContentValid
                     mutableState.value = State.EditingUserGroup
                     return@launch
+                } else {
+                    setErrorDialogStateForEditContentLoading(getContent.error)
+                    mutableState.value = State.EditContentLoadingError
                 }
+
             } catch (exception: Exception) {
-                mutableState.value = State.EditContentLoadingError
                 setErrorDialogStateForEditContentLoading()
-                Logger.e(exception.message ?: "empty message", exception, "LoadUserGroupEditContent")
+                mutableState.value = State.EditContentLoadingError
             }
         }
     }
@@ -82,7 +87,7 @@ class EditUserGroupViewModel(
 
             try {
                 val updateModel = toModel() ?: return@launch
-                val error = model.update(updateModel)
+                val error = model.update(updateModel, rootUserGroupId)
                 if (error == null) {
                     mutableState.value = State.ChangesUploadingDone
                     return@launch
@@ -129,7 +134,6 @@ class EditUserGroupViewModel(
         errorDialogBody.value = error.humanize()
         onErrorDialogTryAgain.value = {
             loadEditContent()
-            showErrorDialog.value = false
         }
         onErrorDialogDismiss.value = {
             onReturn()
@@ -141,11 +145,9 @@ class EditUserGroupViewModel(
         errorDialogBody.value = error.humanize()
         onErrorDialogTryAgain.value = {
             edit()
-            showErrorDialog.value = false
         }
         onErrorDialogDismiss.value = {
             mutableState.value = State.EditingUserGroup
-            showErrorDialog.value = false
         }
     }
 }

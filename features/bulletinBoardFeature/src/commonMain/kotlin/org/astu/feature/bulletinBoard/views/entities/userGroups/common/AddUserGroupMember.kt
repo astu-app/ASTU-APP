@@ -7,7 +7,6 @@ import com.benasher44.uuid.Uuid
 data class AddUserGroupMember (
     val userId: Uuid,
 
-    val canViewAnnouncements: MutableState<Boolean> = mutableStateOf(true),
     val canCreateAnnouncements: MutableState<Boolean> = mutableStateOf(false),
     val canCreateSurveys: MutableState<Boolean> = mutableStateOf(false),
     val canRuleUserGroupHierarchy: MutableState<Boolean> = mutableStateOf(false),

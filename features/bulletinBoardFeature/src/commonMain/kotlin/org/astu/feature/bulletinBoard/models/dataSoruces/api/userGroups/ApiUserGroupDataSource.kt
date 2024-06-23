@@ -24,8 +24,10 @@ class ApiUserGroupDataSource(private val baseUrl: String) : UserGroupDataSource 
     private val client = securityHttpClient.instance
 
 
-    override suspend fun getCreateContent(): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors> {
-        val response = client.get("${baseUrl}/api/bulletin-board-service/usergroups/get-create-content")
+    override suspend fun getCreateContent(rootUserGroupId: Uuid): ContentWithError<ContentForUserGroupCreation, GetUsergroupCreateContentErrors> {
+        val response = client.get("${baseUrl}/api/bulletin-board-service/usergroups/get-create-content") {
+            headers { append("X-Root-UserGroup-Id", rootUserGroupId.toString()) }
+        }
 
         if (!response.status.isSuccess())
             return ContentWithError(null, error = readUnsuccessCode<GetUsergroupCreateContentErrors>(response))
@@ -35,9 +37,10 @@ class ApiUserGroupDataSource(private val baseUrl: String) : UserGroupDataSource 
         return ContentWithError(content, error = null)
     }
 
-    override suspend fun create(content: CreateUserGroup): CreateUserGroupErrors? {
+    override suspend fun create(content: CreateUserGroup, rootUserGroupId: Uuid): CreateUserGroupErrors? {
         val dto = content.toDto()
         val response = client.post("${baseUrl}/api/bulletin-board-service/usergroups/create") {
+            headers { append("X-Root-UserGroup-Id", rootUserGroupId.toString()) }
             contentType(ContentType.Application.Json)
             setBody(dto)
         }
@@ -48,8 +51,10 @@ class ApiUserGroupDataSource(private val baseUrl: String) : UserGroupDataSource 
         return null
     }
 
-    override suspend fun getDetails(id: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {
-        val response = client.get("${baseUrl}/api/bulletin-board-service/usergroups/get-details/$id")
+    override suspend fun getDetails(id: Uuid, rootUserGroupId: Uuid): ContentWithError<UserGroupDetails, GetUsergroupDetailsErrors> {
+        val response = client.get("${baseUrl}/api/bulletin-board-service/usergroups/get-details/$id") {
+            headers { append("X-Root-UserGroup-Id", rootUserGroupId.toString()) }
+        }
 
         if (!response.status.isSuccess())
             return ContentWithError(null, error = readUnsuccessCode<GetUsergroupDetailsErrors>(response))
@@ -58,8 +63,10 @@ class ApiUserGroupDataSource(private val baseUrl: String) : UserGroupDataSource 
         return ContentWithError(dto.toModel(), error = null)
     }
 
-    override suspend fun getUpdateContent(id: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors> {
-        val response = client.get("${baseUrl}/api/bulletin-board-service/usergroups/get-update-content/$id")
+    override suspend fun getUpdateContent(id: Uuid, rootUserGroupId: Uuid): ContentWithError<ContentForUserGroupEditing, ContentForUserGroupEditingErrors> {
+        val response = client.get("${baseUrl}/api/bulletin-board-service/usergroups/get-update-content/$id") {
+            headers { append("X-Root-UserGroup-Id", rootUserGroupId.toString()) }
+        }
         if (!response.status.isSuccess())
             return ContentWithError(null, error = readUnsuccessCode<ContentForUserGroupEditingErrors>(response))
 
@@ -67,9 +74,10 @@ class ApiUserGroupDataSource(private val baseUrl: String) : UserGroupDataSource 
         return ContentWithError(dto.toModel(), error = null)
     }
 
-    override suspend fun update(content: UpdateUserGroup): UpdateUsergroupErrors? {
+    override suspend fun update(content: UpdateUserGroup, rootUserGroupId: Uuid): UpdateUsergroupErrors? {
         val dto = content.toDto()
         val response = client.put("${baseUrl}/api/bulletin-board-service/usergroups/update") {
+            headers { append("X-Root-UserGroup-Id", rootUserGroupId.toString()) }
             contentType(ContentType.Application.Json)
             setBody(dto)
         }
@@ -102,9 +110,10 @@ class ApiUserGroupDataSource(private val baseUrl: String) : UserGroupDataSource 
         return ContentWithError(list, error = null)
     }
 
-    override suspend fun delete(id: Uuid): DeleteUserGroupErrors? {
+    override suspend fun delete(id: Uuid, rootUserGroupId: Uuid): DeleteUserGroupErrors? {
         val dto = "\"$id\""
         val response = client.delete("${baseUrl}/api/bulletin-board-service/usergroups/delete") {
+            headers { append("X-Root-UserGroup-Id", rootUserGroupId.toString()) }
             contentType(ContentType.Application.Json)
             setBody(dto)
         }

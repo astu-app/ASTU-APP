@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -12,6 +13,7 @@ import org.astu.feature.bulletinBoard.views.components.announcements.common.Atta
 import org.astu.feature.bulletinBoard.views.components.announcements.common.AttachedSurveySection
 import org.astu.feature.bulletinBoard.views.components.announcements.common.DelayedMomentPicker
 import org.astu.feature.bulletinBoard.views.components.announcements.common.DisplayAudienceHierarchySection
+import org.astu.feature.bulletinBoard.views.components.announcements.creation.DropDownSelector
 import org.astu.feature.bulletinBoard.views.components.announcements.details.AnnouncementDetailsHeader
 import org.astu.feature.bulletinBoard.views.entities.ContentProvider
 import org.astu.feature.bulletinBoard.views.entities.DefaultModifierProvider
@@ -33,6 +35,24 @@ class AnnouncementEditor(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier,
         ) {
+            // Группа пользователей
+            Card(
+                colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                Text(
+                    text = "Группа пользователей",
+                    modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                )
+                DropDownSelector(
+                    announcementSnapshot.audienceRootsForUserGroupSelection.values,
+                    announcementSnapshot.audienceRootsForUserGroupSelection[announcementSnapshot.selectedRootId.value]!!,
+                    announcementSnapshot.isSelectUserGroupExpanded
+                )
+            }
+
             Card(
                 colors = CardDefaults.cardColors(containerColor = CurrentColorScheme.secondaryContainer),
                 modifier = Modifier
@@ -95,7 +115,8 @@ class AnnouncementEditor(
             }
 
             // Аудитория
-            DisplayAudienceHierarchySection(announcementSnapshot.audienceRoots)
+            if (announcementSnapshot.selectedRootId.value != null)
+                DisplayAudienceHierarchySection(listOf(announcementSnapshot.audienceRoots[announcementSnapshot.selectedRootId.value]!!))
         }
     }
 

@@ -20,12 +20,13 @@ import org.astu.infrastructure.theme.CurrentColorScheme
 
 class EditUserGroupScreen(
     private val id: Uuid,
+    private val rootUserGroupId: Uuid,
     var onReturn: () -> Unit
 ) : Screen {
     @Composable
     override fun Content() {
         var onReturnCalled = remember { false }
-        val viewModel = rememberScreenModel { EditUserGroupViewModel(id, onReturn)}
+        val viewModel = rememberScreenModel { EditUserGroupViewModel(id, rootUserGroupId, onReturn)}
 
         val editor = remember { UserGroupEditor(viewModel) }
 

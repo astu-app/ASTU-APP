@@ -5,7 +5,6 @@ import org.astu.feature.bulletinBoard.views.entities.users.UserSummary
 data class UserSummaryWithUserRights(
     val user: UserSummary,
 
-    val canViewAnnouncements: Boolean,
     val canCreateAnnouncements: Boolean,
     val canCreateSurveys: Boolean,
     val canRuleUserGroupHierarchy: Boolean,

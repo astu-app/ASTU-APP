@@ -26,4 +26,6 @@ data class EditAnnouncement (
 
     val attachmentIdsToRemove: Set<Uuid>?,
     val newSurvey: CreateSurvey?,
+
+    val rootUserGroupId: Uuid,
 )

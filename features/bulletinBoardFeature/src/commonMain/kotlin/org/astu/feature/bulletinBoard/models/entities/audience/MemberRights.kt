@@ -1,7 +1,6 @@
 package org.astu.feature.bulletinBoard.models.entities.audience
 
 data class MemberRights(
-    val canViewAnnouncements: Boolean,
     val canCreateAnnouncements: Boolean,
     val canCreateSurveys: Boolean,
     val canRuleUserGroupHierarchy: Boolean,

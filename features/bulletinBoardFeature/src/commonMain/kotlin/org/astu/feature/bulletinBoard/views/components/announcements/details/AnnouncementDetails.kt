@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.astu.feature.bulletinBoard.views.components.attachments.Attachment
@@ -51,9 +53,8 @@ fun AnnouncementDetails(
             AddDivider()
         }
 
-        DropDown(
-            details.audience.toViews()
-        ) {
+        val dropdownExpanded = remember { mutableStateOf(false) }
+        DropDown(details.audience.toViews(), isExpanded = dropdownExpanded) {
             Text(
                 text = "Получатели",
                 modifier = Modifier

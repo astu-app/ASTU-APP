@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import co.touchlab.kermit.Logger
+import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuidFrom
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.astu.feature.bulletinBoard.common.utils.localDateTimeFromComponents
@@ -30,6 +32,8 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
 
     private val model: AnnouncementModel = AnnouncementModel()
     val content: MutableState<CreateAnnouncementContent?> = mutableStateOf(null)
+    val rootUserGroupId: Uuid
+        get() = content.value?.selectedRootId?.value ?: uuidFrom("00000000-0000-0000-0000-000000000000")
 
     private val unexpectedErrorTitle: String = "Ошибка"
 
@@ -75,7 +79,7 @@ class CreateAnnouncementViewModel(private val onReturn: () -> Unit) : StateScree
             try {
                 val createAnnouncementModel = toModel() ?: return@launch
 
-                val error = model.create(createAnnouncementModel)
+                val error = model.create(createAnnouncementModel, rootUserGroupId)
                 if (error == null) {
                     mutableState.value = State.NewAnnouncementUploadingDone
                     return@launch

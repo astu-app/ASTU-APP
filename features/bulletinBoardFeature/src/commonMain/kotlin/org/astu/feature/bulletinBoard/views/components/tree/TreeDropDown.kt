@@ -17,30 +17,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 
-/**
- * Выпадающий список, позволяющий выводить древовидные структуры. Каждый из уровней дерева выделяется отступом от
- * предыдущего
- * @param title Заголовок выпадающего списка
- * @param rootNode корневой узел дерева
- * @param levelIndent Отступ очередного уровня от предыдущего
- * @param modifier Модификатор объекта, применяющийся к основному контейнеру выпадающего списка
- */
 @Composable
 fun TreeDropDown(
-    rootNode: INode,
-    levelIndent: Dp = 16.dp,
-    modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight()
-        .padding(vertical = 8.dp),
-    title: @Composable () -> Unit,
-) {
-    TreeDropDown(listOf(rootNode), levelIndent, modifier, title)
-}
-
-@Composable
-fun TreeDropDown(
-    rootNodes: List<INode>,
+    rootNodes: Collection<INode>,
     levelIndent: Dp = 16.dp,
     modifier: Modifier = Modifier
         .fillMaxWidth()

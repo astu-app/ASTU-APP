@@ -9,6 +9,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -79,7 +80,7 @@ class UserGroupEditor(
                 ),
                 modifier = defaultCardModifier,
             ) {
-                DropDown(editContentSnapshot.allUsers, isExpanded = true, modifier = Modifier.padding(16.dp)) {
+                DropDown(editContentSnapshot.allUsers, isExpanded = mutableStateOf(true), modifier = Modifier.padding(16.dp)) {
                     Text("Участники")
                 }
             }
@@ -132,9 +133,9 @@ class UserGroupEditor(
         val selectedUserSnapshot = viewModel.content.value?.selectedUserForRightsManaging?.value ?: return
 
         ManageUserRightsDialogContent(
-            canViewAnnouncements = selectedUserSnapshot.canViewAnnouncements,
             canCreateAnnouncements = selectedUserSnapshot.canCreateAnnouncements,
             canCreateSurveys = selectedUserSnapshot.canCreateSurveys,
+            canRuleUserGroupHierarchy = selectedUserSnapshot.canRuleUserGroupHierarchy,
             canViewUserGroupDetails = selectedUserSnapshot.canViewUserGroupDetails,
             canCreateUserGroups = selectedUserSnapshot.canCreateUserGroups,
             canEditUserGroups = selectedUserSnapshot.canEditUserGroups,

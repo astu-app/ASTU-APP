@@ -24,11 +24,12 @@ import org.astu.infrastructure.theme.CurrentColorScheme
 class UserGroupDetailsScreen(
     private val id: Uuid,
     private val name: String,
+    private val rootUserGroupId: Uuid,
     private val onReturn: () -> Unit
 ) : Screen {
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel(tag = uuid4().toString()){ UserGroupDetailsViewModel(id, onReturn) }
+        val viewModel = rememberScreenModel(tag = uuid4().toString()){ UserGroupDetailsViewModel(id, rootUserGroupId, onReturn) }
         val navigator = LocalNavigator.currentOrThrow
 
         ActionScreenScaffold(
@@ -37,7 +38,7 @@ class UserGroupDetailsScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        val editUserGroupScreen = EditUserGroupScreen(id) { navigator.pop() }
+                        val editUserGroupScreen = EditUserGroupScreen(id, rootUserGroupId) { navigator.pop() }
                         navigator.push(editUserGroupScreen)
                     },
                     containerColor = CurrentColorScheme.tertiaryContainer,

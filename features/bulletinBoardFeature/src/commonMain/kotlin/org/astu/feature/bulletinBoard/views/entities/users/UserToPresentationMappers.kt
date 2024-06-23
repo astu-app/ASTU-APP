@@ -18,7 +18,6 @@ object UserToPresentationMappers {
     fun MemberWithRights.toPresentation(): UserSummaryWithUserRights =
         UserSummaryWithUserRights(
             user = this.user.toPresentation(),
-            canViewAnnouncements = this.rights.canViewAnnouncements,
             canCreateAnnouncements = this.rights.canCreateAnnouncements,
             canCreateSurveys = this.rights.canCreateSurveys,
             canRuleUserGroupHierarchy = this.rights.canRuleUserGroupHierarchy,

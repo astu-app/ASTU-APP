@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MemberRightsDto (
-    val canViewAnnouncements: Boolean,
     val canCreateAnnouncements: Boolean,
     val canCreateSurveys: Boolean,
     val canRuleUserGroupHierarchy: Boolean,

@@ -6,6 +6,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import co.touchlab.kermit.Logger
 import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuidFrom
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.astu.feature.bulletinBoard.models.AnnouncementModel
@@ -111,6 +112,8 @@ class EditAnnouncementViewModel(
 
             attachmentIdsToRemove = emptySet(),
             newSurvey = contentSnapshot.newSurvey.value?.toModel(),
+
+            rootUserGroupId = contentSnapshot.selectedRootId.value ?: uuidFrom("00000000-0000-0000-0000-000000000000")
         )
     }
 

@@ -1,5 +1,6 @@
 package org.astu.feature.bulletinBoard.views.entities.announcement.creation
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +13,7 @@ import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarch
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDate
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeTime
 import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
+import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupToViewMappers.toView
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.mappers.AudiencePresentationMapper
 import kotlin.time.Duration
@@ -37,8 +39,12 @@ class CreateAnnouncementContent(audienceHierarchy: UserGroupHierarchy) {
 
     var survey: MutableState<NewSurvey?> = mutableStateOf(null)
 
-    val audienceRoots: List<INode>
+    val audienceRoots: Map<Uuid, INode>
     val selectedUserIds: SnapshotStateList<Uuid> = mutableStateListOf()
+
+    val audienceRootsForUserGroupSelection: Map<Uuid, @Composable () -> Unit>
+    var selectedRootId: MutableState<Uuid?> = mutableStateOf(null)
+    val isSelectUserGroupExpanded: MutableState<Boolean> = mutableStateOf(false)
 
 
     init {
@@ -64,5 +70,13 @@ class CreateAnnouncementContent(audienceHierarchy: UserGroupHierarchy) {
 
         val audienceMapper = AudiencePresentationMapper(audienceHierarchy, selectedUserIds)
         audienceRoots = audienceMapper.mapAudienceHierarchy()
+
+        audienceRootsForUserGroupSelection = audienceHierarchy.roots.associate {
+            it.id to it.toView {
+                selectedRootId.value = it.id
+                isSelectUserGroupExpanded.value = !isSelectUserGroupExpanded.value
+            }
+        }
+        selectedRootId = mutableStateOf(audienceRootsForUserGroupSelection.keys.firstOrNull())
     }
 }

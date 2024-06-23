@@ -34,8 +34,8 @@ class AnnouncementRepository {
         return publishedAnnouncementsSource.getDetails(id)
     }
 
-    suspend fun create(announcement: CreateAnnouncement): CreateAnnouncementErrorsAggregate? {
-        return generalAnnouncementsSource.create(announcement)
+    suspend fun create(announcement: CreateAnnouncement, rootUserGroupId: Uuid): CreateAnnouncementErrorsAggregate? {
+        return generalAnnouncementsSource.create(announcement, rootUserGroupId)
     }
 
     suspend fun loadEditContent(id: Uuid): ContentWithError<ContentForAnnouncementEditing, EditAnnouncementErrors> {

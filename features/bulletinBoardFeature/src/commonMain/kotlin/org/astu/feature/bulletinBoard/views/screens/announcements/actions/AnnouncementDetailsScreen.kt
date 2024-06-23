@@ -68,7 +68,6 @@ class AnnouncementDetailsScreen(
                     body = viewModel.errorDialogBody.value,
                     onTryAgainRequest = {
                         viewModel.loadDetails()
-                        viewModel.showErrorDialog.value = false
                     },
                     onDismissRequest = onReturn
                 )

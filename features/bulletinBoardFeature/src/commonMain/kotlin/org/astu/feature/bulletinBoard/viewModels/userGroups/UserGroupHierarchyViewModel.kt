@@ -18,6 +18,7 @@ import org.astu.feature.bulletinBoard.models.UserGroupModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.DeleteUserGroupErrors
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.GetUserHierarchyErrors
 import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumanization.humanize
+import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupToViewMappers.toView
 import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupsPresentationMapper.toShortUserGroupHierarchy
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.screens.userGroups.actions.UserGroupDetailsScreen
@@ -44,6 +45,13 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
     val selectedUserGroupYPosition: Dp
         get() = selectedUserGroupPosition?.positionInRoot()?.y?.dp ?: 0.dp
 
+    val hierarchyRootsForUserGroupSelection: MutableMap<Uuid, @Composable () -> Unit> = mutableMapOf()
+    var selectedRootId: MutableState<Uuid?> = mutableStateOf(null)
+    val isSelectUserGroupExpanded: MutableState<Boolean> = mutableStateOf(false)
+
+    val rootUserGroupId: Uuid
+        get() = selectedRootId.value ?: uuidFrom("00000000-0000-0000-0000-000000000000")
+
     private val unexpectedErrorTitle: String = "Ошибка"
     private val unexpectedErrorBody: String = "Неожиданная ошибка. Повторите попытку"
     var errorDialogLabel by mutableStateOf(unexpectedErrorTitle)
@@ -60,14 +68,15 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
         screenModelScope.launch {
             try {
                 mutableState.value = State.Loading
-                userGroups.clear()
+                userGroups.removeAll { true }
+                hierarchyRootsForUserGroupSelection.clear()
 
                 val userGroups = userGroupModel.getUserGroupHierarchy()
                 if (userGroups.isContentValid) {
                     this@UserGroupHierarchyViewModel.userGroups.addAll(
                         userGroups.content!!.toShortUserGroupHierarchy(
                             onUserGroupClick =  {
-                                val userGroupDetailsScreen = UserGroupDetailsScreen(it.id, it.name) { navigator.pop() }
+                                val userGroupDetailsScreen = UserGroupDetailsScreen(it.id, it.name, rootUserGroupId) { navigator.pop() }
                                 navigator.push(userGroupDetailsScreen)
                             },
                             onUserGroupLongPress = { userGroup, position, offset ->
@@ -83,6 +92,18 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
                             },
                         )
                     )
+
+                    hierarchyRootsForUserGroupSelection.putAll(
+                        userGroups.content.roots.associate {
+                            it.id to it.toView {
+                                selectedRootId.value = it.id
+                                isSelectUserGroupExpanded.value = !isSelectUserGroupExpanded.value
+                                Logger.d("${it.id}, ${it.name}", tag = "rootUserGroup")
+                            }
+                        }
+                    )
+                    selectedRootId = mutableStateOf(hierarchyRootsForUserGroupSelection.keys.firstOrNull())
+
                     mutableState.value = State.LoadingDone
                     return@launch
                 } else {
@@ -103,7 +124,7 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
             try {
                 mutableState.value = State.Deleting
 
-                val error = userGroupModel.delete(id)
+                val error = userGroupModel.delete(id, rootUserGroupId)
                 if (error == null) {
                     mutableState.value = State.LoadingDone
                     return@launch
@@ -126,10 +147,9 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             loadUserGroups()
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.LoadingDone
         }
     }
 
@@ -137,10 +157,9 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
         errorDialogBody = error.humanize()
         onErrorDialogTryAgainRequest = {
             deleteUserGroup(userGroupId)
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.LoadingDone
         }
     }
 }

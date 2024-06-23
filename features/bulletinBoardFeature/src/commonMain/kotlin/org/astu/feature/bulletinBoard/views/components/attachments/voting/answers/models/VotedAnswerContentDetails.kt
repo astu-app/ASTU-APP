@@ -3,6 +3,8 @@ package org.astu.feature.bulletinBoard.views.components.attachments.voting.answe
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.Uuid
@@ -31,7 +33,8 @@ class VotedAnswerContentDetails(
             super.DrawVotedContentSummary(modifier)
 
         } else {
-            DropDown(items = voters) {
+            val dropdownExpanded = remember { mutableStateOf(false) }
+            DropDown(items = voters, isExpanded = dropdownExpanded) {
                 super.DrawVotedContentSummary(modifier)
             }
         }

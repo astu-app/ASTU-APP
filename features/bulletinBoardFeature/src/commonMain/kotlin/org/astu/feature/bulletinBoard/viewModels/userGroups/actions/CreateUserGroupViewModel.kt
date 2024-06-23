@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.launch
 import org.astu.feature.bulletinBoard.models.UserGroupModel
 import org.astu.feature.bulletinBoard.models.dataSoruces.api.userGroups.responses.CreateUserGroupErrors
@@ -14,7 +15,10 @@ import org.astu.feature.bulletinBoard.viewModels.humanization.ErrorCodesHumaniza
 import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupsModelMappers.toModel
 import org.astu.feature.bulletinBoard.views.entities.userGroups.creation.CreateUserGroupContent
 
-class CreateUserGroupViewModel : StateScreenModel<CreateUserGroupViewModel.State>(State.CreateContentLoading) {
+class CreateUserGroupViewModel(
+    private val rootUserGroupId: Uuid,
+    private val onReturn: () -> Unit,
+) : StateScreenModel<CreateUserGroupViewModel.State>(State.CreateContentLoading) {
     sealed class State {
         data object CreateContentLoading : State()
         data object CreateContentLoadingDone : State()
@@ -44,7 +48,7 @@ class CreateUserGroupViewModel : StateScreenModel<CreateUserGroupViewModel.State
             try {
                 mutableState.value = State.CreateContentLoading
 
-                val createContent = userGroupModel.getCreateContent()
+                val createContent = userGroupModel.getCreateContent(rootUserGroupId)
                 if (!createContent.isContentValid) {
                     constructLoadingCreateUserGroupContentErrorDialogContent(createContent.error)
                     mutableState.value = State.CreateContentLoadingError
@@ -74,7 +78,7 @@ class CreateUserGroupViewModel : StateScreenModel<CreateUserGroupViewModel.State
             try {
                 mutableState.value = State.NewUserGroupUploading
 
-                val error = userGroupModel.create(contentSnapshot.toModel())
+                val error = userGroupModel.create(contentSnapshot.toModel(), rootUserGroupId)
                 if (error != null) {
                     constructNewUserGroupUploadingErrorDialogContent(error)
                     mutableState.value = State.NewUserGroupUploadingError
@@ -104,6 +108,7 @@ class CreateUserGroupViewModel : StateScreenModel<CreateUserGroupViewModel.State
             loadCreateUserGroupContent()
         }
         onErrorDialogDismissRequest = {
+            onReturn()
             showErrorDialog = false
         }
     }
@@ -113,10 +118,9 @@ class CreateUserGroupViewModel : StateScreenModel<CreateUserGroupViewModel.State
 
         onErrorDialogTryAgainRequest = {
             create()
-            showErrorDialog = false
         }
         onErrorDialogDismissRequest = {
-            showErrorDialog = false
+            mutableState.value = State.CreateContentLoadingDone
         }
     }
 }

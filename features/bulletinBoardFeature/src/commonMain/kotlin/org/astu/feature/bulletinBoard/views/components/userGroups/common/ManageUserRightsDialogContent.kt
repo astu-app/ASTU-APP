@@ -12,9 +12,9 @@ import org.astu.infrastructure.components.SwitchRow
 
 @Composable
 fun ManageUserRightsDialogContent(
-    canViewAnnouncements: MutableState<Boolean>,
     canCreateAnnouncements: MutableState<Boolean>,
     canCreateSurveys: MutableState<Boolean>,
+    canRuleUserGroupHierarchy: MutableState<Boolean>,
     canViewUserGroupDetails: MutableState<Boolean>,
     canCreateUserGroups: MutableState<Boolean>,
     canEditUserGroups: MutableState<Boolean>,
@@ -25,10 +25,6 @@ fun ManageUserRightsDialogContent(
 ) {
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         items(1) {
-            SwitchRow(
-                title = "Просмотр объявлений",
-                state = canViewAnnouncements
-            )
             SwitchRow(
                 title = "Создание объявлений",
                 state = canCreateAnnouncements
@@ -41,7 +37,7 @@ fun ManageUserRightsDialogContent(
 
             SwitchRow(
                 title = "Управление иерархией групп пользователей",
-                state = canCreateSurveys
+                state = canRuleUserGroupHierarchy
             )
             SwitchRow(
                 title = "Просмотр деталей групп пользователей",

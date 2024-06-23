@@ -16,7 +16,7 @@ import org.astu.infrastructure.theme.CurrentColorScheme
 
 @Composable
 fun DisplayAudienceHierarchySection(
-    rootNodes: List<INode>,
+    rootNodes: Collection<INode>,
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .wrapContentHeight()

@@ -1,5 +1,6 @@
 package org.astu.feature.bulletinBoard.views.entities.announcement.editing
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.benasher44.uuid.Uuid
@@ -15,6 +16,7 @@ import org.astu.feature.bulletinBoard.views.components.attachments.voting.survey
 import org.astu.feature.bulletinBoard.views.dateTime.getDateTimeFromEpochMillis
 import org.astu.feature.bulletinBoard.views.entities.attachments.AttachmentToPresentationMappers.votedSurveyToPresentation
 import org.astu.feature.bulletinBoard.views.entities.attachments.creation.NewSurvey
+import org.astu.feature.bulletinBoard.views.entities.userGroups.UserGroupToViewMappers.toView
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.INode
 import org.astu.feature.bulletinBoard.views.entities.userGroups.audienceGraph.mappers.AudiencePresentationMapper
 import kotlin.math.round
@@ -64,8 +66,12 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
     val attachedSurvey: AttachedSurveyContent?
     var newSurvey: MutableState<NewSurvey?> = mutableStateOf(null)
 
-    val audienceRoots: List<INode>
+    val audienceRoots: Map<Uuid, INode>
     val selectedUserIds: MutableSet<Uuid>
+
+    val audienceRootsForUserGroupSelection: Map<Uuid, @Composable () -> Unit>
+    var selectedRootId: MutableState<Uuid?> = mutableStateOf(null)
+    val isSelectUserGroupExpanded: MutableState<Boolean> = mutableStateOf(false)
 
 
     init {
@@ -87,6 +93,14 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
 
         val audienceMapper = AudiencePresentationMapper(editContent.audienceHierarchy, selectedUserIds)
         audienceRoots = audienceMapper.mapAudienceHierarchy()
+
+        audienceRootsForUserGroupSelection = editContent.audienceHierarchy.roots.associate {
+            it.id to it.toView {
+                selectedRootId.value = it.id
+                isSelectUserGroupExpanded.value = !isSelectUserGroupExpanded.value
+            }
+        }
+        selectedRootId = mutableStateOf(audienceRootsForUserGroupSelection.keys.firstOrNull())
     }
 
     private fun setPublicationTimeString() {

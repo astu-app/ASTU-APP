@@ -213,7 +213,10 @@ object ErrorCodesHumanization {
     fun  UpdateUsergroupErrors?.humanize(): String =
         when (this) {
             UpdateUsergroupErrors.NameIsNullOrWhitespace -> "Имя не может быть пустым"
-            UpdateUsergroupErrors.UpdateUsergroupForbidden -> "У вас недостаточно прав редактирования группы пользователей"
+            UpdateUsergroupErrors.UpdateUsergroupForbidden -> "У вас недостаточно прав для редактирования группы пользователей"
+            UpdateUsergroupErrors.ChangeAdminForbidden -> "У вас недостаточно прав для изменения администратора"
+            UpdateUsergroupErrors.ChangeUsersForbidden -> "У вас недостаточно прав для изменения состава пользователей"
+            UpdateUsergroupErrors.ChangeUserRightsForbidden -> "У вас недостаточно прав для изменения прав пользователей"
             UpdateUsergroupErrors.UsersDoNotExist -> "Пользователь не найден"
 //            UpdateUsergroupErrors.UserGroupsDoNotExist -> "Группа пользователей не найдена" // remove
             UpdateUsergroupErrors.AdminCannotBeOrdinaryMember -> "Администратор не может быть рядовым участником группы пользователей"

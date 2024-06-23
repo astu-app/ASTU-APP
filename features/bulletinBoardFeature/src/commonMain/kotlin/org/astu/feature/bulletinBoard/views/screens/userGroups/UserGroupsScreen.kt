@@ -31,7 +31,7 @@ class UserGroupsScreen(private val onReturn: () -> Unit) : Screen {
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        val createUserGroupScreen = CreateUserGroupScreen { navigator.pop() }
+                        val createUserGroupScreen = CreateUserGroupScreen(viewModel.rootUserGroupId) { navigator.pop() }
                         navigator.push(createUserGroupScreen)
                     },
                     containerColor = CurrentColorScheme.tertiaryContainer,

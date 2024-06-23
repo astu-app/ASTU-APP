@@ -32,8 +32,8 @@ class AudiencePresentationMapper(
     private val mappedNodes: MutableMap<Uuid, ISelectableNode> = mutableMapOf()
 
 
-    fun mapAudienceHierarchy(): List<INode> {
-        return audienceHierarchy.roots.map { mapAudienceHierarchyNode(it) }
+    fun mapAudienceHierarchy(): Map<Uuid, INode> {
+        return audienceHierarchy.roots.associate { it.id to mapAudienceHierarchyNode(it) }
     }
 
 

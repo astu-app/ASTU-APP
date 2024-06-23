@@ -9,13 +9,15 @@ import org.astu.feature.bulletinBoard.models.entities.attachments.survey.voting.
 import kotlin.jvm.JvmName
 
 object SurveyToDtoMappers {
-    @JvmName("CreateSurveyCollectionToDtos")
-    fun Collection<CreateSurvey>.toDtos(): List<CreateSurveyDto> =
-        this.map { it.toDto() }
-
     @JvmName("CreateSurveyToDto")
     fun CreateSurvey.toDto(): CreateSurveyDto =
-        CreateSurveyDto(this.questions.toDtos(), this.isAnonymous, this.resultsOpenBeforeClosing, this.voteUntil)
+        CreateSurveyDto(
+            questions = this.questions.toDtos(),
+            isAnonymous = this.isAnonymous,
+            resultsOpenBeforeClosing = this.resultsOpenBeforeClosing,
+            voteUntil = this.voteUntil,
+            rootUserGroupId = this.rootUserGroupId.toString()
+        )
 
     @JvmName("CreateQuestionCollectionToDtos")
     fun Collection<CreateQuestion>.toDtos(): List<CreateQuestionDto> =
@@ -32,10 +34,6 @@ object SurveyToDtoMappers {
     @JvmName("CreateAnswerToDto")
     fun CreateAnswer.toDto(): CreateAnswerDto =
         CreateAnswerDto(this.serial, this.content)
-
-    @JvmName("VoteInSurveyCollectionToDtos")
-    fun Collection<VoteInSurvey>.toDtos(): List<VoteInSurveyDto> =
-        map { it.toDto() }
 
     @JvmName("VoteInSurveyToDto")
     fun VoteInSurvey.toDto(): VoteInSurveyDto =
