@@ -8,6 +8,7 @@ import org.astu.feature.universal_request.UniversalTemplateRepository
 import org.astu.feature.universal_request.client.models.TemplateDTO
 import org.astu.feature.universal_request.screens.AddTemplateScreen
 import org.astu.feature.universal_request.screens.FillTemplateScreen
+import org.astu.infrastructure.AccountUser
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.SerializableScreen
@@ -27,6 +28,7 @@ class TemplateListViewModel : StateScreenModel<TemplateListViewModel.State>(Stat
 
     val templates = mutableStateOf(listOf<TemplateDTO>())
     var screen: MutableState<SerializableScreen?> = mutableStateOf(null)
+    var canAdd = mutableStateOf(false)
     private val repository by GlobalDIContext.inject<UniversalTemplateRepository>()
 
     init {
@@ -44,6 +46,11 @@ class TemplateListViewModel : StateScreenModel<TemplateListViewModel.State>(Stat
 
     fun retryLoad() {
         screenModelScope.launch {
+            runCatching {
+                val user by GlobalDIContext.inject<AccountUser>()
+                canAdd.value = user.checkPerm { it.isEmployee }
+            }
+
             runCatching {
                 repository.getAllTemplates()
             }.onSuccess {

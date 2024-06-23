@@ -2,6 +2,7 @@ package org.astu.app
 
 import io.ktor.client.*
 import io.ktor.client.engine.js.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.serialization.kotlinx.*
@@ -36,6 +37,11 @@ actual object AppModule : FeatureModule {
                             encodeDefaults = true
                             explicitNulls = true
                         })
+                    }
+                    install(HttpTimeout){
+                        requestTimeoutMillis = 40000
+                        socketTimeoutMillis = 40000
+                        connectTimeoutMillis = 40000
                     }
                     install(WebSockets) {
                         contentConverter = KotlinxWebsocketSerializationConverter(Json)

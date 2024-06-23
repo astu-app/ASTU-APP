@@ -33,6 +33,10 @@ class AddTemplateViewModel : StateScreenModel<AddTemplateViewModel.State>(State.
     val description = mutableStateOf("")
     val outputPath = mutableStateOf("")
 
+    fun fill(){
+        name.value = "Шаблон заявления на практику"
+        description.value = "Шаблон заявления на прохождение практики в организации"
+    }
 
     fun uploadFile() {
         val repository by GlobalDIContext.inject<UniversalTemplateRepository>()

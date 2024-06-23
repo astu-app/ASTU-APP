@@ -20,12 +20,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import com.benasher44.uuid.uuid4
-//import com.mohamedrejeb.calf.core.LocalPlatformContext
-//import com.mohamedrejeb.calf.io.getName
-//import com.mohamedrejeb.calf.picker.FilePickerFileType
-//import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
-//import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import org.astu.feature.universal_request.client.models.TemplateDTO
 import org.astu.feature.universal_request.view_models.TemplateListViewModel
 import org.astu.infrastructure.SerializableScreen
@@ -108,6 +102,7 @@ class TemplateListScreen(val onReturn: () -> Unit) : SerializableScreen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun TopBar(content: @Composable (PaddingValues) -> Unit) {
+        val canAdd = remember { vm.canAdd }
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(
                 navigationIcon = {
@@ -125,11 +120,13 @@ class TemplateListScreen(val onReturn: () -> Unit) : SerializableScreen {
                 ),
                 actions = {
                     Row {
-                        IconButton(vm::openAddScreen) {
-                            Icon(
-                                Icons.Default.Add,
-                                contentDescription = null
-                            )
+                        if (canAdd.value) {
+                            IconButton(vm::openAddScreen) {
+                                Icon(
+                                    Icons.Default.Add,
+                                    contentDescription = null
+                                )
+                            }
                         }
                         IconButton(vm::retryLoad) {
                             Icon(

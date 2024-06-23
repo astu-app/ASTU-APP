@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.astu.feature.single_window.entities.EmployeeCreatedRequest
@@ -23,7 +22,7 @@ class EmployeeListOfRequestSingleWindowScreen(
     val vm: EmployeeRequestViewModel,
     onReturn: (() -> Unit)?,
     onChange: (ServiceScreen) -> Unit
-) : ServiceScreen("Список заявлений", onReturn, onChange) {
+) : ServiceScreen("Список заявлений, доступных для обработки", onReturn, onChange) {
     @Composable
     override fun Content() {
         val requests = remember { vm.requests }

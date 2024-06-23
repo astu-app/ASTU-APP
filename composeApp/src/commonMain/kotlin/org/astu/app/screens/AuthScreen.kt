@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -39,10 +40,10 @@ class AuthScreen(private val onAuth: () -> Unit) : SerializableScreen {
 
     @Composable
     fun desktopView() {
-        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-            authPanel(Modifier.weight(2f).fillMaxHeight())
-            HorizontalDivider(Modifier.weight(0.01f).fillMaxHeight(), 4.dp)
-            authDetail(Modifier.weight(6f))
+        Row(horizontalArrangement = Arrangement.Center) {
+            authPanel(Modifier.fillMaxHeight().padding(horizontal = 40.dp))
+//            HorizontalDivider(Modifier.weight(0.01f).fillMaxHeight(), 4.dp)
+//            authDetail(Modifier.weight(6f))
         }
     }
 
@@ -107,6 +108,12 @@ class AuthScreen(private val onAuth: () -> Unit) : SerializableScreen {
             }
             if(error != null)
                 Text(error!!,modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            Button({viewModel.loginAsStudent(onAuth)}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow)){
+                Text("Войти как студент")
+            }
+            Button({viewModel.loginAsEmployee(onAuth)}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow)){
+                Text("Войти как сотрудник")
+            }
         }
     }
 

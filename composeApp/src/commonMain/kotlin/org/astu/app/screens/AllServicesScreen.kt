@@ -3,28 +3,32 @@ package org.astu.app.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.astu.app.view_models.AllServicesViewModel
 import org.astu.feature.single_window.screens.EmployeeSingleWindowScreen
 import org.astu.feature.single_window.screens.MainSingleWindowScreen
 import org.astu.feature.single_window.screens.UserSingleWindowScreen
+import org.astu.feature.single_window.view_models.EmployeeCreatedRequestViewModel
 import org.astu.feature.universal_request.screens.TemplateListScreen
+import org.astu.infrastructure.AccountUser
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.SerializableScreen
 import org.astu.infrastructure.components.card.Description
 import org.astu.infrastructure.components.card.Title
 
 class AllServicesScreen : SerializableScreen {
-    private val currentScreen: MutableState<SerializableScreen?> = mutableStateOf(null)
+    private lateinit var viewModel: AllServicesViewModel
 
     @Composable
     override fun Content() {
+        viewModel = remember { AllServicesViewModel() }
+        val currentScreen = remember { viewModel.currentScreen }
         key(currentScreen.value) {
             if (currentScreen.value == null)
                 TopBar {
@@ -53,50 +57,15 @@ class AllServicesScreen : SerializableScreen {
 
     @Composable
     fun list(modifier: Modifier) {
+        val services = remember{ viewModel.services }
         LazyColumn(modifier) {
-            item {
+            items(services.value) {
                 ListItem(
-                    Modifier.fillMaxWidth(),
-                    "Список моих заявлений на справку",
-                    "Просмотр поданных заявлений на получение справок"
-                ) {
-                    currentScreen.value = UserSingleWindowScreen {
-                        currentScreen.value = null
-                    }
-                }
-            }
-            item {
-                ListItem(
-                    Modifier.fillMaxWidth(),
-                    "Подача заявлений на справки",
-                    "Сервис для подачи заявлений на получение справок"
-                ) {
-                    currentScreen.value = MainSingleWindowScreen {
-                        currentScreen.value = null
-                    }
-                }
-            }
-            item {
-                ListItem(
-                    Modifier.fillMaxWidth(), "Обработка заявлений на справки",
-                    "Сервис для обработки заявлений на получение справок"
-                ) {
-                    currentScreen.value = EmployeeSingleWindowScreen {
-                        currentScreen.value = null
-                    }
-                }
-            }
-            item {
-                ListItem(
-                    Modifier.fillMaxWidth(),
-                    "Генерация универсальных заявлений(АСОИУ)",
-                    "Сервис для генерации заявлений на кафедре АСОИУ"
-                ) {
-                    currentScreen.value = TemplateListScreen {
-                        currentScreen.value = null
-                    }
-                }
-                HorizontalDivider()
+                    modifier =  Modifier.fillMaxWidth(),
+                    it.title,
+                    it.description,
+                    it.onClick
+                )
             }
         }
     }

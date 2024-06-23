@@ -22,10 +22,25 @@ class ConstructorViewModel : ScreenModel, JavaSerializable {
     val description = mutableStateOf("")
 
     val done = mutableStateOf(false)
+    val error = mutableStateOf<String?>(null)
 
     private val repository by GlobalDIContext.inject<SingleWindowRepository>()
     private val user by GlobalDIContext.inject<AccountUser>()
 
+
+    fun createTemplate(){
+        name.value = "Справка с места учебы"
+        category.value = "Студенческая канцелярия"
+        description.value = "Заявление на получение справки с места учебы"
+        forStudent.value = true
+
+        addRequirement()
+        val fio = requirements.value.last()
+        updateRequirement(fio.copy(name = "ФИО Студента", description = "Фамилия Имя Отчество студента"))
+        addRequirement()
+        val stud = requirements.value.last()
+        updateRequirement(stud.copy(name = "Номер студенческого билета", description = ""))
+    }
 
     fun updateRequirement(addRequirementField: AddRequirementField) {
         requirements.value = requirements.value.map {
@@ -40,6 +55,7 @@ class ConstructorViewModel : ScreenModel, JavaSerializable {
     }
 
     fun saveRequirement() {
+        error.value = null
         screenModelScope.launch {
             runCatching {
                 val id = user.current()?.departmentId ?: throw RuntimeException()
@@ -53,7 +69,7 @@ class ConstructorViewModel : ScreenModel, JavaSerializable {
                 )
                 repository.saveTemplate(dto)
             }.onFailure {
-                println(it)
+                error.value = it.message
             }.onSuccess {
                 done.value = true
             }

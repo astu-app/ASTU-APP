@@ -67,7 +67,7 @@ class ScheduleScreen : SerializableScreen {
 
     @Composable
     override fun Content() {
-        viewModel = rememberScreenModel { ScheduleViewModel() }
+        viewModel = remember { ScheduleViewModel() }
         val state by remember{ viewModel.state }
         when (state) {
             ScheduleViewModel.State.Init -> TODO()

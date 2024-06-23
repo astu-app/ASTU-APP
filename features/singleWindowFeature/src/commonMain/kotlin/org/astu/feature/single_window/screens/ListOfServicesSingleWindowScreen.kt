@@ -18,14 +18,13 @@ import org.astu.feature.single_window.entities.Template
 import org.astu.feature.single_window.view_models.MainRequestViewModel
 import org.astu.infrastructure.components.card.Description
 import org.astu.infrastructure.components.card.Title
-import org.astu.infrastructure.theme.CurrentColorScheme
 
 
 class ListOfServicesSingleWindowScreen(
     val vm: MainRequestViewModel,
     onReturn: (() -> Unit)?,
     onChange: (ServiceScreen) -> Unit
-) : ServiceScreen("Список заявлений", onReturn, onChange) {
+) : ServiceScreen("Список заявлений, доступных для подачи", onReturn, onChange) {
     @Composable
     override fun Content() {
         val templates = remember { vm.templates }

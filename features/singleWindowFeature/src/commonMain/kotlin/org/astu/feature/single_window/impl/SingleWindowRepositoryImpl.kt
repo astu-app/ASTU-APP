@@ -64,6 +64,10 @@ class SingleWindowRepositoryImpl : SingleWindowRepository, JavaSerializable {
         api.apiRequestServiceEmployeeRequestIdSuccessPost(id, filename, body)
     }
 
+    override suspend fun successRequest(id: String, comment: String) {
+        api.apiRequestServiceEmployeeRequestIdSuccessPost(id, comment)
+    }
+
     override suspend fun getEmployeeRequests(): List<EmployeeCreatedRequest> {
         return api.apiRequestServiceEmployeeRequestGet().map { dto ->
             EmployeeCreatedRequest(

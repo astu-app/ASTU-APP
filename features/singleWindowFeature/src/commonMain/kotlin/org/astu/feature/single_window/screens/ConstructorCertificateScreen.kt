@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import org.astu.feature.single_window.entities.AddRequirementField
 import org.astu.feature.single_window.view_models.ConstructorViewModel
 import org.astu.infrastructure.SerializableScreen
@@ -18,7 +18,7 @@ class ConstructorCertificateScreen(val onReturn: () -> Unit) : SerializableScree
 
     @Composable
     override fun Content() {
-        vm = rememberScreenModel { ConstructorViewModel() }
+        vm = remember { ConstructorViewModel() }
         val done = remember { vm.done }
         if (!done.value)
             list()
@@ -43,6 +43,7 @@ class ConstructorCertificateScreen(val onReturn: () -> Unit) : SerializableScree
     @Composable
     fun list() {
         val fields = remember { vm.requirements }
+        val error = remember { vm.error }
         LazyColumn {
             item {
                 NameField()
@@ -70,6 +71,11 @@ class ConstructorCertificateScreen(val onReturn: () -> Unit) : SerializableScree
                     RequirementItem(requirement)
                 }
             }
+            error.value?.let {
+                item {
+                    Text(it)
+                }
+            }
             item {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -82,7 +88,11 @@ class ConstructorCertificateScreen(val onReturn: () -> Unit) : SerializableScree
                         Text("Создать заявление")
                     }
                 }
-
+            }
+            item {
+                Button({vm.createTemplate()}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow)){
+                    Text("Заполнить поля")
+                }
             }
         }
     }
@@ -135,7 +145,7 @@ class ConstructorCertificateScreen(val onReturn: () -> Unit) : SerializableScree
             OutlinedButton(
                 { vm.minusRequirement(requirement) },
             ) {
-                Text("Удалит поле")
+                Text("Удалить поле")
             }
             HorizontalDivider()
         }

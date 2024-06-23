@@ -10,12 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.astu.feature.single_window.entities.CreatedRequest
-import org.astu.feature.single_window.entities.EmployeeCreatedRequest
-import org.astu.feature.single_window.view_models.EmployeeRequestViewModel
 import org.astu.feature.single_window.view_models.UserRequestViewModel
 import org.astu.infrastructure.components.card.Description
 import org.astu.infrastructure.components.card.Title

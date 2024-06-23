@@ -48,8 +48,8 @@ class TemplateApi(private val baseUrl: String) : JavaSerializable {
         println(response.bodyAsText())
         return when (response.status) {
             HttpStatusCode.OK -> response.body<Unit>()
-            HttpStatusCode.BadRequest -> throw ApiException("Некорректный запрос")
-            else -> throw ApiException("Проблема с интернет соединением")
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -58,8 +58,8 @@ class TemplateApi(private val baseUrl: String) : JavaSerializable {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body<List<TemplateDTO>>()
-            HttpStatusCode.BadRequest -> throw ApiException("Некорректный запрос")
-            else -> throw ApiException("Проблема с интернет соединением")
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -72,8 +72,8 @@ class TemplateApi(private val baseUrl: String) : JavaSerializable {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.bodyAsChannel().toByteArray()
-            HttpStatusCode.BadRequest -> throw ApiException("Некорректный запрос")
-            else -> throw ApiException("Проблема с интернет соединением")
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 }

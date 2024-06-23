@@ -7,10 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.astu.feature.single_window.SingleWindowRepository
-import org.astu.feature.single_window.entities.CreatedRequest
 import org.astu.feature.single_window.entities.EmployeeCreatedRequest
-import org.astu.feature.single_window.entities.Request
-import org.astu.feature.single_window.entities.Template
 import org.astu.feature.single_window.screens.ConstructorCertificateScreen
 import org.astu.feature.single_window.screens.EmployeeListOfRequestSingleWindowScreen
 import org.astu.feature.single_window.screens.EmployeeRequestScreen
@@ -79,6 +76,7 @@ class EmployeeRequestViewModel : StateScreenModel<EmployeeRequestViewModel.State
     fun openRequestScreen(request: EmployeeCreatedRequest) = screenModelScope.launch {
         currentRequest.value = request
         currentScreen.value = EmployeeRequestScreen(this@EmployeeRequestViewModel, {
+            loadRequests()
             currentScreen.value = EmployeeListOfRequestSingleWindowScreen(this@EmployeeRequestViewModel, null) {
                 currentScreen.value = it
             }

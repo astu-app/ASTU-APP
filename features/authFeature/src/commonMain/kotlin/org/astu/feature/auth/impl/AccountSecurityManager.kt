@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.contains
 import org.astu.feature.auth.jwtDecoding.decodeJwtPayload
+import org.astu.infrastructure.AccountUser
+import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.gateway.models.Tokens
 import org.astu.infrastructure.security.IAccountSecurityManager
@@ -51,8 +53,11 @@ class AccountSecurityManager : IAccountSecurityManager, JavaSerializable {
         settings.contains(accessTokenId) && settings.contains(refreshTokenId)
 
     override fun logout() {
+        val user by GlobalDIContext.inject<AccountUser>()
+
         settings.remove(accessTokenId)
         settings.remove(refreshTokenId)
+        user.logout()
 
         _data.value = null
     }

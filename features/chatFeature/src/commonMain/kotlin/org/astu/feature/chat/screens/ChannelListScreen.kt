@@ -43,7 +43,7 @@ class ChannelListScreen : SerializableScreen {
 
     @Composable
     override fun Content() {
-        viewModel = rememberScreenModel { ChatListViewModel() }
+        viewModel = remember { ChatListViewModel() }
         val dialogState by remember { viewModel.dialogState }
 
         when (dialogState) {

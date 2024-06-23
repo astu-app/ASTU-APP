@@ -12,11 +12,9 @@
 package org.astu.feature.single_window.client
 
 import io.ktor.client.call.body
-import io.ktor.client.request.delete
+import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import org.astu.feature.single_window.client.models.AddRequestDTO
 import org.astu.feature.single_window.client.models.AddRequirementTypeDTO
@@ -28,6 +26,7 @@ import org.astu.feature.single_window.client.models.TemplateDTO
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.SecurityHttpClient
+import org.astu.infrastructure.exceptions.ApiException
 
 class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
     private val securityHttpClient by GlobalDIContext.inject<SecurityHttpClient>()
@@ -43,7 +42,8 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body<List<RequestDTO>>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -62,7 +62,8 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
 
         when (response.status) {
             HttpStatusCode.OK -> {}
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -83,7 +84,26 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body<Unit>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
+        }
+    }
+
+    /**
+     *
+     * Одобрение заявки пользователя
+     * @param id
+     * @return kotlin.Any
+     */
+    suspend fun apiRequestServiceEmployeeRequestIdSuccessPost(id: String, comment: String): Unit {
+        val response = client.post("${baseUrl}api/request-service/employee/request/$id/approve"){
+            parameter("comment", comment)
+        }
+
+        return when (response.status) {
+            HttpStatusCode.OK -> response.body<Unit>()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -94,11 +114,12 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
      * @return Unit
      */
     suspend fun apiRequestServiceUserRequestIdDelete(id: String) {
-        val response = client.delete("${baseUrl}api/request-service/user/request/$id")
+        val response = client.post("${baseUrl}api/request-service/user/request/$id/remove")
 
         when (response.status) {
             HttpStatusCode.OK -> {}
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -116,7 +137,8 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body<String>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -130,7 +152,8 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body<List<RequirementTypeDTO>>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -148,7 +171,8 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body<RequirementTypeDTO>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -161,7 +185,8 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
         val response = client.get("${baseUrl}api/request-service/template")
         return when (response.status) {
             HttpStatusCode.OK -> response.body<List<TemplateDTO>>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -179,7 +204,8 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body<String>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 
@@ -193,7 +219,8 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body<List<RequestDTO>>()
-            else -> throw RuntimeException()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
         }
     }
 }
