@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 import org.astu.feature.auth.AuthRepository
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
-import kotlin.math.log
+import org.astu.infrastructure.exceptions.ApiException
 
 class AuthViewModel : ScreenModel, JavaSerializable {
     val email = mutableStateOf("")
@@ -31,8 +31,11 @@ class AuthViewModel : ScreenModel, JavaSerializable {
             email.value = ""
             onSuccess()
         }.onFailure {
+            when(it){
+                is ApiException -> error.value = it.message.toString()
+                else -> error.value = "Не удалось подключиться к серверу"
+            }
             password.value = ""
-            error.value = "Не удалось подключиться к серверу"
         }
     }
 

@@ -12,11 +12,8 @@
 package org.astu.feature.single_window.client
 
 import io.ktor.client.call.body
-import io.ktor.client.request.delete
+import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import org.astu.feature.single_window.client.models.AddRequestDTO
@@ -94,12 +91,30 @@ class RequestApi(private val baseUrl: String = "/") : JavaSerializable {
 
     /**
      *
+     * Одобрение заявки пользователя
+     * @param id
+     * @return kotlin.Any
+     */
+    suspend fun apiRequestServiceEmployeeRequestIdSuccessPost(id: String, comment: String): Unit {
+        val response = client.post("${baseUrl}api/request-service/employee/request/$id/approve"){
+            parameter("comment", comment)
+        }
+
+        return when (response.status) {
+            HttpStatusCode.OK -> response.body<Unit>()
+            HttpStatusCode.BadRequest -> throw ApiException(response.bodyAsText())
+            else -> throw ApiException(response.bodyAsText())
+        }
+    }
+
+    /**
+     *
      * Удаление запроса
      * @param id
      * @return Unit
      */
     suspend fun apiRequestServiceUserRequestIdDelete(id: String) {
-        val response = client.delete("${baseUrl}api/request-service/user/request/$id")
+        val response = client.post("${baseUrl}api/request-service/user/request/$id/remove")
 
         when (response.status) {
             HttpStatusCode.OK -> {}

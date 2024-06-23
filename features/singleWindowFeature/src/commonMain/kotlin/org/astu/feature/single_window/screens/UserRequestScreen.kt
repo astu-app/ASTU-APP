@@ -12,19 +12,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import org.astu.feature.single_window.client.models.RequestDTO
 import org.astu.feature.single_window.view_models.UserCreatedRequestViewModel
 import org.astu.feature.single_window.view_models.UserRequestViewModel
-import org.astu.infrastructure.AccountUser
-import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 
 class UserRequestScreen(
     private val vm: UserRequestViewModel,
     onReturn: (() -> Unit)?,
     onChange: (ServiceScreen) -> Unit
-) : ServiceScreen("Просмотр заявления", onReturn, onChange), JavaSerializable {
+) : ServiceScreen("Просмотр вашего заявления", onReturn, onChange), JavaSerializable {
     private lateinit var viewModel: UserCreatedRequestViewModel
 
     @Composable
@@ -119,7 +116,7 @@ class UserRequestScreen(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp, horizontal = 15.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = viewModel::remove) {
+                Button(onClick = { viewModel.remove(onReturn) }) {
                     Text("Отозвать заявление")
                 }
             }

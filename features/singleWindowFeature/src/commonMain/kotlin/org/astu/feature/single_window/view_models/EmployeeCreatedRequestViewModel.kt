@@ -3,16 +3,10 @@ package org.astu.feature.single_window.view_models
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.astu.feature.single_window.SingleWindowRepository
-import org.astu.feature.single_window.client.models.AddRequestDTO
 import org.astu.feature.single_window.client.models.FailRequestDTO
-import org.astu.feature.single_window.entities.CreatedRequest
 import org.astu.feature.single_window.entities.EmployeeCreatedRequest
-import org.astu.feature.single_window.entities.Request
-import org.astu.feature.single_window.entities.RequirementField
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.exceptions.ApiException
@@ -76,6 +70,30 @@ class EmployeeCreatedRequestViewModel(var request: EmployeeCreatedRequest) : Scr
                     }
                 }
             }
+        }
+    }
+
+    fun send() {
+        error.value = null
+        if (comment.value.isBlank()) {
+            error.value = "Обязательно нужно оставить комментарий"
+            return
+        }
+        screenModelScope.launch {
+            error.value = null
+                runCatching {
+                    repository.successRequest(request.id, comment.value)
+                }.onFailure {
+                    when (it) {
+                        is ApiException -> error.value = it.message
+                        else -> {
+                            error.value = "Не удалось загрузить шаблон :("
+                        }
+                    }
+                }.onSuccess {
+                    done.value = true
+                    println("OK send file")
+                }
         }
     }
 }

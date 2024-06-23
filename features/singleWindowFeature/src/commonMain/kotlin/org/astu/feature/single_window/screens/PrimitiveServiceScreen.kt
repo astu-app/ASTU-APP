@@ -18,7 +18,7 @@ class PrimitiveServiceScreen(
     private val vm: MainRequestViewModel,
     onReturn: (() -> Unit)?,
     onChange: (ServiceScreen) -> Unit
-) : ServiceScreen("Заполнение справки", onReturn, onChange), JavaSerializable {
+) : ServiceScreen("Заполнение заявления на справку", onReturn, onChange), JavaSerializable {
     private var viewModel: RequestViewModel = RequestViewModel(vm.currentRequest.value!!)
 
     @Composable
@@ -107,7 +107,7 @@ class PrimitiveServiceScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(onClick = { viewModel.send() }) {
-                    Text("Отправить")
+                    Text("Отправить заявление в отдел")
                 }
             }
         }

@@ -8,10 +8,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.astu.feature.single_window.SingleWindowRepository
 import org.astu.feature.single_window.entities.CreatedRequest
-import org.astu.feature.single_window.entities.EmployeeCreatedRequest
-import org.astu.feature.single_window.entities.Request
-import org.astu.feature.single_window.entities.Template
-import org.astu.feature.single_window.screens.*
+import org.astu.feature.single_window.screens.ConstructorCertificateScreen
+import org.astu.feature.single_window.screens.ServiceScreen
+import org.astu.feature.single_window.screens.UserListOfRequestSingleWindowScreen
+import org.astu.feature.single_window.screens.UserRequestScreen
 import org.astu.infrastructure.DependencyInjection.GlobalDIContext
 import org.astu.infrastructure.JavaSerializable
 import org.astu.infrastructure.StateScreenModel
@@ -76,6 +76,7 @@ class UserRequestViewModel : StateScreenModel<UserRequestViewModel.State>(State.
     fun openRequestScreen(request: CreatedRequest) = screenModelScope.launch {
         currentRequest.value = request
         currentScreen.value = UserRequestScreen(this@UserRequestViewModel, {
+            this@UserRequestViewModel.loadRequests()
             currentScreen.value = UserListOfRequestSingleWindowScreen(this@UserRequestViewModel, null) {
                 currentScreen.value = it
             }

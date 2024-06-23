@@ -24,7 +24,7 @@ class ListOfServicesSingleWindowScreen(
     val vm: MainRequestViewModel,
     onReturn: (() -> Unit)?,
     onChange: (ServiceScreen) -> Unit
-) : ServiceScreen("Список заявлений", onReturn, onChange) {
+) : ServiceScreen("Список заявлений, доступных для подачи", onReturn, onChange) {
     @Composable
     override fun Content() {
         val templates = remember { vm.templates }

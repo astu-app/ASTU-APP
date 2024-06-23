@@ -1,9 +1,7 @@
 package org.astu.app.view_models
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
 import org.astu.feature.single_window.screens.EmployeeSingleWindowScreen
@@ -35,22 +33,6 @@ class AllServicesViewModel : StateScreenModel<AllServicesViewModel.State>(State.
 
         val list = mutableListOf<ServiceInfo>()
         screenModelScope.launch {
-            list.add(ServiceInfo(
-                "Список моих заявлений на справку",
-                "Просмотр поданных заявлений на получение справок"
-            ) {
-                currentScreen.value = UserSingleWindowScreen {
-                    currentScreen.value = null
-                }
-            })
-            list.add(ServiceInfo(
-                "Подача заявлений на справки",
-                "Сервис для подачи заявлений на получение справок"
-            ) {
-                currentScreen.value = MainSingleWindowScreen {
-                    currentScreen.value = null
-                }
-            })
             runCatching {
                 if (user.checkPerm { it.isEmployee })
                     list.add(ServiceInfo(
@@ -62,6 +44,22 @@ class AllServicesViewModel : StateScreenModel<AllServicesViewModel.State>(State.
                         }
                     })
             }
+            list.add(ServiceInfo(
+                "Подача заявлений на справки",
+                "Сервис для подачи заявлений на получение справок"
+            ) {
+                currentScreen.value = MainSingleWindowScreen {
+                    currentScreen.value = null
+                }
+            })
+            list.add(ServiceInfo(
+                "Список моих заявлений на справку",
+                "Просмотр поданных заявлений на получение справок"
+            ) {
+                currentScreen.value = UserSingleWindowScreen {
+                    currentScreen.value = null
+                }
+            })
             list.add(ServiceInfo(
                 "Генерация универсальных заявлений(АСОИУ)",
                 "Сервис для генерации заявлений на кафедре АСОИУ"

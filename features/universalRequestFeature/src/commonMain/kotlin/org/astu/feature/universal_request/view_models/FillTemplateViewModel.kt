@@ -145,7 +145,7 @@ class FillTemplateViewModel(private val templateDTO: TemplateDTO) :
                 }
 
             }.onSuccess { bytes ->
-                FileUtils.saveFile(bytes, templateDTO.name,"doc")
+                FileUtils.saveFile(bytes, templateDTO.name,"docx")
             }
         }
     }

@@ -16,6 +16,7 @@ interface SingleWindowRepository {
     suspend fun failRequest(id: String, body: FailRequestDTO)
     suspend fun removeRequest(id: String)
     suspend fun successRequest(id: String, filename: String, body: ByteArray)
+    suspend fun successRequest(id: String, comment: String)
 
     suspend fun getRequirementTypes(): List<RequirementType>
 

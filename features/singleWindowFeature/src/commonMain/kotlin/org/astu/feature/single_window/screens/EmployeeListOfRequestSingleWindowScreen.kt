@@ -22,7 +22,7 @@ class EmployeeListOfRequestSingleWindowScreen(
     val vm: EmployeeRequestViewModel,
     onReturn: (() -> Unit)?,
     onChange: (ServiceScreen) -> Unit
-) : ServiceScreen("Список заявлений", onReturn, onChange) {
+) : ServiceScreen("Список заявлений, доступных для обработки", onReturn, onChange) {
     @Composable
     override fun Content() {
         val requests = remember { vm.requests }

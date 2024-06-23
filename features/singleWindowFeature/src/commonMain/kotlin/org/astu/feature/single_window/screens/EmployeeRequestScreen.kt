@@ -19,7 +19,7 @@ class EmployeeRequestScreen(
     private val vm: EmployeeRequestViewModel,
     onReturn: (() -> Unit)?,
     onChange: (ServiceScreen) -> Unit
-) : ServiceScreen("Просмотр заявления", onReturn, onChange), JavaSerializable {
+) : ServiceScreen("Обработка заявления", onReturn, onChange), JavaSerializable {
     private lateinit var viewModel: EmployeeCreatedRequestViewModel
 
     @Composable
@@ -104,7 +104,7 @@ class EmployeeRequestScreen(
                         Text("Отправить")
                     }
                 else
-                    Button(onClick = {/*EVENT*/ }) {
+                    Button(onClick = viewModel::send) {
                         Text("Уведомить")
                     }
                 Button(onClick = viewModel::fail) {

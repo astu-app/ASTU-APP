@@ -118,7 +118,7 @@ class FillTemplateScreen(var templateDTO: TemplateDTO, val onReturn: () -> Unit)
                 Button(modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp), onClick = {
                     vm.fillTemplate()
                 }) {
-                    Text("Оформить")
+                    Text("Заполнить шаблон")
                 }
             }
         }
