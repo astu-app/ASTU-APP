@@ -122,8 +122,9 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
                     mutableState.value = State.DeletingAnnouncementError
 
                 } else {
+                    content.removeAll { it.id == id }
                     mutableState.value = State.LoadingDone
-                    loadAnnouncements()
+//                    loadAnnouncements()
                     return@launch
                 }
 
@@ -145,8 +146,9 @@ class BulletInBoardViewModel : StateScreenModel<BulletInBoardViewModel.State>(St
                     mutableState.value = State.HidingAnnouncementError
 
                 } else {
+                    content.removeAll { it.id == id }
                     mutableState.value = State.LoadingDone
-                    loadAnnouncements()
+//                    loadAnnouncements()
                     return@launch
                 }
 

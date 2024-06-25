@@ -73,8 +73,9 @@ class HiddenAnnouncementsViewModel(private val onReturn: () -> Unit) : StateScre
                     mutableState.value = State.DeletingAnnouncementError
 
                 } else {
+                    content.removeAll { it.id == id }
                     mutableState.value = State.LoadingDone
-                    loadAnnouncements()
+//                    loadAnnouncements()
                     return@launch
                 }
 

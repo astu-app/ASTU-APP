@@ -73,8 +73,9 @@ class DelayedPublishedAnnouncementsViewModel(private val onReturn: () -> Unit) :
                     mutableState.value = State.DeletingAnnouncementError
 
                 } else {
+                    content.removeAll { it.id == id }
                     mutableState.value = State.LoadingDone
-                    loadAnnouncements()
+//                    loadAnnouncements()
                     return@launch
                 }
 

@@ -1,12 +1,16 @@
 package org.astu.feature.bulletinBoard.models.services.announcements
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.offsetAt
 import org.astu.feature.bulletinBoard.views.entities.announcement.creation.CreateAnnouncementContent
 
 class AnnouncementCreateValidator(private val announcement: CreateAnnouncementContent) {
     fun canCreate(): Boolean {
-        val now = Clock.System.now()
-        val nowMillis = now.toEpochMilliseconds()
+        val nowUtc = Clock.System.now()
+        val timeZoneDifferenceMillis = TimeZone.currentSystemDefault().offsetAt(nowUtc).totalSeconds * 1_000
+        val nowMillis = nowUtc.toEpochMilliseconds() + timeZoneDifferenceMillis
 
         val delayedHidingMomentMillis = announcement.delayedHidingDateMillis.value
             .plus(announcement.delayedHidingTimeHours.value * 3_600_000)
@@ -30,6 +34,10 @@ class AnnouncementCreateValidator(private val announcement: CreateAnnouncementCo
     ): Boolean {
         if (!announcement.delayedPublicationEnabled.value)
             return true
+
+        println("now ${Instant.fromEpochMilliseconds(nowMillis)}")
+        println("pub ${Instant.fromEpochMilliseconds(delayedPublicationMomentMillis)}")
+        println("hid ${Instant.fromEpochMilliseconds(delayedHidingMomentMillis)}")
 
         var valid = true
         valid = valid and (nowMillis < delayedPublicationMomentMillis)

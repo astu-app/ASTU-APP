@@ -16,7 +16,6 @@ object SurveyToDtoMappers {
             isAnonymous = this.isAnonymous,
             resultsOpenBeforeClosing = this.resultsOpenBeforeClosing,
             voteUntil = this.voteUntil,
-            rootUserGroupId = this.rootUserGroupId.toString()
         )
 
     @JvmName("CreateQuestionCollectionToDtos")

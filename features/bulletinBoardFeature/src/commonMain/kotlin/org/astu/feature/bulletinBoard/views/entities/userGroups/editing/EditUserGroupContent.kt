@@ -72,6 +72,7 @@ class EditUserGroupContent(
             .toMutableMap()
 
         adminCandidates = content.potentialMembers
+            .sortedBy { it.fullName }
             .toPresentations()
             .associateBy(
                 keySelector = { it.id },

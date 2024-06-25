@@ -1,12 +1,15 @@
 package org.astu.feature.bulletinBoard.models.services.announcements
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.offsetAt
 import org.astu.feature.bulletinBoard.views.entities.announcement.editing.EditAnnouncementContent
 
 class AnnouncementEditValidator(private val announcement: EditAnnouncementContent) {
     fun canEdit(): Boolean {
-        val now = Clock.System.now()
-        val nowMillis = now.toEpochMilliseconds()
+        val nowUtc = Clock.System.now()
+        val timeZoneDifferenceMillis = TimeZone.currentSystemDefault().offsetAt(nowUtc).totalSeconds * 1_000
+        val nowMillis = nowUtc.toEpochMilliseconds() + timeZoneDifferenceMillis
 
         val delayedHidingMomentMillis = announcement.delayedHidingDateMillis.value
             .plus(announcement.delayedHidingTimeHours.value * 3_600_000)

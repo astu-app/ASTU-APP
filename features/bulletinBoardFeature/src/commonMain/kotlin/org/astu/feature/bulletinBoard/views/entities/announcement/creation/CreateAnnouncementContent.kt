@@ -8,6 +8,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.benasher44.uuid.Uuid
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.offsetAt
 import kotlinx.datetime.toLocalDateTime
 import org.astu.feature.bulletinBoard.models.entities.audience.UserGroupHierarchy
 import org.astu.feature.bulletinBoard.viewModels.humanization.humanizeDate
@@ -48,17 +49,18 @@ class CreateAnnouncementContent(audienceHierarchy: UserGroupHierarchy) {
 
 
     init {
-        val now = Clock.System.now()
-        val nowMillis = now.toEpochMilliseconds()
+        val nowUtc = Clock.System.now()
+        val timeZoneDifferenceMillis = TimeZone.currentSystemDefault().offsetAt(nowUtc).totalSeconds * 1_000
+        val nowMillis = nowUtc.toEpochMilliseconds() + timeZoneDifferenceMillis
         delayedPublicationDateMillis = mutableStateOf(nowMillis)
         delayedPublicationDateString = mutableStateOf(humanizeDate(delayedPublicationDateMillis.value))
 
-        val tomorrow = now + Duration.parse("1d")
+        val tomorrow = nowUtc + Duration.parse("1d")
         val tomorrowMillis = tomorrow.toEpochMilliseconds()
         delayedHidingDateMillis = mutableStateOf(tomorrowMillis)
         delayedHidingDateString = mutableStateOf(humanizeDate(delayedHidingDateMillis.value))
 
-        val hourLater = now + Duration.parse("1h")
+        val hourLater = nowUtc + Duration.parse("1h")
 
         delayedPublicationTimeHours = mutableStateOf(hourLater.toLocalDateTime(TimeZone.currentSystemDefault()).hour)
         delayedPublicationTimeString =

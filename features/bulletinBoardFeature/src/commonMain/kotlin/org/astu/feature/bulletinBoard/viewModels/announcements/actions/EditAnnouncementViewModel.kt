@@ -100,14 +100,19 @@ class EditAnnouncementViewModel(
         val contentSnapshot = content.value
         val originalSnapshot = original
 
-        return if (contentSnapshot == null || originalSnapshot == null) null
-        else EditAnnouncement(
+        if (contentSnapshot == null || originalSnapshot == null)
+            return null
+
+        val delayedPublishingAtChanged = isDelayedPublishingChanged(contentSnapshot, originalSnapshot)
+        val delayedHidingAtChanged = isDelayedHidingChanged(contentSnapshot, originalSnapshot)
+
+        return EditAnnouncement(
             id = announcementId,
             content = getUpdatedContent(contentSnapshot, originalSnapshot),
             users = getUpdatedAudienceIds(contentSnapshot, originalSnapshot),
-            delayedPublishingAtChanged = isDelayedPublishingChanged(contentSnapshot, originalSnapshot),
+            delayedPublishingAtChanged = delayedPublishingAtChanged,
             delayedPublishingAt = getChangedDelayedPublicationMoment(contentSnapshot, originalSnapshot),
-            delayedHidingAtChanged = isDelayedHidingChanged(contentSnapshot, originalSnapshot),
+            delayedHidingAtChanged = delayedHidingAtChanged,
             delayedHidingAt = getChangedDelayedHidingMoment(contentSnapshot, originalSnapshot),
 
             attachmentIdsToRemove = emptySet(),
@@ -148,14 +153,25 @@ class EditAnnouncementViewModel(
         if (contentDelayedPublicationEnabled != originalDelayedPublicationEnabled) return true
 
         // contentDelayedPublicationEnabled == true && originalDelayedPublicationEnabled == true
-        return content.delayedPublicationAt == original.delayedPublishingAt
+        return content.delayedPublicationAt != original.delayedPublishingAt
     }
 
     private fun getChangedDelayedPublicationMoment(
         content: EditAnnouncementContent,
         original: ContentForAnnouncementEditing
     ): LocalDateTime? {
-        return if (isDelayedPublishingChanged(content, original)) content.delayedPublicationAt else null
+        val contentDelayedPublicationEnabled = content.delayedPublicationEnabled.value
+        val originalDelayedPublicationEnabled = original.delayedPublishingAt != null
+        val changed = isDelayedPublishingChanged(content, original)
+
+        return if (originalDelayedPublicationEnabled && contentDelayedPublicationEnabled && changed)
+            content.delayedPublicationAt
+        else if (originalDelayedPublicationEnabled && !contentDelayedPublicationEnabled)
+            null
+        else if (!originalDelayedPublicationEnabled && contentDelayedPublicationEnabled)
+            content.delayedPublicationAt
+        else
+            null
     }
 
     private fun isDelayedHidingChanged(
@@ -168,14 +184,25 @@ class EditAnnouncementViewModel(
         if (contentDelayedHidingEnabled == false && originalDelayedHidingEnabled == false) return false
         if (contentDelayedHidingEnabled != originalDelayedHidingEnabled) return true
 
-        return content.delayedHidingAt == original.delayedHidingAt
+        return content.delayedHidingAt != original.delayedHidingAt
     }
 
     private fun getChangedDelayedHidingMoment(
         content: EditAnnouncementContent,
         original: ContentForAnnouncementEditing
     ): LocalDateTime? {
-        return if (isDelayedHidingChanged(content, original)) content.delayedHidingAt else null
+        val contentDelayedPublicationEnabled = content.delayedHidingEnabled.value
+        val originalDelayedPublicationEnabled = original.delayedHidingAt != null
+        val changed = isDelayedHidingChanged(content, original)
+
+        return if (originalDelayedPublicationEnabled && contentDelayedPublicationEnabled && changed)
+            content.delayedHidingAt
+        else if (originalDelayedPublicationEnabled && !contentDelayedPublicationEnabled)
+            null
+        else if (!originalDelayedPublicationEnabled && contentDelayedPublicationEnabled)
+            content.delayedHidingAt
+        else
+            null
     }
 
     private fun setErrorDialogStateForEditContentLoading(error:  GetAnnouncementEditContentErrors? = null) {

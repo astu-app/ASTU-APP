@@ -112,7 +112,6 @@ class ApiGeneralAnnouncementDataSource(private val baseUrl: String) : GeneralAnn
 
 
     private suspend fun uploadSurvey(survey: CreateSurvey, rootUserGroupId: Uuid): ContentWithError<Uuid, CreateSurveyErrors> {
-        survey.rootUserGroupId = rootUserGroupId
         return surveyDataSource.create(survey, rootUserGroupId)
     }
 

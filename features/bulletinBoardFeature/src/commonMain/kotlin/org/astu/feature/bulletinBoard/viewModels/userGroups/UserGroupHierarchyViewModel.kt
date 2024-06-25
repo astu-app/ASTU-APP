@@ -127,6 +127,7 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
                 val error = userGroupModel.delete(id, rootUserGroupId)
                 if (error == null) {
                     mutableState.value = State.LoadingDone
+                    loadUserGroups()
                     return@launch
                 } else {
                     constructUserGroupsDeletingErrorDialogContent(id, error)

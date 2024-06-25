@@ -16,7 +16,5 @@ data class CreateSurveyDto (
     val isAnonymous: Boolean,
     val resultsOpenBeforeClosing: Boolean,
     val voteUntil: LocalDateTime?,
-
-    var rootUserGroupId: String,
 )
 

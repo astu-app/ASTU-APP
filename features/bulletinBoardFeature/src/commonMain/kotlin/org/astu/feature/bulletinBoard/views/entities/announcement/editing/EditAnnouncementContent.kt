@@ -35,7 +35,7 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
     val audienceSize: Int = editContent.audienceSize
     var text: MutableState<String> = mutableStateOf(editContent.content)
 
-    val delayedPublicationEnabled: MutableState<Boolean> = mutableStateOf(editContent.delayedPublishingAt != null)
+    val delayedPublicationEnabled: MutableState<Boolean> = mutableStateOf(editContent.delayedPublishingAt != null && editContent.publishedAt == null)
     lateinit var delayedPublicationDateMillis: MutableState<Long>
     lateinit var delayedPublicationDateString: MutableState<String>
 
@@ -49,7 +49,7 @@ class EditAnnouncementContent(private val editContent: ContentForAnnouncementEdi
             return LocalDateTime(date.date, time)
         }
 
-    val delayedHidingEnabled: MutableState<Boolean> = mutableStateOf(editContent.delayedHidingAt != null)
+    val delayedHidingEnabled: MutableState<Boolean> = mutableStateOf(editContent.delayedHidingAt != null && editContent.hiddenAt == null)
     lateinit var delayedHidingDateMillis: MutableState<Long>
     lateinit var delayedHidingDateString: MutableState<String>
 

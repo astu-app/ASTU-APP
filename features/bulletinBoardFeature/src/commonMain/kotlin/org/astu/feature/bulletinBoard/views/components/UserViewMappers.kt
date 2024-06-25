@@ -22,12 +22,12 @@ object UserViewMappers {
         val user = this
         Column(modifier = modifier) {
             Text(
-                text = user.firstName
+                text = user.secondName
             )
             val secondPartOfName =
                 if (user.patronymic != null)
-                    "${user.secondName} ${user.patronymic}"
-                else user.secondName
+                    "${user.firstName} ${user.patronymic}"
+                else user.firstName
             Text(
                 text = secondPartOfName,
                 style = MaterialTheme.typography.labelMedium,
