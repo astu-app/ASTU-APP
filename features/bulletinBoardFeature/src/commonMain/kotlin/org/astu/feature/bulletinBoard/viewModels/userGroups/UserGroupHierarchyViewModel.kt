@@ -1,7 +1,7 @@
 package org.astu.feature.bulletinBoard.viewModels.userGroups
 
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.Dp
@@ -33,7 +33,7 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
     }
 
     private val userGroupModel: UserGroupModel = UserGroupModel()
-    var userGroups: SnapshotStateList<INode> = mutableStateListOf()
+    var userGroups: SnapshotStateMap<Uuid, INode> = mutableStateMapOf()
 
     var pressOffset by mutableStateOf(DpOffset.Zero)
     var selectedUserGroupPosition: LayoutCoordinates? = null
@@ -47,6 +47,7 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
 
     val hierarchyRootsForUserGroupSelection: MutableMap<Uuid, @Composable () -> Unit> = mutableMapOf()
     var selectedRootId: MutableState<Uuid?> = mutableStateOf(null)
+    var selectedHierarchyRoot: MutableState<@Composable () -> Unit> = mutableStateOf({ })
     val isSelectUserGroupExpanded: MutableState<Boolean> = mutableStateOf(false)
 
     val rootUserGroupId: Uuid
@@ -68,12 +69,12 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
         screenModelScope.launch {
             try {
                 mutableState.value = State.Loading
-                userGroups.removeAll { true }
+                userGroups.clear()
                 hierarchyRootsForUserGroupSelection.clear()
 
                 val userGroups = userGroupModel.getUserGroupHierarchy()
                 if (userGroups.isContentValid) {
-                    this@UserGroupHierarchyViewModel.userGroups.addAll(
+                    this@UserGroupHierarchyViewModel.userGroups.putAll(
                         userGroups.content!!.toShortUserGroupHierarchy(
                             onUserGroupClick =  {
                                 val userGroupDetailsScreen = UserGroupDetailsScreen(it.id, it.name, rootUserGroupId) { navigator.pop() }
@@ -97,12 +98,14 @@ class UserGroupHierarchyViewModel(private val navigator: Navigator) : StateScree
                         userGroups.content.roots.associate {
                             it.id to it.toView {
                                 selectedRootId.value = it.id
+                                selectedHierarchyRoot.value = hierarchyRootsForUserGroupSelection[selectedRootId.value] ?: { }
                                 isSelectUserGroupExpanded.value = !isSelectUserGroupExpanded.value
                                 Logger.d("${it.id}, ${it.name}", tag = "rootUserGroup")
                             }
                         }
                     )
                     selectedRootId = mutableStateOf(hierarchyRootsForUserGroupSelection.keys.firstOrNull())
+                    selectedHierarchyRoot.value = hierarchyRootsForUserGroupSelection[selectedRootId.value] ?: { }
 
                     mutableState.value = State.LoadingDone
                     return@launch

@@ -9,8 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -103,6 +105,20 @@ class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewMode
 
     @Composable
     private fun ShowLoadedContent(viewModel: UserGroupHierarchyViewModel) {
+        val selectedRootIdSnapshot = viewModel.selectedRootId.value
+        if (selectedRootIdSnapshot == null) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    "Вы не можете управлять ни одной иерархией групп пользователей",
+                    textAlign = TextAlign.Center
+                )
+            }
+            return
+        }
+
         Column {
             // Группа пользователей
             Card(
@@ -117,14 +133,15 @@ class UserGroupHierarchyScreen(private val viewModel: UserGroupHierarchyViewMode
                 )
                 DropDownSelector(
                     viewModel.hierarchyRootsForUserGroupSelection.values,
-                    viewModel.hierarchyRootsForUserGroupSelection[viewModel.selectedRootId.value]!!,
+                    viewModel.selectedHierarchyRoot.value,
+//                    viewModel.hierarchyRootsForUserGroupSelection[viewModel.selectedRootId.value]!!,
                     viewModel.isSelectUserGroupExpanded
                 )
             }
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
 
-            DisplayUserGroupHierarchySection(viewModel.userGroups)
+            DisplayUserGroupHierarchySection(listOf(viewModel.userGroups[selectedRootIdSnapshot]!!))
         }
     }
 

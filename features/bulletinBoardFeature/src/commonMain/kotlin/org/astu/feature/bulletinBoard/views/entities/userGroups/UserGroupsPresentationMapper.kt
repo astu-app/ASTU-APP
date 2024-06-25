@@ -36,9 +36,9 @@ object UserGroupsPresentationMapper {
     fun UserGroupHierarchy.toShortUserGroupHierarchy(
         onUserGroupClick: (UserGroup) -> Unit = { },
         onUserGroupLongPress: (UserGroup, LayoutCoordinates, DpOffset) -> Unit,
-    ): List<INode> {
+    ): Map<Uuid, INode> {
         mappedNodes.clear()
-        return this.roots.map { mapShortUserGroupHierarchyNode(it, onUserGroupClick, onUserGroupLongPress) }
+        return this.roots.associate { it.id to mapShortUserGroupHierarchyNode(it, onUserGroupClick, onUserGroupLongPress) }
     }
 
     @JvmName("UserGroupDetailsToPresentation")

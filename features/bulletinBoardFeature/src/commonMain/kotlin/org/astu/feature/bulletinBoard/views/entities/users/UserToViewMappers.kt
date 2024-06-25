@@ -87,11 +87,11 @@ object UserToViewMappers {
                         .wrapContentHeight()
                         .weight(1f)
                 ) {
-                    Text(firstName)
+                    Text(secondName)
                     val secondPartOfName =
                         if (patronymic != null)
-                            "$secondName $patronymic"
-                        else secondName
+                            "$firstName $patronymic"
+                        else firstName
                     Text(
                         text = secondPartOfName,
                         style = MaterialTheme.typography.labelMedium,
