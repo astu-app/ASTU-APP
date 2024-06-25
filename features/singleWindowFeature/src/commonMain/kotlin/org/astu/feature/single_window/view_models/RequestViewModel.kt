@@ -3,9 +3,6 @@ package org.astu.feature.single_window.view_models
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.benasher44.uuid.uuid4
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.astu.feature.single_window.SingleWindowRepository
 import org.astu.feature.single_window.client.models.AddRequestDTO
@@ -35,9 +32,14 @@ class RequestViewModel(request: Request) : ScreenModel, JavaSerializable {
     }
 
     fun fill(){
-        email.value = "azimusma@gmail.com"
-        fields.value.forEach {
-            
+        runCatching {
+            email.value = "azimusma@ttraum.ru"
+            fields.value.forEach {
+                if(it.requirement.name.lowercase() == "ФИО Студента".lowercase())
+                    updateField(RequirementField(it.requirement, "Усманов Азим Маннурович"))
+                if(it.requirement.name.lowercase() == "Номер студенческого билета".lowercase())
+                    updateField(RequirementField(it.requirement, "20201019"))
+            }
         }
     }
 
@@ -60,5 +62,4 @@ class RequestViewModel(request: Request) : ScreenModel, JavaSerializable {
 
         }
     }
-
 }

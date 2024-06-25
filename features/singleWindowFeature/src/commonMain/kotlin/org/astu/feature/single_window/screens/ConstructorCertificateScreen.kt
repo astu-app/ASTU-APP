@@ -90,7 +90,7 @@ class ConstructorCertificateScreen(val onReturn: () -> Unit) : SerializableScree
                 }
             }
             item {
-                Button({vm.createTemplate()}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow)){
+                Button({vm.createTemplate()}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow, contentColor = Color.Black)){
                     Text("Заполнить поля")
                 }
             }

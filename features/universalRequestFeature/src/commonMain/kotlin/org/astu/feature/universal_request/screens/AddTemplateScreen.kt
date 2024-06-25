@@ -94,7 +94,7 @@ class AddTemplateScreen(private val onReturn: () -> Unit) : SerializableScreen {
             }) {
                 Text("Выбрать файл и отправить")
             }
-            Button({vm.fill()}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow)){
+            Button({vm.fill()}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow, contentColor = Color.Black)){
                 Text("Заполнить поля")
             }
         }

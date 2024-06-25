@@ -101,7 +101,7 @@ class FillTemplateScreen(var templateDTO: TemplateDTO, val onReturn: () -> Unit)
                 HorizontalDivider()
             }
             item {
-                Button({vm.fill()}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow)){
+                Button({vm.fill()}, colors = ButtonDefaults.buttonColors().copy(containerColor = Color.Yellow, contentColor = Color.Black)){
                     Text("Заполнить поля")
                 }
             }

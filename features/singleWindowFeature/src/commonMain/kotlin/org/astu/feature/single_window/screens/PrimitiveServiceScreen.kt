@@ -1,11 +1,25 @@
 package org.astu.feature.single_window.screens
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,12 +46,15 @@ class PrimitiveServiceScreen(
                 }
 
                 Row {
-                    TextField(modifier = Modifier.fillMaxWidth(), value = prop.value, onValueChange = {
-                        prop.value = it
-                        println(fields.value)
-                        viewModel.updateField(prop)
-                        println(fields.value)
-                    })
+                    TextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = prop.value,
+                        onValueChange = {
+                            prop.value = it
+                            println(fields.value)
+                            viewModel.updateField(prop)
+                            println(fields.value)
+                        })
                 }
             }
         }
@@ -49,7 +66,7 @@ class PrimitiveServiceScreen(
         val email = remember { viewModel.email }
         val state = remember { viewModel.state }
 
-        Column(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             Text(
                 modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp),
                 text = viewModel.name,
@@ -110,20 +127,27 @@ class PrimitiveServiceScreen(
                     Text("Отправить заявление в отдел")
                 }
             }
+            Button(
+                onClick = { viewModel.fill() },
+                colors = ButtonDefaults.buttonColors()
+                    .copy(containerColor = Color.Yellow, contentColor = Color.Black)
+            ) {
+                Text("Заполнить поля")
+            }
         }
     }
 
     @Composable
     override fun Content() {
         val done = remember { viewModel.done }
-        if(!done.value)
+        if (!done.value)
             showAllList()
         else
             Done()
     }
 
     @Composable
-    private fun Done(){
+    private fun Done() {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
